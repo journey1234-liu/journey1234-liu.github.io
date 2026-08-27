@@ -1,0 +1,20 @@
+{
+  "name": "atm26-leaderboard-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "ATM26 public challenge website and Test Phase leaderboard (static, GitHub Pages).",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
+  }
+}

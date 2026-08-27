@@ -1,0 +1,75 @@
+name: Deploy ATM26 site to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "atm26-site/**"
+      - ".github/workflows/pages.yml"
+      - "index.html"
+  pull_request:
+    paths:
+      - "atm26-site/**"
+      - ".github/workflows/pages.yml"
+      - "index.html"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: atm26-site/.nvmrc
+          cache: npm
+          cache-dependency-path: atm26-site/package-lock.json
+
+      - name: Install dependencies
+        working-directory: atm26-site
+        run: npm ci
+
+      - name: Validate leaderboard data and run tests
+        working-directory: atm26-site
+        run: npm test
+
+      - name: Production build (type-check + bundle)
+        working-directory: atm26-site
+        run: npm run build
+
+      - name: Assemble Pages artifact
+        run: |
+          set -euo pipefail
+          rm -rf deploy
+          mkdir -p deploy/atm26/final-test-phase-leaderboard
+          cp -r atm26-site/dist/* deploy/atm26/final-test-phase-leaderboard/
+          cp index.html deploy/index.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: deploy
+
+  deploy:
+    needs: build
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
