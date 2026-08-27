@@ -32,8 +32,10 @@ function renderShell(route: string, content: string): string {
   return `
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
-      <a class="brand" href="#/home">${escapeHtml(SITE.title)}</a>
-      ${renderNav(route)}
+      <div class="header-inner">
+        <a class="brand" href="#/home">${escapeHtml(SITE.title)}</a>
+        ${renderNav(route)}
+      </div>
     </header>
     <main id="main" class="site-main" tabindex="-1">
       <div id="page">${content}</div>

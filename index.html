@@ -1,24 +1,147 @@
-<header>
-    <a href="#" class="logo">Yaoyu Liu</a>
-    <nav class="nav-items">
-        <a href="#">Homepage</a>
-        <a href="#">Publication</a>
-        <a href="#">Project</a>
-        <a href="#">Blog</a>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Yaoyu Liu — student at the Institute of Medical Robotics (IMR), Shanghai Jiao Tong University." />
+  <title>Yaoyu Liu</title>
+  <style>
+    :root {
+      --primary: #a41034;
+      --primary-dark: #8c0d2c;
+      --primary-soft: #fdf0f3;
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --text: #1f2328;
+      --muted: #6b7280;
+      --shadow: 0 1px 3px rgba(16,24,40,.08);
+      --radius: 10px;
+      --font: "Helvetica Neue", Helvetica, Arial, "Segoe UI", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    a:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+
+    .site-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 50;
+    }
+    .header-inner {
+      max-width: 1000px; margin: 0 auto; padding: .8rem 1.5rem;
+      display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.25rem;
+    }
+    .brand { color: var(--primary); font-weight: 800; font-size: 1.25rem; margin-right: auto; }
+    .brand:hover { text-decoration: none; }
+    .nav { display: flex; flex-wrap: wrap; gap: .15rem; }
+    .nav a { color: var(--muted); padding: .4rem .7rem; border-radius: 6px; font-weight: 500; font-size: .95rem; }
+    .nav a:hover { color: var(--primary); background: var(--primary-soft); text-decoration: none; }
+    .nav a.nav-cta { background: var(--primary); color: #fff; }
+    .nav a.nav-cta:hover { background: var(--primary-dark); }
+
+    main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    .hero {
+      background: linear-gradient(135deg, #7c0a26 0%, #a41034 55%, #c2254b 100%);
+      color: #fff; border-radius: 16px; padding: 3.5rem 2rem; text-align: center;
+      box-shadow: var(--shadow); margin-bottom: 2rem;
+    }
+    .hero h1 { font-size: clamp(2.2rem, 5vw, 3.2rem); margin: 0 0 .5rem; letter-spacing: -.02em; }
+    .hero .subtitle { font-size: 1.1rem; opacity: .92; margin: 0 0 1rem; }
+    .hero .bio { max-width: 640px; margin: 0 auto 1.5rem; opacity: .95; }
+    .hero .links { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; }
+    .hero .links a {
+      background: #fff; color: var(--primary); padding: .5rem 1rem; border-radius: 8px; font-weight: 600;
+    }
+    .hero .links a:hover { background: var(--primary-soft); text-decoration: none; }
+    .hero .links a.ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.7); }
+
+    .section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); }
+    .section h2 { margin: 0 0 .75rem; font-size: 1.4rem; letter-spacing: -.01em; }
+    .kicker { text-transform: uppercase; letter-spacing: .08em; font-size: .75rem; font-weight: 700; color: var(--primary); margin-bottom: .25rem; }
+    .muted { color: var(--muted); }
+    .pub { border-bottom: 1px solid var(--border); padding: .9rem 0; }
+    .pub:last-child { border-bottom: none; }
+    .pub .title { font-weight: 600; }
+    .pub .meta { color: var(--muted); font-size: .9rem; }
+    .badge { display: inline-block; background: var(--primary-soft); color: var(--primary); border-radius: 999px; padding: .1rem .6rem; font-size: .78rem; font-weight: 600; }
+
+    .footer { border-top: 1px solid var(--border); padding: 1.5rem; text-align: center; color: var(--muted); font-size: .88rem; }
+
+    @media (max-width: 640px) {
+      .brand { flex-basis: 100%; }
+      main { padding: 1rem 1rem 3rem; }
+      .hero { padding: 2.5rem 1.25rem; }
+      .section { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#">Yaoyu Liu</a>
+      <nav class="nav">
+        <a href="#about">About</a>
+        <a href="#publications">Publications</a>
+        <a href="#projects">Projects</a>
+        <a href="#blog">Blog</a>
+        <a class="nav-cta" href="/atm26/final-test-phase-leaderboard/">ATM26 Leaderboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Yaoyu Liu</h1>
+      <p class="subtitle">Student &middot; Institute of Medical Robotics (IMR), Shanghai Jiao Tong University</p>
+      <p class="bio">I am Yaoyu Liu, currently a student at the Institute of Medical Robotics (IMR), Shanghai Jiao Tong University, working on medical image analysis and airway-tree modeling.</p>
+      <div class="links">
+        <a href="mailto:yaoyuliu@sjtu.edu.cn">Email</a>
+        <a href="https://github.com/journey1234-liu" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="/atm26/final-test-phase-leaderboard/">ATM26 Leaderboard</a>
-    </nav>
-</header>
+        <a class="ghost" href="#publications">Publications</a>
+      </div>
+    </section>
 
-<main>
-    <div class="intro">
-        <h1>Brief intro</h1>
-        <p>I am Yaoyu Liu, currently a student in <a href="https://imr.sjtu.edu.cn/">Institute of Medical Robotics(IMR)</a>, Shanghai Jiao Tong University.</p>
-    </div>
-</main>
+    <section class="section" id="about">
+      <div class="kicker">About</div>
+      <h2>About me</h2>
+      <p>I am a student at the <a href="https://imr.sjtu.edu.cn/" target="_blank" rel="noopener noreferrer">Institute of Medical Robotics (IMR)</a>, Shanghai Jiao Tong University. My research focuses on medical image analysis, with a current emphasis on automatic airway-tree modeling from chest CT.</p>
+    </section>
 
-<footer class="footer">
-    <div class="links">
-        <span>E-mail</span>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-    </div>
-</footer>
+    <section class="section" id="publications">
+      <div class="kicker">Research</div>
+      <h2>Publications</h2>
+      <div class="pub">
+        <div class="title">PLACEHOLDER — publication title</div>
+        <div class="meta">PLACEHOLDER — venue, year</div>
+      </div>
+      <p class="muted">Publication list to be updated.</p>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="kicker">Work</div>
+      <h2>Projects</h2>
+      <p><span class="badge">Challenge</span> <strong>ATM26</strong> — Airway Tree Modeling 2026. See the <a href="/atm26/final-test-phase-leaderboard/">public leaderboard</a>.</p>
+    </section>
+
+    <section class="section" id="blog">
+      <div class="kicker">Writing</div>
+      <h2>Blog</h2>
+      <p class="muted">Posts coming soon.</p>
+    </section>
+  </main>
+
+  <footer class="footer">© 2026 Yaoyu Liu · Institute of Medical Robotics, Shanghai Jiao Tong University</footer>
+</body>
+</html>

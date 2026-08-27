@@ -36,9 +36,10 @@ export function renderHome(): string {
 
   return `
     <section class="panel hero">
-      <h1>${escapeHtml(SITE.fullTitle)}</h1>
-      <p class="lede">${escapeHtml(SITE.tagline)}</p>
-      <p>${escapeHtml(SITE.intro)}</p>
+      <div class="section-kicker">Airway Tree Modeling &middot; 2026</div>
+      <h1>${escapeHtml(SITE.title)}</h1>
+      <p class="subtitle">${escapeHtml(SITE.tagline)}</p>
+      <p class="lede">${escapeHtml(SITE.intro)}</p>
       <div class="cta-row">
         ${ctaLink(LINKS.registration, "Register")}
         ${ctaLink(LINKS.submission, "Submit a Docker container")}
@@ -47,6 +48,7 @@ export function renderHome(): string {
       </div>
     </section>
     <section class="panel">
+      <div class="section-kicker">Timeline</div>
       <h2>Status</h2>
       <ul class="timeline-compact">${timelineSummary || "<li>Timeline to be announced.</li>"}</ul>
       <p class="muted">${escapeHtml(SITE.organizerPlaceholderNote)}</p>
