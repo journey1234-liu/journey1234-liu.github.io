@@ -3,14 +3,14 @@ import { joinBase } from "../src/basePath";
 
 describe("joinBase (non-root deployment base path)", () => {
   it("resolves a data path under a project subpath", () => {
-    expect(joinBase("/atm26/final-test-phase-leaderboard/", "data/leaderboard.json")).toBe(
-      "/atm26/final-test-phase-leaderboard/data/leaderboard.json",
+    expect(joinBase("/atm26/", "data/leaderboard.json")).toBe(
+      "/atm26/data/leaderboard.json",
     );
   });
 
   it("resolves assets under a project subpath", () => {
-    expect(joinBase("/atm26/final-test-phase-leaderboard/", "assets/app.js")).toBe(
-      "/atm26/final-test-phase-leaderboard/assets/app.js",
+    expect(joinBase("/atm26/", "assets/app.js")).toBe(
+      "/atm26/assets/app.js",
     );
   });
 

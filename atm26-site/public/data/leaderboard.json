@@ -1,113 +1,226 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "generated_at": "2026-08-27T00:00:00Z",
   "ranking_policy": {
     "submission_selection": "latest approved successful submission per team and track",
     "method": "mean rank across metrics; ties use average rank"
   },
-  "tracks": {
-    "track-1": {
-      "metrics": [
-        { "name": "DSC", "higher_is_better": true },
-        { "name": "clDice", "higher_is_better": true },
-        { "name": "TLD", "higher_is_better": true },
-        { "name": "BD", "higher_is_better": true },
-        { "name": "Betti0Error", "higher_is_better": false }
-      ],
-      "entries": [
-        {
-          "rank": 1,
-          "team_display_name": "Placeholder Team A",
-          "metrics": { "DSC": 0.91, "clDice": 0.89, "TLD": 0.95, "BD": 0.93, "Betti0Error": 0.05 },
-          "metric_ranks": { "DSC": 1, "clDice": 1, "TLD": 1, "BD": 1, "Betti0Error": 1 },
-          "mean_rank": 1.0,
-          "submission_timestamp": "2026-08-25T09:00:00Z"
+  "phases": {
+    "validation": {
+      "label": "Validation Phase",
+      "tracks": {
+        "track-1": {
+          "metrics": [
+            { "name": "DSC", "higher_is_better": true },
+            { "name": "clDice", "higher_is_better": true },
+            { "name": "TLD", "higher_is_better": true },
+            { "name": "BD", "higher_is_better": true },
+            { "name": "Betti0Error", "higher_is_better": false }
+          ],
+          "entries": [
+            {
+              "rank": 1,
+              "team_display_name": "Placeholder Team A",
+              "metrics": { "DSC": 0.89, "clDice": 0.87, "TLD": 0.93, "BD": 0.91, "Betti0Error": 0.07 },
+              "metric_ranks": { "DSC": 1, "clDice": 1, "TLD": 1, "BD": 1, "Betti0Error": 1 },
+              "mean_rank": 1.0,
+              "submission_timestamp": "2026-08-18T09:00:00Z"
+            },
+            {
+              "rank": 2,
+              "team_display_name": "Placeholder Team B",
+              "metrics": { "DSC": 0.85, "clDice": 0.82, "TLD": 0.89, "BD": 0.86, "Betti0Error": 0.15 },
+              "metric_ranks": { "DSC": 2, "clDice": 2, "TLD": 2, "BD": 2, "Betti0Error": 2 },
+              "mean_rank": 2.0,
+              "submission_timestamp": "2026-08-18T10:30:00Z"
+            },
+            {
+              "rank": 3,
+              "team_display_name": "Placeholder Team C",
+              "metrics": { "DSC": 0.81, "clDice": 0.78, "TLD": 0.84, "BD": 0.81, "Betti0Error": 0.24 },
+              "metric_ranks": { "DSC": 3, "clDice": 3, "TLD": 3, "BD": 3, "Betti0Error": 3 },
+              "mean_rank": 3.0,
+              "submission_timestamp": "2026-08-18T12:00:00Z"
+            },
+            {
+              "rank": 4,
+              "team_display_name": "Placeholder Team D",
+              "metrics": { "DSC": 0.76, "clDice": 0.72, "TLD": 0.79, "BD": 0.75, "Betti0Error": 0.38 },
+              "metric_ranks": { "DSC": 4, "clDice": 4, "TLD": 4, "BD": 4, "Betti0Error": 4 },
+              "mean_rank": 4.0,
+              "submission_timestamp": "2026-08-18T14:00:00Z"
+            },
+            {
+              "rank": 5,
+              "team_display_name": "Placeholder Team E",
+              "metrics": { "DSC": 0.69, "clDice": 0.64, "TLD": 0.72, "BD": 0.67, "Betti0Error": 0.55 },
+              "metric_ranks": { "DSC": 5, "clDice": 5, "TLD": 5, "BD": 5, "Betti0Error": 5 },
+              "mean_rank": 5.0,
+              "submission_timestamp": "2026-08-18T16:00:00Z"
+            }
+          ]
         },
-        {
-          "rank": 2,
-          "team_display_name": "Placeholder Team B",
-          "metrics": { "DSC": 0.88, "clDice": 0.85, "TLD": 0.91, "BD": 0.89, "Betti0Error": 0.12 },
-          "metric_ranks": { "DSC": 2, "clDice": 2, "TLD": 2, "BD": 2, "Betti0Error": 2 },
-          "mean_rank": 2.0,
-          "submission_timestamp": "2026-08-25T10:30:00Z"
-        },
-        {
-          "rank": 3,
-          "team_display_name": "Placeholder Team C",
-          "metrics": { "DSC": 0.84, "clDice": 0.81, "TLD": 0.87, "BD": 0.84, "Betti0Error": 0.20 },
-          "metric_ranks": { "DSC": 3, "clDice": 3, "TLD": 3, "BD": 3, "Betti0Error": 3 },
-          "mean_rank": 3.0,
-          "submission_timestamp": "2026-08-25T12:00:00Z"
-        },
-        {
-          "rank": 4,
-          "team_display_name": "Placeholder Team D",
-          "metrics": { "DSC": 0.79, "clDice": 0.76, "TLD": 0.82, "BD": 0.78, "Betti0Error": 0.33 },
-          "metric_ranks": { "DSC": 4, "clDice": 4, "TLD": 4, "BD": 4, "Betti0Error": 4 },
-          "mean_rank": 4.0,
-          "submission_timestamp": "2026-08-25T14:00:00Z"
-        },
-        {
-          "rank": 5,
-          "team_display_name": "Placeholder Team E",
-          "metrics": { "DSC": 0.72, "clDice": 0.68, "TLD": 0.75, "BD": 0.70, "Betti0Error": 0.48 },
-          "metric_ranks": { "DSC": 5, "clDice": 5, "TLD": 5, "BD": 5, "Betti0Error": 5 },
-          "mean_rank": 5.0,
-          "submission_timestamp": "2026-08-25T16:00:00Z"
+        "track-2": {
+          "metrics": [
+            { "name": "ACC", "higher_is_better": true },
+            { "name": "F1", "higher_is_better": true },
+            { "name": "SC", "higher_is_better": true },
+            { "name": "TD", "higher_is_better": false },
+            { "name": "mDice", "higher_is_better": true },
+            { "name": "mclDice", "higher_is_better": true }
+          ],
+          "entries": [
+            {
+              "rank": 1,
+              "team_display_name": "Placeholder Team A",
+              "metrics": { "ACC": 0.88, "F1": 0.90, "SC": 0.75, "TD": 2.8, "mDice": 0.70, "mclDice": 0.79 },
+              "metric_ranks": { "ACC": 1, "F1": 1, "SC": 1, "TD": 1, "mDice": 1, "mclDice": 1 },
+              "mean_rank": 1.0,
+              "submission_timestamp": "2026-08-18T09:10:00Z"
+            },
+            {
+              "rank": 2,
+              "team_display_name": "Placeholder Team B",
+              "metrics": { "ACC": 0.83, "F1": 0.85, "SC": 0.67, "TD": 4.3, "mDice": 0.65, "mclDice": 0.74 },
+              "metric_ranks": { "ACC": 2, "F1": 2, "SC": 2, "TD": 2, "mDice": 2, "mclDice": 2 },
+              "mean_rank": 2.0,
+              "submission_timestamp": "2026-08-18T10:40:00Z"
+            },
+            {
+              "rank": 3,
+              "team_display_name": "Placeholder Team C",
+              "metrics": { "ACC": 0.78, "F1": 0.80, "SC": 0.58, "TD": 6.1, "mDice": 0.60, "mclDice": 0.69 },
+              "metric_ranks": { "ACC": 3, "F1": 3, "SC": 3, "TD": 3, "mDice": 3, "mclDice": 3 },
+              "mean_rank": 3.0,
+              "submission_timestamp": "2026-08-18T12:10:00Z"
+            },
+            {
+              "rank": 4,
+              "team_display_name": "Placeholder Team D",
+              "metrics": { "ACC": 0.72, "F1": 0.74, "SC": 0.49, "TD": 8.9, "mDice": 0.54, "mclDice": 0.63 },
+              "metric_ranks": { "ACC": 4, "F1": 4, "SC": 4, "TD": 4, "mDice": 4, "mclDice": 4 },
+              "mean_rank": 4.0,
+              "submission_timestamp": "2026-08-18T14:20:00Z"
+            },
+            {
+              "rank": 5,
+              "team_display_name": "Placeholder Team E",
+              "metrics": { "ACC": 0.65, "F1": 0.67, "SC": 0.40, "TD": 12.5, "mDice": 0.47, "mclDice": 0.55 },
+              "metric_ranks": { "ACC": 5, "F1": 5, "SC": 5, "TD": 5, "mDice": 5, "mclDice": 5 },
+              "mean_rank": 5.0,
+              "submission_timestamp": "2026-08-18T16:30:00Z"
+            }
+          ]
         }
-      ]
+      }
     },
-    "track-2": {
-      "metrics": [
-        { "name": "ACC", "higher_is_better": true },
-        { "name": "F1", "higher_is_better": true },
-        { "name": "SC", "higher_is_better": true },
-        { "name": "TD", "higher_is_better": false },
-        { "name": "mDice", "higher_is_better": true },
-        { "name": "mclDice", "higher_is_better": true }
-      ],
-      "entries": [
-        {
-          "rank": 1,
-          "team_display_name": "Placeholder Team A",
-          "metrics": { "ACC": 0.91, "F1": 0.92, "SC": 0.79, "TD": 2.1, "mDice": 0.72, "mclDice": 0.81 },
-          "metric_ranks": { "ACC": 1, "F1": 1, "SC": 1, "TD": 1, "mDice": 1, "mclDice": 1 },
-          "mean_rank": 1.0,
-          "submission_timestamp": "2026-08-25T09:10:00Z"
+    "final-test": {
+      "label": "Final Test Phase",
+      "tracks": {
+        "track-1": {
+          "metrics": [
+            { "name": "DSC", "higher_is_better": true },
+            { "name": "clDice", "higher_is_better": true },
+            { "name": "TLD", "higher_is_better": true },
+            { "name": "BD", "higher_is_better": true },
+            { "name": "Betti0Error", "higher_is_better": false }
+          ],
+          "entries": [
+            {
+              "rank": 1,
+              "team_display_name": "Placeholder Team A",
+              "metrics": { "DSC": 0.91, "clDice": 0.89, "TLD": 0.95, "BD": 0.93, "Betti0Error": 0.05 },
+              "metric_ranks": { "DSC": 1, "clDice": 1, "TLD": 1, "BD": 1, "Betti0Error": 1 },
+              "mean_rank": 1.0,
+              "submission_timestamp": "2026-08-25T09:00:00Z"
+            },
+            {
+              "rank": 2,
+              "team_display_name": "Placeholder Team B",
+              "metrics": { "DSC": 0.88, "clDice": 0.85, "TLD": 0.91, "BD": 0.89, "Betti0Error": 0.12 },
+              "metric_ranks": { "DSC": 2, "clDice": 2, "TLD": 2, "BD": 2, "Betti0Error": 2 },
+              "mean_rank": 2.0,
+              "submission_timestamp": "2026-08-25T10:30:00Z"
+            },
+            {
+              "rank": 3,
+              "team_display_name": "Placeholder Team C",
+              "metrics": { "DSC": 0.84, "clDice": 0.81, "TLD": 0.87, "BD": 0.84, "Betti0Error": 0.20 },
+              "metric_ranks": { "DSC": 3, "clDice": 3, "TLD": 3, "BD": 3, "Betti0Error": 3 },
+              "mean_rank": 3.0,
+              "submission_timestamp": "2026-08-25T12:00:00Z"
+            },
+            {
+              "rank": 4,
+              "team_display_name": "Placeholder Team D",
+              "metrics": { "DSC": 0.79, "clDice": 0.76, "TLD": 0.82, "BD": 0.78, "Betti0Error": 0.33 },
+              "metric_ranks": { "DSC": 4, "clDice": 4, "TLD": 4, "BD": 4, "Betti0Error": 4 },
+              "mean_rank": 4.0,
+              "submission_timestamp": "2026-08-25T14:00:00Z"
+            },
+            {
+              "rank": 5,
+              "team_display_name": "Placeholder Team E",
+              "metrics": { "DSC": 0.72, "clDice": 0.68, "TLD": 0.75, "BD": 0.70, "Betti0Error": 0.48 },
+              "metric_ranks": { "DSC": 5, "clDice": 5, "TLD": 5, "BD": 5, "Betti0Error": 5 },
+              "mean_rank": 5.0,
+              "submission_timestamp": "2026-08-25T16:00:00Z"
+            }
+          ]
         },
-        {
-          "rank": 2,
-          "team_display_name": "Placeholder Team B",
-          "metrics": { "ACC": 0.86, "F1": 0.88, "SC": 0.71, "TD": 3.5, "mDice": 0.68, "mclDice": 0.77 },
-          "metric_ranks": { "ACC": 2, "F1": 2, "SC": 2, "TD": 2, "mDice": 2, "mclDice": 2 },
-          "mean_rank": 2.0,
-          "submission_timestamp": "2026-08-25T10:40:00Z"
-        },
-        {
-          "rank": 3,
-          "team_display_name": "Placeholder Team C",
-          "metrics": { "ACC": 0.81, "F1": 0.83, "SC": 0.62, "TD": 5.2, "mDice": 0.63, "mclDice": 0.72 },
-          "metric_ranks": { "ACC": 3, "F1": 3, "SC": 3, "TD": 3, "mDice": 3, "mclDice": 3 },
-          "mean_rank": 3.0,
-          "submission_timestamp": "2026-08-25T12:10:00Z"
-        },
-        {
-          "rank": 4,
-          "team_display_name": "Placeholder Team D",
-          "metrics": { "ACC": 0.75, "F1": 0.77, "SC": 0.53, "TD": 7.8, "mDice": 0.57, "mclDice": 0.66 },
-          "metric_ranks": { "ACC": 4, "F1": 4, "SC": 4, "TD": 4, "mDice": 4, "mclDice": 4 },
-          "mean_rank": 4.0,
-          "submission_timestamp": "2026-08-25T14:20:00Z"
-        },
-        {
-          "rank": 5,
-          "team_display_name": "Placeholder Team E",
-          "metrics": { "ACC": 0.68, "F1": 0.70, "SC": 0.44, "TD": 11.0, "mDice": 0.50, "mclDice": 0.58 },
-          "metric_ranks": { "ACC": 5, "F1": 5, "SC": 5, "TD": 5, "mDice": 5, "mclDice": 5 },
-          "mean_rank": 5.0,
-          "submission_timestamp": "2026-08-25T16:30:00Z"
+        "track-2": {
+          "metrics": [
+            { "name": "ACC", "higher_is_better": true },
+            { "name": "F1", "higher_is_better": true },
+            { "name": "SC", "higher_is_better": true },
+            { "name": "TD", "higher_is_better": false },
+            { "name": "mDice", "higher_is_better": true },
+            { "name": "mclDice", "higher_is_better": true }
+          ],
+          "entries": [
+            {
+              "rank": 1,
+              "team_display_name": "Placeholder Team A",
+              "metrics": { "ACC": 0.91, "F1": 0.92, "SC": 0.79, "TD": 2.1, "mDice": 0.72, "mclDice": 0.81 },
+              "metric_ranks": { "ACC": 1, "F1": 1, "SC": 1, "TD": 1, "mDice": 1, "mclDice": 1 },
+              "mean_rank": 1.0,
+              "submission_timestamp": "2026-08-25T09:10:00Z"
+            },
+            {
+              "rank": 2,
+              "team_display_name": "Placeholder Team B",
+              "metrics": { "ACC": 0.86, "F1": 0.88, "SC": 0.71, "TD": 3.5, "mDice": 0.68, "mclDice": 0.77 },
+              "metric_ranks": { "ACC": 2, "F1": 2, "SC": 2, "TD": 2, "mDice": 2, "mclDice": 2 },
+              "mean_rank": 2.0,
+              "submission_timestamp": "2026-08-25T10:40:00Z"
+            },
+            {
+              "rank": 3,
+              "team_display_name": "Placeholder Team C",
+              "metrics": { "ACC": 0.81, "F1": 0.83, "SC": 0.62, "TD": 5.2, "mDice": 0.63, "mclDice": 0.72 },
+              "metric_ranks": { "ACC": 3, "F1": 3, "SC": 3, "TD": 3, "mDice": 3, "mclDice": 3 },
+              "mean_rank": 3.0,
+              "submission_timestamp": "2026-08-25T12:10:00Z"
+            },
+            {
+              "rank": 4,
+              "team_display_name": "Placeholder Team D",
+              "metrics": { "ACC": 0.75, "F1": 0.77, "SC": 0.53, "TD": 7.8, "mDice": 0.57, "mclDice": 0.66 },
+              "metric_ranks": { "ACC": 4, "F1": 4, "SC": 4, "TD": 4, "mDice": 4, "mclDice": 4 },
+              "mean_rank": 4.0,
+              "submission_timestamp": "2026-08-25T14:20:00Z"
+            },
+            {
+              "rank": 5,
+              "team_display_name": "Placeholder Team E",
+              "metrics": { "ACC": 0.68, "F1": 0.70, "SC": 0.44, "TD": 11.0, "mDice": 0.50, "mclDice": 0.58 },
+              "metric_ranks": { "ACC": 5, "F1": 5, "SC": 5, "TD": 5, "mDice": 5, "mclDice": 5 },
+              "mean_rank": 5.0,
+              "submission_timestamp": "2026-08-25T16:30:00Z"
+            }
+          ]
         }
-      ]
+      }
     }
   }
 }

@@ -52,7 +52,7 @@ atm26-site/
 The site must work both at a repository subpath and at the root. One value in
 [`vite.config.ts`](./vite.config.ts) controls every asset and data URL:
 
-- Personal Pages subpage (current): `/atm26/final-test-phase-leaderboard/`
+- Personal Pages subpage (current): `/atm26/`
 - Future organization project site: `/<repository-name>/`
 - Custom domain / root: `/`
 
@@ -63,7 +63,7 @@ VITE_BASE_PATH=/ATM26-Website/ npm run build
 ```
 
 The GitHub Actions workflow assembles the artifact so the built site is served
-from `/atm26/final-test-phase-leaderboard/` while the personal homepage stays at
+from `/atm26/` while the personal homepage stays at
 the repository root.
 
 ## GitHub Pages deployment
@@ -104,18 +104,34 @@ consumes this versioned shape (extra forward-compatible fields are ignored):
 
 ```json
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "generated_at": "2026-08-27T00:00:00Z",
   "ranking_policy": {
     "submission_selection": "latest approved successful submission per team and track",
     "method": "mean rank across metrics; ties use average rank"
   },
-  "tracks": {
-    "track-1": { "metrics": [], "entries": [] },
-    "track-2": { "metrics": [], "entries": [] }
+  "phases": {
+    "validation": {
+      "label": "Validation Phase",
+      "tracks": {
+        "track-1": { "metrics": [], "entries": [] },
+        "track-2": { "metrics": [], "entries": [] }
+      }
+    },
+    "final-test": {
+      "label": "Final Test Phase",
+      "tracks": {
+        "track-1": { "metrics": [], "entries": [] },
+        "track-2": { "metrics": [], "entries": [] }
+      }
+    }
   }
 }
 ```
+
+Each phase (`validation`, `final-test`, …) carries the two tracks, so the
+leaderboard renders a phase selector plus a Track 1 / Track 2 selector. The
+phase id maps to the URL sub-route `#/leaderboard/<phase>`.
 
 Each entry exposes only public fields (`rank`, `team_display_name`, metric
 values, optional `metric_ranks`/`mean_rank`/`submission_timestamp`). The

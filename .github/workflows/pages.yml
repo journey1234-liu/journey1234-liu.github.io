@@ -53,8 +53,8 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf deploy
-          mkdir -p deploy/atm26/final-test-phase-leaderboard
-          cp -r atm26-site/dist/* deploy/atm26/final-test-phase-leaderboard/
+          mkdir -p deploy/atm26
+          cp -r atm26-site/dist/* deploy/atm26/
           cp index.html deploy/index.html
 
       - name: Upload Pages artifact

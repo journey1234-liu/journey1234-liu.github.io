@@ -1,11 +1,16 @@
 import "./styles.css";
 import { NAV_ITEMS, SITE } from "./content";
+import { currentBase } from "./basePath";
 import { renderStaticPage } from "./pages";
 import { mountLeaderboard } from "./leaderboard";
 
-function currentRoute(): string {
+function parseHash(): { page: string; phase: string | null } {
   const hash = window.location.hash.replace(/^#\/?/, "");
-  return hash || "home";
+  const segments = (hash || "home").split("/");
+  return {
+    page: segments[0] || "home",
+    phase: segments.length > 1 ? segments[1] : null,
+  };
 }
 
 function escapeHtml(value: string): string {
@@ -18,9 +23,12 @@ function escapeHtml(value: string): string {
 }
 
 function renderNav(active: string): string {
+  const base = currentBase();
   const items = NAV_ITEMS.map((item) => {
     const isActive = item.id === active;
-    return `<a class="nav-item${isActive ? " is-active" : ""}" href="#/${item.id}"${
+    // "Home" is the site root (/atm26/), not a hash sub-route.
+    const href = item.id === "home" ? base : `#/${item.id}`;
+    return `<a class="nav-item${isActive ? " is-active" : ""}" href="${href}"${
       isActive ? ' aria-current="page"' : ""
     }>${escapeHtml(item.label)}</a>`;
   }).join("");
@@ -33,7 +41,7 @@ function renderShell(route: string, content: string): string {
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <div class="header-inner">
-        <a class="brand" href="#/home">${escapeHtml(SITE.title)}</a>
+        <a class="brand" href="${currentBase()}">${escapeHtml(SITE.title)}</a>
         ${renderNav(route)}
       </div>
     </header>
@@ -50,7 +58,7 @@ function renderShell(route: string, content: string): string {
 async function mount(): Promise<void> {
   const app = document.getElementById("app");
   if (!app) return;
-  const route = currentRoute();
+  const { page: route, phase } = parseHash();
   const pageLabel = NAV_ITEMS.find((item) => item.id === route)?.label;
   document.title = route === "home" || !pageLabel ? SITE.title : `${pageLabel} — ${SITE.title}`;
 
@@ -61,7 +69,7 @@ async function mount(): Promise<void> {
 
   if (route === "leaderboard") {
     const page = document.getElementById("page");
-    if (page) await mountLeaderboard(page);
+    if (page) await mountLeaderboard(page, phase);
   }
   const main = document.getElementById("main");
   main?.focus({ preventScroll: true });
