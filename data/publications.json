@@ -1,0 +1,15 @@
+[
+  {
+    "title": "PLACEHOLDER — publication title",
+    "authors": "<strong>Y Liu</strong>, et al.",
+    "type": "preprint",
+    "isFirstAuthor": true,
+    "showOnHomepage": true,
+    "featuredOrder": 1,
+    "venue": "PLACEHOLDER — venue",
+    "year": "2026",
+    "tags": [
+      { "text": "Paper", "link": "#" }
+    ]
+  }
+]

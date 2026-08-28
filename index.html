@@ -1,147 +1,306 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Yaoyu Liu — student at the Institute of Medical Robotics (IMR), Shanghai Jiao Tong University." />
-  <title>Yaoyu Liu</title>
-  <style>
-    :root {
-      --primary: #a41034;
-      --primary-dark: #8c0d2c;
-      --primary-soft: #fdf0f3;
-      --bg: #fafafa;
-      --surface: #ffffff;
-      --border: #e5e7eb;
-      --text: #1f2328;
-      --muted: #6b7280;
-      --shadow: 0 1px 3px rgba(16,24,40,.08);
-      --radius: 10px;
-      --font: "Helvetica Neue", Helvetica, Arial, "Segoe UI", system-ui, sans-serif;
-    }
-    * { box-sizing: border-box; }
-    html { -webkit-text-size-adjust: 100%; }
-    body {
-      margin: 0;
-      font-family: var(--font);
-      color: var(--text);
-      background: var(--bg);
-      line-height: 1.65;
-    }
-    a { color: var(--primary); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    a:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
-
-    .site-header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      position: sticky; top: 0; z-index: 50;
-    }
-    .header-inner {
-      max-width: 1000px; margin: 0 auto; padding: .8rem 1.5rem;
-      display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.25rem;
-    }
-    .brand { color: var(--primary); font-weight: 800; font-size: 1.25rem; margin-right: auto; }
-    .brand:hover { text-decoration: none; }
-    .nav { display: flex; flex-wrap: wrap; gap: .15rem; }
-    .nav a { color: var(--muted); padding: .4rem .7rem; border-radius: 6px; font-weight: 500; font-size: .95rem; }
-    .nav a:hover { color: var(--primary); background: var(--primary-soft); text-decoration: none; }
-    .nav a.nav-cta { background: var(--primary); color: #fff; }
-    .nav a.nav-cta:hover { background: var(--primary-dark); }
-
-    main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-
-    .hero {
-      background: linear-gradient(135deg, #7c0a26 0%, #a41034 55%, #c2254b 100%);
-      color: #fff; border-radius: 16px; padding: 3.5rem 2rem; text-align: center;
-      box-shadow: var(--shadow); margin-bottom: 2rem;
-    }
-    .hero h1 { font-size: clamp(2.2rem, 5vw, 3.2rem); margin: 0 0 .5rem; letter-spacing: -.02em; }
-    .hero .subtitle { font-size: 1.1rem; opacity: .92; margin: 0 0 1rem; }
-    .hero .bio { max-width: 640px; margin: 0 auto 1.5rem; opacity: .95; }
-    .hero .links { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; }
-    .hero .links a {
-      background: #fff; color: var(--primary); padding: .5rem 1rem; border-radius: 8px; font-weight: 600;
-    }
-    .hero .links a:hover { background: var(--primary-soft); text-decoration: none; }
-    .hero .links a.ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.7); }
-
-    .section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); }
-    .section h2 { margin: 0 0 .75rem; font-size: 1.4rem; letter-spacing: -.01em; }
-    .kicker { text-transform: uppercase; letter-spacing: .08em; font-size: .75rem; font-weight: 700; color: var(--primary); margin-bottom: .25rem; }
-    .muted { color: var(--muted); }
-    .pub { border-bottom: 1px solid var(--border); padding: .9rem 0; }
-    .pub:last-child { border-bottom: none; }
-    .pub .title { font-weight: 600; }
-    .pub .meta { color: var(--muted); font-size: .9rem; }
-    .badge { display: inline-block; background: var(--primary-soft); color: var(--primary); border-radius: 999px; padding: .1rem .6rem; font-size: .78rem; font-weight: 600; }
-
-    .footer { border-top: 1px solid var(--border); padding: 1.5rem; text-align: center; color: var(--muted); font-size: .88rem; }
-
-    @media (max-width: 640px) {
-      .brand { flex-basis: 100%; }
-      main { padding: 1rem 1rem 3rem; }
-      .hero { padding: 2.5rem 1.25rem; }
-      .section { padding: 1.25rem; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yaoyu Liu</title>
+    <meta name="description" content="Personal academic webpage for Yaoyu Liu, medical image analysis researcher at the Institute of Medical Robotics, SJTU.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              background: '#fefffe',
+              foreground: '#0f172a',
+              primary: '#1e293b',
+              accent: '#d4a562',
+              'accent-dark': '#b88a4d',
+              muted: '#64748b'
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              serif: ['Crimson Text', 'serif']
+            }
+          }
+        }
+      };
+    </script>
 </head>
-<body>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="#">Yaoyu Liu</a>
-      <nav class="nav">
-        <a href="#about">About</a>
-        <a href="#publications">Publications</a>
-        <a href="#projects">Projects</a>
-        <a href="#blog">Blog</a>
-        <a class="nav-cta" href="/atm26/">ATM26 Leaderboard</a>
-      </nav>
-    </div>
-  </header>
+<body class="bg-background text-foreground antialiased font-sans">
+    <nav class="top-nav glass fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 lg:h-20">
+                <div class="flex-shrink-0">
+                    <a href="#" class="text-xl lg:text-2xl font-serif font-semibold text-primary hover:text-accent transition-colors duration-200">
+                        Yaoyu Liu
+                    </a>
+                </div>
 
-  <main>
-    <section class="hero">
-      <h1>Yaoyu Liu</h1>
-      <p class="subtitle">Student &middot; Institute of Medical Robotics (IMR), Shanghai Jiao Tong University</p>
-      <p class="bio">I am Yaoyu Liu, currently a student at the Institute of Medical Robotics (IMR), Shanghai Jiao Tong University, working on medical image analysis and airway-tree modeling.</p>
-      <div class="links">
-        <a href="mailto:yaoyuliu@sjtu.edu.cn">Email</a>
-        <a href="https://github.com/journey1234-liu" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="/atm26/">ATM26 Leaderboard</a>
-        <a class="ghost" href="#publications">Publications</a>
-      </div>
-    </section>
+                <div class="hidden lg:block">
+                    <div class="ml-10 flex items-center space-x-8">
+                        <ul class="nav-links flex space-x-8">
+                            <li><a href="#homepage" class="nav-item">Homepage</a></li>
+                            <li><a href="#about" class="nav-item">About</a></li>
+                            <li><a href="#latest-news" class="nav-item">News</a></li>
+                            <li><a href="#publications" class="nav-item">Publications</a></li>
+                            <li><a href="#honors" class="nav-item">Honors</a></li>
+                            <li><a href="#services" class="nav-item">Service</a></li>
+                            <li><a href="#educations" class="nav-item">Education</a></li>
+                            <li><a href="#contact" class="nav-item">Contact</a></li>
+                            <li><a href="/atm26/" class="nav-item text-accent font-semibold">ATM26</a></li>
+                        </ul>
+                    </div>
+                </div>
 
-    <section class="section" id="about">
-      <div class="kicker">About</div>
-      <h2>About me</h2>
-      <p>I am a student at the <a href="https://imr.sjtu.edu.cn/" target="_blank" rel="noopener noreferrer">Institute of Medical Robotics (IMR)</a>, Shanghai Jiao Tong University. My research focuses on medical image analysis, with a current emphasis on automatic airway-tree modeling from chest CT.</p>
-    </section>
+                <div class="lg:hidden flex items-center">
+                    <button class="mobile-menu-btn p-2 rounded-md text-neutral-600 hover:text-primary" aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
 
-    <section class="section" id="publications">
-      <div class="kicker">Research</div>
-      <h2>Publications</h2>
-      <div class="pub">
-        <div class="title">PLACEHOLDER — publication title</div>
-        <div class="meta">PLACEHOLDER — venue, year</div>
-      </div>
-      <p class="muted">Publication list to be updated.</p>
-    </section>
+            <div class="mobile-menu hidden lg:hidden absolute top-16 left-0 w-full bg-white/95 backdrop-blur-md border-b border-neutral-200 shadow-lg" id="mobile-menu">
+                <ul class="flex flex-col py-4 px-4 space-y-4">
+                    <li><a href="#homepage" class="mobile-nav-item block text-neutral-600 hover:text-primary font-medium">Homepage</a></li>
+                    <li><a href="#about" class="mobile-nav-item block text-neutral-600 hover:text-primary font-medium">About</a></li>
+                    <li><a href="#latest-news" class="mobile-nav-item block text-neutral-600 hover:text-primary font-medium">News</a></li>
+                    <li><a href="#publications" class="mobile-nav-item block text-neutral-600 hover:text-primary font-medium">Publications</a></li>
+                    <li><a href="#honors" class="mobile-nav-item block text-neutral-600 hover:text-primary font-medium">Honors</a></li>
+                    <li><a href="#services" class="mobile-nav-item block text-neutral-600 hover:text-primary font-medium">Service</a></li>
+                    <li><a href="#educations" class="mobile-nav-item block text-neutral-600 hover:text-primary font-medium">Education</a></li>
+                    <li><a href="#contact" class="mobile-nav-item block text-neutral-600 hover:text-primary font-medium">Contact</a></li>
+                    <li><a href="/atm26/" class="mobile-nav-item block text-accent font-medium">ATM26 Challenge</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <section class="section" id="projects">
-      <div class="kicker">Work</div>
-      <h2>Projects</h2>
-      <p><span class="badge">Challenge</span> <strong>ATM26</strong> — Airway Tree Modeling 2026. See the <a href="/atm26/">public leaderboard</a>.</p>
-    </section>
+    <main class="min-h-screen pt-20 lg:pt-28 pb-12">
+        <div class="w-full max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid-layout">
+                <div class="profile-column">
+                    <div class="profile-card sticky top-24">
+                        <div class="profile-image-container mb-6 mx-auto max-w-[180px]">
+                            <img src="assets/profile.svg" alt="Profile portrait" class="w-full h-auto rounded-xl shadow-sm">
+                        </div>
 
-    <section class="section" id="blog">
-      <div class="kicker">Writing</div>
-      <h2>Blog</h2>
-      <p class="muted">Posts coming soon.</p>
-    </section>
-  </main>
+                        <div class="text-center mb-6">
+                            <h1 class="text-3xl font-serif font-bold text-primary mb-2">Yaoyu Liu</h1>
+                            <p class="text-lg text-accent font-medium mb-1">Medical Image Analysis Student</p>
+                            <p class="text-neutral-600 mb-2">Institute of Medical Robotics (IMR), SJTU</p>
+                        </div>
 
-  <footer class="footer">© 2026 Yaoyu Liu · Institute of Medical Robotics, Shanghai Jiao Tong University</footer>
+                        <div class="social-links flex flex-wrap justify-center gap-3 mb-6">
+                            <a href="mailto:yaoyuliu@sjtu.edu.cn" class="social-btn" title="Email"><i class="fas fa-envelope"></i></a>
+                            <a href="https://github.com/journey1234-liu" target="_blank" rel="noopener noreferrer" class="social-btn" title="GitHub"><i class="fab fa-github"></i></a>
+                            <a href="https://scholar.google.com/" target="_blank" rel="noopener noreferrer" class="social-btn" title="Google Scholar"><i class="fas fa-graduation-cap"></i></a>
+                            <a href="/atm26/" class="social-btn" title="ATM26 Challenge"><i class="fas fa-trophy"></i></a>
+                        </div>
+
+                        <div class="research-interests-card bg-neutral-100 rounded-xl p-5 mb-6">
+                            <h3 class="font-serif font-bold text-lg text-primary mb-4 pb-2 border-b border-neutral-200 flex items-center">
+                                <i class="fas fa-lightbulb text-accent mr-2 text-base"></i> Research Interests
+                            </h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-center text-neutral-700 hover:text-primary transition-colors">
+                                    <i class="fas fa-brain text-accent/80 mr-3 w-5 text-center text-sm"></i>
+                                    <span class="text-sm font-medium">Medical Image Analysis</span>
+                                </li>
+                                <li class="flex items-center text-neutral-700 hover:text-primary transition-colors">
+                                    <i class="fas fa-eye text-accent/80 mr-3 w-5 text-center text-sm"></i>
+                                    <span class="text-sm font-medium">Airway Segmentation</span>
+                                </li>
+                                <li class="flex items-center text-neutral-700 hover:text-primary transition-colors">
+                                    <i class="fas fa-robot text-accent/80 mr-3 w-5 text-center text-sm"></i>
+                                    <span class="text-sm font-medium">Anatomical Labeling</span>
+                                </li>
+                                <li class="flex items-center text-neutral-700 hover:text-primary transition-colors">
+                                    <i class="fas fa-network-wired text-accent/80 mr-3 w-5 text-center text-sm"></i>
+                                    <span class="text-sm font-medium">Deep Learning</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-column space-y-12">
+                    <section id="homepage" class="scroll-mt-24">
+                        <span id="about"></span>
+                        <div class="section-header mb-6">
+                            <h2 class="text-3xl font-serif font-bold text-primary">About Me</h2>
+                        </div>
+                        <div class="prose max-w-none text-neutral-600 text-justify formal-font">
+                            <p class="mb-4">
+                                I am a student at the Institute of Medical Robotics (IMR), Shanghai Jiao Tong University.
+                                My research focuses on medical image analysis, with current work on automatic airway-tree
+                                modeling from chest CT — including binary airway segmentation and branch-wise anatomical
+                                labeling.
+                            </p>
+
+                            <div class="highlight-box bg-accent/10 border-l-4 border-accent p-4 rounded-r-lg text-left font-sans">
+                                <p>
+                                    <strong><i class="fas fa-lightbulb text-accent mr-2"></i>Airway Tree Modeling.</strong>
+                                    I work on the ATM26 challenge (Airway Tree Modeling 2026), spanning Track 1 (binary
+                                    airway segmentation) and Track 2 (branch-wise anatomical labeling). See the
+                                    <a href="/atm26/" class="text-accent font-semibold hover:underline">public leaderboard</a>.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="research-thrust" class="scroll-mt-24">
+                        <div class="section-header mb-6">
+                            <h2 class="text-3xl font-serif font-bold text-primary">Research Overview</h2>
+                        </div>
+                        <div class="prose max-w-none text-neutral-600 text-justify formal-font">
+                            <blockquote class="pl-4 border-l-4 border-accent/30 italic text-neutral-600 bg-neutral-50/50 p-4 rounded-r-lg mb-6">
+                                "Building reliable, clinically deployable systems that connect medical visual perception with quantitative anatomical analysis."
+                            </blockquote>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="thrust-card bg-neutral-50 rounded-xl p-5 border border-neutral-100 hover:shadow-md transition-all duration-300 group flex flex-col h-full">
+                                    <h3 class="font-serif font-bold text-lg text-primary mb-4 flex items-center group-hover:text-accent transition-colors">
+                                        <i class="fas fa-microscope text-accent mr-2 group-hover:scale-110 transition-transform"></i> Airway Segmentation
+                                    </h3>
+                                    <p class="text-sm leading-relaxed text-justify text-neutral-600 flex-grow">
+                                        Developing methods to segment the airway tree from chest CT, addressing the challenge
+                                        of thin, tubular structures and their topological correctness.
+                                    </p>
+                                </div>
+
+                                <div class="thrust-card bg-neutral-50 rounded-xl p-5 border border-neutral-100 hover:shadow-md transition-all duration-300 group flex flex-col h-full">
+                                    <h3 class="font-serif font-bold text-lg text-primary mb-4 flex items-center group-hover:text-accent transition-colors">
+                                        <i class="fas fa-flask text-accent mr-2 group-hover:scale-110 transition-transform"></i> Anatomical Labeling
+                                    </h3>
+                                    <p class="text-sm leading-relaxed text-justify text-neutral-600 flex-grow">
+                                        Assigning branch-wise anatomical labels (21 segmental classes) to segmented airways,
+                                        evaluated on classification and voxel-level agreement.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="latest-news" class="scroll-mt-24">
+                        <div class="section-header mb-6 flex justify-between items-center">
+                            <h2 class="text-3xl font-serif font-bold text-primary">Latest News</h2>
+                            <a href="pages/all-news.html" class="text-sm font-medium text-accent hover:text-accent-dark transition-colors">View All <i class="fas fa-arrow-right ml-1"></i></a>
+                        </div>
+                        <div id="news-container" class="news-list space-y-4"></div>
+                    </section>
+
+                    <section id="publications" class="scroll-mt-24">
+                        <div class="section-header mb-6 flex justify-between items-start gap-4">
+                            <div>
+                                <h2 class="text-3xl font-serif font-bold text-primary">Selected Publications</h2>
+                                <p class="text-sm text-neutral-500 mt-1">Set `showOnHomepage` and `featuredOrder` in `data/publications.json` to control what appears here.</p>
+                            </div>
+                            <a href="pages/all-publications.html" class="text-sm font-medium text-accent hover:text-accent-dark transition-colors whitespace-nowrap mt-1">View Full List <i class="fas fa-arrow-right ml-1"></i></a>
+                        </div>
+
+                        <div id="featured-publications-container" class="publications-list space-y-6"></div>
+                    </section>
+
+                    <section id="honors" class="scroll-mt-24">
+                        <div class="section-header mb-6 flex justify-between items-center">
+                            <h2 class="text-3xl font-serif font-bold text-primary">Honors &amp; Awards</h2>
+                            <a href="pages/all-honors.html" class="text-sm font-medium text-accent hover:text-accent-dark transition-colors">View All <i class="fas fa-arrow-right ml-1"></i></a>
+                        </div>
+                        <div id="honors-container" class="honors-list space-y-4"></div>
+                    </section>
+
+                    <section id="services" class="scroll-mt-24">
+                        <div class="section-header mb-6">
+                            <h2 class="text-3xl font-serif font-bold text-primary">Academic Service</h2>
+                        </div>
+                        <div class="timeline space-y-6">
+                            <div class="timeline-item flex gap-4">
+                                <div class="school-logo-container w-16 h-16 flex-shrink-0 bg-white rounded-lg shadow-sm p-2 flex items-center justify-center border border-neutral-100 text-2xl text-accent">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h3 class="font-semibold text-primary">Conference Reviewer</h3>
+                                    <p class="text-sm text-accent font-medium">PLACEHOLDER</p>
+                                    <p class="text-sm text-neutral-600 mt-1 leading-relaxed">To be updated.</p>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item flex gap-4">
+                                <div class="school-logo-container w-16 h-16 flex-shrink-0 bg-white rounded-lg shadow-sm p-2 flex items-center justify-center border border-neutral-100 text-2xl text-accent">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h3 class="font-semibold text-primary">Journal Reviewer</h3>
+                                    <p class="text-sm text-accent font-medium">PLACEHOLDER</p>
+                                    <p class="text-sm text-neutral-600 mt-1 leading-relaxed">To be updated.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="educations" class="scroll-mt-24">
+                        <div class="section-header mb-6">
+                            <h2 class="text-3xl font-serif font-bold text-primary">Education</h2>
+                        </div>
+                        <div class="timeline space-y-6">
+                            <div class="timeline-item flex gap-4">
+                                <div class="school-logo-container w-16 h-16 flex-shrink-0 bg-white rounded-lg shadow-sm p-2 flex items-center justify-center border border-neutral-100 text-2xl text-accent">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h3 class="font-semibold text-primary">PLACEHOLDER — Degree</h3>
+                                    <p class="text-sm text-accent font-medium">PLACEHOLDER — Years</p>
+                                    <p class="text-sm text-neutral-600 mt-1">Shanghai Jiao Tong University</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="contact" class="scroll-mt-24">
+                        <div class="section-header mb-6">
+                            <h2 class="text-3xl font-serif font-bold text-primary">Contact</h2>
+                        </div>
+                        <div class="contact-card bg-white rounded-xl shadow-sm border border-neutral-200 p-5">
+                            <div class="mb-4">
+                                <h3 class="font-semibold text-primary mb-2">Office Address</h3>
+                                <p class="text-neutral-600 flex items-start gap-2">
+                                    <i class="fas fa-map-marker-alt mt-1 text-accent"></i>
+                                    <span>Institute of Medical Robotics (IMR), Shanghai Jiao Tong University, Shanghai, China.</span>
+                                </p>
+                            </div>
+                            <div class="mb-4">
+                                <h3 class="font-semibold text-primary mb-2">Email</h3>
+                                <p class="text-neutral-600 flex items-start gap-2">
+                                    <i class="fas fa-envelope mt-1 text-accent"></i>
+                                    <span>yaoyuliu@sjtu.edu.cn</span>
+                                </p>
+                            </div>
+                            <div class="visitor-stats text-center">
+                                <h3 class="font-semibold text-primary mb-2">ATM26 Challenge</h3>
+                                <p class="text-sm text-neutral-500">
+                                    Visit the <a href="/atm26/" class="text-accent font-semibold hover:underline">public leaderboard</a> for the Validation and Final Test phases.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-neutral-200 py-8 mt-12 bg-neutral-50">
+        <div class="max-w-[90rem] mx-auto px-4 text-center text-neutral-500 text-sm">
+            <p>&copy; <span id="current-year"></span> Yaoyu Liu. All rights reserved.</p>
+            <p class="mt-2">Built with <a href="https://github.com/yihangtao/AcaNova-X" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline font-medium">AcaNova-X</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
