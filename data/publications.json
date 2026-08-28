@@ -1,15 +1,77 @@
 [
   {
-    "title": "PLACEHOLDER — publication title",
-    "authors": "<strong>Y Liu</strong>, et al.",
+    "title": "TubeMLLM: A Foundation Model for Topology Knowledge Exploration in Vessel-like Anatomy",
+    "authors": "<strong>Yaoyu Liu</strong>*, Minghui Zhang*, Xin You, Hanxiao Zhang, Yun Gu",
     "type": "preprint",
     "isFirstAuthor": true,
     "showOnHomepage": true,
     "featuredOrder": 1,
-    "venue": "PLACEHOLDER — venue",
+    "venue": "arXiv preprint",
     "year": "2026",
     "tags": [
-      { "text": "Paper", "link": "#" }
+      { "text": "Paper", "link": "https://arxiv.org/abs/2603.09217" }
+    ]
+  },
+  {
+    "title": "TopoVST: Toward Topology-fidelitous Vessel Skeleton Tracking",
+    "authors": "<strong>Yaoyu Liu</strong>, Minghui Zhang, Junjun He, Yun Gu",
+    "type": "preprint",
+    "isFirstAuthor": true,
+    "showOnHomepage": true,
+    "featuredOrder": 2,
+    "venue": "arXiv preprint",
+    "year": "2026",
+    "tags": [
+      { "text": "Paper", "link": "https://arxiv.org/abs/2603.14909" }
+    ]
+  },
+  {
+    "title": "Shape-aware Sampling Matters in the Modeling of Multi-Class Tubular Structures",
+    "authors": "Minghui Zhang*, <strong>Yaoyu Liu</strong>*, Xin You, Hanxiao Zhang, Yun Gu",
+    "type": "preprint",
+    "isFirstAuthor": true,
+    "showOnHomepage": true,
+    "featuredOrder": 3,
+    "venue": "arXiv preprint",
+    "year": "2025",
+    "tags": [
+      { "text": "Paper", "link": "https://arxiv.org/abs/2506.12395" }
+    ]
+  },
+  {
+    "title": "TopBrain Segmentation Challenge for Whole Brain Vessel Anatomy",
+    "authors": "Kaiyuan Yang, Pengcheng Shi, Houjing Huang, ..., <strong>Yaoyu Liu</strong>, ..., Bjoern Menze",
+    "type": "preprint",
+    "isFirstAuthor": false,
+    "showOnHomepage": false,
+    "venue": "medRxiv preprint",
+    "year": "2026",
+    "tags": [
+      { "text": "Paper", "link": "https://doi.org/10.64898/2026.05.28.26354312" }
+    ]
+  },
+  {
+    "title": "TopoSculpt: Betti-Steered Topological Sculpting of Three-Dimensional Tubular Shapes",
+    "authors": "Minghui Zhang, <strong>Yaoyu Liu</strong>, Junyang Wu, Xin You, Hanxiao Zhang, Junjun He, Yun Gu, Xinglin Zhang",
+    "type": "preprint",
+    "isFirstAuthor": false,
+    "showOnHomepage": false,
+    "venue": "arXiv preprint",
+    "year": "2025",
+    "tags": [
+      { "text": "Paper", "link": "https://arxiv.org/abs/2509.03938" }
+    ]
+  },
+  {
+    "title": "AirwayNet: Constructing Fine-Grained Airway Atlases",
+    "authors": "Minghui Zhang, Chenyu Li, Fangfang Xie, <strong>Yaoyu Liu</strong>, Hanxiao Zhang, Junyang Wu, Chunxi Zhang, Jie Yang, Jiayuan Sun, Guang-Zhong Yang, Yun Gu",
+    "type": "preprint",
+    "isFirstAuthor": false,
+    "showOnHomepage": false,
+    "venue": "Research Square preprint",
+    "year": "2025",
+    "tags": [
+      { "text": "Paper", "link": "https://doi.org/10.21203/rs.3.rs-6712546/v1" }
     ]
   }
 ]
