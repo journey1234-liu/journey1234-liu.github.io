@@ -76,7 +76,12 @@ describe("validateLeaderboard", () => {
   it("ignores malformed optional display fields without failing", () => {
     const data = loadFixture();
     const phases = data.phases as Record<string, { tracks: Record<string, { entries: Array<Record<string, unknown>> }> }>;
-    phases.validation.tracks["track-1"].entries[0].method_label = 123; // wrong type, ignored
+    // The published snapshot may have no entries yet (empty leaderboard);
+    // fabricate one so the malformed-field path is still exercised.
+    const track = phases.validation.tracks["track-1"];
+    const entry = track.entries[0] ?? { rank: 1, team_display_name: "x", metrics: {} };
+    entry.method_label = 123; // wrong type, ignored
+    if (track.entries.length === 0) track.entries.push(entry);
     const result = validateLeaderboard(data);
     expect(result.ok).toBe(true);
     expect(result.errors).toEqual([]);
