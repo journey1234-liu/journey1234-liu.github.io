@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-28T07:18:46+00:00",
+  "generated_at": "2026-08-28T09:47:27+00:00",
   "phases": {
     "final-test": {
       "label": "Final Test Phase",
@@ -89,7 +89,30 @@
           ]
         },
         "track-2": {
-          "entries": [],
+          "entries": [
+            {
+              "mean_rank": 1.0,
+              "metric_ranks": {
+                "ACC": 1.0,
+                "F1": 1.0,
+                "SC": 1.0,
+                "TD": 1.0,
+                "mDice": 1.0,
+                "mclDice": 1.0
+              },
+              "metrics": {
+                "ACC": 0.898731236217421,
+                "F1": 0.9053576702132743,
+                "SC": 0.7256046701894399,
+                "TD": 2.698182524060117,
+                "mDice": 0.7414969281384487,
+                "mclDice": 0.8130971011311845
+              },
+              "rank": 1.0,
+              "submission_timestamp": "2026-08-28T09:42:41+00:00",
+              "team_display_name": "ATM26 Organizer Baseline"
+            }
+          ],
           "metrics": [
             {
               "higher_is_better": true,
