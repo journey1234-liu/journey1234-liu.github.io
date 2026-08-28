@@ -1,4 +1,4 @@
-name: Deploy ATM26 site to GitHub Pages
+name: Deploy site to GitHub Pages
 
 on:
   push:
@@ -7,11 +7,21 @@ on:
       - "atm26-site/**"
       - ".github/workflows/pages.yml"
       - "index.html"
+      - "styles.css"
+      - "script.js"
+      - "data/**"
+      - "pages/**"
+      - "assets/**"
   pull_request:
     paths:
       - "atm26-site/**"
       - ".github/workflows/pages.yml"
       - "index.html"
+      - "styles.css"
+      - "script.js"
+      - "data/**"
+      - "pages/**"
+      - "assets/**"
   workflow_dispatch:
 
 permissions:
@@ -53,9 +63,13 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf deploy
+          mkdir -p deploy
+          # Personal homepage static assets (site root)
+          cp index.html styles.css script.js deploy/
+          cp -r data pages assets deploy/
+          # ATM26 sub-site
           mkdir -p deploy/atm26
           cp -r atm26-site/dist/* deploy/atm26/
-          cp index.html deploy/index.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
