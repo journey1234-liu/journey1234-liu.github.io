@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480" viewBox="0 0 480 480">
-  <rect width="480" height="480" fill="#1e293b"/>
-  <circle cx="240" cy="180" r="78" fill="#d4a562"/>
-  <path d="M120 400c14-72 62-110 120-110s106 38 120 110" fill="#d4a562"/>
-  <text x="240" y="250" font-family="Georgia,serif" font-size="64" font-weight="700" fill="#1e293b" text-anchor="middle">YL</text>
-</svg>
