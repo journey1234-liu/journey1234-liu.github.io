@@ -49,8 +49,8 @@ export const SITE = {
 // Renderers resolve them against the site base path.
 export const IMAGES = {
   banner: "img/banner.webp",
-  sensar: "img/sensar.webp",
-  miccai: "img/miccai.webp",
+  keylab: "img/keylab.webp",
+  tongren: "img/tongren.webp",
 };
 
 export interface OrganizerInstitution {
@@ -148,7 +148,7 @@ export const ORGANIZERS: OrganizerInstitution[] = [
   {
     name: "Shanghai Key Laboratory of Flexible Medical Robotics, Tongren Hospital, Shanghai Jiao Tong University",
     members: "Guang-Zhong Yang, Hanxiao Zhang",
-    logo: "img/org-keylab.webp",
+    logo: "img/keylab.webp",
   },
   {
     name: "Institute of Medical Robotics, Shanghai Jiao Tong University",

@@ -225,8 +225,8 @@ export function renderOrganizers(): string {
       <h1>Organizers</h1>
       <p>ATM26 is organized by the following partners. For challenge-related questions, contact the organizers by email.</p>
       <div class="org-logo-row">
-        <img class="org-network-logo" src="${escapeHtml(resolveAsset(IMAGES.sensar))}" alt="SENSAR Network" loading="lazy" />
-        <img class="org-network-logo" src="${escapeHtml(resolveAsset(IMAGES.miccai))}" alt="MICCAI 2026" loading="lazy" />
+        <img class="org-network-logo" src="${escapeHtml(resolveAsset(IMAGES.keylab))}" alt="Shanghai Key Laboratory of Flexible Medical Robotics" loading="lazy" />
+        <img class="org-network-logo" src="${escapeHtml(resolveAsset(IMAGES.tongren))}" alt="Shanghai Tongren Hospital" loading="lazy" />
       </div>
       <div class="org-list">${cards}</div>
     </section>`;
