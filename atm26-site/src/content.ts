@@ -148,6 +148,7 @@ export const ORGANIZERS: OrganizerInstitution[] = [
   {
     name: "Shanghai Key Laboratory of Flexible Medical Robotics, Tongren Hospital, Shanghai Jiao Tong University",
     members: "Guang-Zhong Yang, Hanxiao Zhang",
+    logo: "img/org-keylab.webp",
   },
   {
     name: "Institute of Medical Robotics, Shanghai Jiao Tong University",
