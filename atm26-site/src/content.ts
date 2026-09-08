@@ -103,7 +103,7 @@ export const TRACKS: TrackInfo[] = [
   {
     slug: "track-2",
     title: "Track 2 · Branch-wise Anatomical Labeling",
-    short: "Label airway branches into 21 anatomical classes.",
+    short: "Label airway branches into 20 classes (19 anatomical labels + background).",
     description:
       "Track 2 moves beyond binary segmentation toward structured airway understanding. Participants are required to assign anatomical labels to airway branches and generate an anatomically consistent airway representation. Target labels include the segmental airway branches. This task is designed to support automated route planning, lesion-to-airway association, and standardized anatomical reporting for endobronchial intervention.",
     metrics: [
