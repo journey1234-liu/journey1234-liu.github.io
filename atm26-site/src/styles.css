@@ -129,13 +129,14 @@ summary:focus-visible,
 
 /* Hero --------------------------------------------------------------------- */
 .hero {
-  background: linear-gradient(135deg, #7c0a26 0%, #a41034 55%, #c2254b 100%);
-  color: #fff;
-  border: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 6px solid var(--primary);
+  color: var(--text);
   text-align: center;
-  padding: 4rem 1.5rem;
-  border-radius: 16px;
-  box-shadow: var(--shadow-md);
+  padding: 2.5rem 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
 .hero h1 {
@@ -144,12 +145,13 @@ summary:focus-visible,
   margin: 0 0 0.75rem;
   letter-spacing: -0.02em;
   font-weight: 800;
+  color: var(--primary);
 }
 
 .hero .subtitle {
   font-size: 1.25rem;
   font-weight: 500;
-  opacity: 0.92;
+  color: var(--muted);
   margin: 0 0 0.5rem;
 }
 
@@ -157,7 +159,7 @@ summary:focus-visible,
   font-size: 1.05rem;
   max-width: 760px;
   margin: 0.5rem auto 1.5rem;
-  opacity: 0.95;
+  color: var(--text);
 }
 
 .hero .cta-row {
@@ -165,22 +167,22 @@ summary:focus-visible,
 }
 
 .hero .cta {
-  background: #fff;
-  color: var(--primary);
+  background: var(--primary);
+  color: #fff;
 }
 
 .hero .cta:hover {
-  background: var(--primary-soft);
+  background: var(--primary-dark);
 }
 
 .hero .cta-secondary {
-  background: transparent;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: #fff;
+  color: var(--primary);
+  border: 1px solid var(--primary);
 }
 
 .hero .cta-secondary:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--primary-soft);
 }
 
 /* Layout ------------------------------------------------------------------- */
@@ -590,6 +592,39 @@ summary {
 
 .citation-list em {
   color: var(--muted);
+}
+
+/* Home sections -------------------------------------------------------------- */
+.news-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.news-list li {
+  margin-bottom: 0.7rem;
+}
+
+.home-tracks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.home-track {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  background: var(--bg);
+}
+
+.home-track h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.1rem;
+}
+
+.home-track p {
+  margin: 0;
 }
 
 /* Responsive --------------------------------------------------------------- */

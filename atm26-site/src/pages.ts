@@ -6,6 +6,9 @@ import {
   LINKS,
   IMAGES,
   TRACKS,
+  INTRODUCTION,
+  TRACKS_INTRO,
+  NEWS,
   RANKING_POLICY_DESCRIPTION,
   TIMELINE,
   ORGANIZERS,
@@ -34,6 +37,19 @@ function ctaLink(url: string, label: string, className = "cta"): string {
 }
 
 export function renderHome(): string {
+  const introHtml = INTRODUCTION.map((p) => `<p>${escapeHtml(p)}</p>`).join("");
+  const newsHtml = NEWS.length
+    ? NEWS.map(
+        (n) => `<li><strong>${escapeHtml(n.date)}</strong> — ${escapeHtml(n.title)}<br /><span class="muted">${escapeHtml(n.detail)}</span></li>`,
+      ).join("")
+    : "<li>No news yet.</li>";
+  const trackCards = TRACKS.map(
+    (track) => `
+      <div class="home-track">
+        <h2>${escapeHtml(track.title)}</h2>
+        <p>${escapeHtml(track.short)}</p>
+      </div>`,
+  ).join("");
   const timelineSummary = TIMELINE.slice(0, 3)
     .map((item) => `<li><strong>${escapeHtml(item.date)}</strong> — ${escapeHtml(item.title)}</li>`)
     .join("");
@@ -58,31 +74,42 @@ export function renderHome(): string {
       </div>
     </section>
     <section class="panel">
+      <div class="section-kicker">Challenge</div>
+      <h2>About ATM26</h2>
+      ${introHtml}
+    </section>
+    <section class="panel">
+      <div class="section-kicker">News</div>
+      <h2>Latest updates</h2>
+      <ul class="news-list">${newsHtml}</ul>
+    </section>
+    <section class="panel">
+      <div class="section-kicker">Tasks</div>
+      <h2>Tracks</h2>
+      <div class="home-tracks">${trackCards}</div>
+      <p class="muted">${escapeHtml(TRACKS_INTRO)}</p>
+      <p><a href="#/tracks">Metric definitions and track details</a></p>
+    </section>
+    <section class="panel">
+      <div class="section-kicker">How to submit</div>
+      <h2>Participation</h2>
+      <p>Registration and submission are handled on the official Grand Challenge platform, not on this website.</p>
+      <ol>
+        <li>Register for the challenge and sign the agreement on the official site.</li>
+        <li>Prepare your algorithm as a Docker container (reads the CT from <code>/input</code>, writes the result to <code>/output</code>).</li>
+        <li>Follow the submission guidelines on the official site to submit your container.</li>
+      </ol>
+      <p>
+        ${ctaLink(LINKS.officialSite, "Official challenge site", "cta-inline")}
+        ${ctaLink(LINKS.submissionGuidelines, "Submission Guidelines", "cta-inline")}
+        <a class="cta-inline" href="#/rules">Rules &amp; container contract</a>
+      </p>
+    </section>
+    <section class="panel">
       <div class="section-kicker">Timeline</div>
       <h2>Status</h2>
       <ul class="timeline-compact">${timelineSummary || "<li>Timeline to be announced.</li>"}</ul>
       <p><a href="#/timeline">Full timeline</a></p>
-    </section>`;
-}
-
-export function renderOverview(): string {
-  return `
-    <section class="panel">
-      <h1>Challenge Overview</h1>
-      <p>${escapeHtml(SITE.intro)}</p>
-      <p>
-        Registration and submission are handled on the official Grand Challenge
-        platform, not on this website. Prepare an algorithm that reads a CT
-        image and writes a segmentation; the organizers evaluate submissions on
-        a held-out test set and publish the results on the public leaderboard.
-      </p>
-      <h2>Task</h2>
-      <p>Automatic airway-tree modeling from chest CT, evaluated across two complementary tracks.</p>
-      <ul>
-        <li><strong>Track 1</strong> — binary airway segmentation.</li>
-        <li><strong>Track 2</strong> — branch-wise anatomical labeling into 21 classes.</li>
-      </ul>
-      <p>See the <a href="#/tracks">Tracks</a> page for metric definitions and the <a href="#/rules">Rules</a> page for submission constraints.</p>
     </section>`;
 }
 
@@ -115,7 +142,7 @@ export function renderTracks(): string {
   return `
     <section class="panel">
       <h1>Tracks</h1>
-      <p>ATM26 has two tracks. Teams may participate in one or both.</p>
+      <p>${escapeHtml(TRACKS_INTRO)}</p>
     </section>
     ${sections}`;
 }
@@ -234,8 +261,6 @@ export function renderOrganizers(): string {
 
 export function renderStaticPage(route: string): string {
   switch (route) {
-    case "overview":
-      return renderOverview();
     case "tracks":
       return renderTracks();
     case "organizers":

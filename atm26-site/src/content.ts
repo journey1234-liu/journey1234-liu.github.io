@@ -35,6 +35,12 @@ export interface CitationItem {
   link?: string;
 }
 
+export interface NewsItem {
+  date: string;
+  title: string;
+  detail: string;
+}
+
 export const SITE = {
   title: "ATM26 Challenge",
   fullTitle: "ATM26 — Airway Tree Modeling 2026",
@@ -61,7 +67,6 @@ export interface OrganizerInstitution {
 
 export const NAV_ITEMS: NavItem[] = [
   { id: "home", label: "Home" },
-  { id: "overview", label: "Overview" },
   { id: "tracks", label: "Tracks" },
   { id: "organizers", label: "Organizers" },
   { id: "leaderboard", label: "Leaderboard" },
@@ -84,10 +89,10 @@ export const LINKS = {
 export const TRACKS: TrackInfo[] = [
   {
     slug: "track-1",
-    title: "Track 1 — Binary Airway Segmentation",
+    title: "Track 1 · Binary Airway Segmentation",
     short: "Segment the airway tree from chest CT.",
     description:
-      "Produce a binary segmentation mask of the airway tree. Predictions are ranked by overlap (DSC, clDice, TLD, BD); methods are encouraged to preserve airway completeness, connectivity and distal branch structures.",
+      "Track 1 focuses on automatic binary segmentation of the airway tree from chest CT scans. Participants are expected to generate a connected airway mask covering the trachea, main bronchi, lobar bronchi, segmental bronchi, and distal branches. Unlike conventional segmentation tasks that primarily emphasize voxel-wise overlap, this track encourages methods that preserve airway completeness, connectivity, and distal branch structures. Topological correctness is a critical component of clinically useful airway modeling.",
     metrics: [
       { name: "DSC", higherIsBetter: true, note: "Dice similarity coefficient" },
       { name: "clDice", higherIsBetter: true, note: "Centerline Dice" },
@@ -97,10 +102,10 @@ export const TRACKS: TrackInfo[] = [
   },
   {
     slug: "track-2",
-    title: "Track 2 — Branch-wise Anatomical Labeling",
+    title: "Track 2 · Branch-wise Anatomical Labeling",
     short: "Label airway branches into 21 anatomical classes.",
     description:
-      "Assign each airway voxel one of 21 segmental labels (LB1–10, RB1–10, trachea). Predictions are projected onto ground-truth branch nodes and scored for classification and voxel-level agreement.",
+      "Track 2 moves beyond binary segmentation toward structured airway understanding. Participants are required to assign anatomical labels to airway branches and generate an anatomically consistent airway representation. Target labels include the segmental airway branches. This task is designed to support automated route planning, lesion-to-airway association, and standardized anatomical reporting for endobronchial intervention.",
     metrics: [
       { name: "ACC", higherIsBetter: true, note: "Branch classification accuracy" },
       { name: "F1", higherIsBetter: true, note: "Branch F1 score" },
@@ -115,6 +120,40 @@ export const TRACKS: TrackInfo[] = [
 
 export const RANKING_POLICY_DESCRIPTION =
   "Each metric is ranked independently; ties receive the average of the ranks they occupy. A submission's final score is the mean of its metric ranks, and the lowest mean rank is placed first.";
+
+// Introduction paragraphs (mirrors the official challenge description).
+export const INTRODUCTION: string[] = [
+  "ATM26 is part of the SENSAR (Sino-European Surgical Autonomy in Robotics) Network challenges. The SENSAR Network is focused on innovative, reproducible solutions for surgical autonomy and robot assisted interventions. ATM26 is organized in conjunction with MICCAI 2026, which is to be held in Strasbourg, September 27 - October 1, 2026.",
+  "Accurate airway tree modeling is clinically important for respiratory disease assessment and endobronchial intervention. Patient-specific airway models can support pre-operative planning, bronchoscopic navigation, and peripheral pulmonary nodule biopsy by helping identify optimal branch-level access routes and reduce procedural uncertainty and operation risks. A complete and topologically reliable airway tree provides the geometric foundation for intervention planning, while anatomical branch labels connect imaging findings with standardized airway nomenclature and clinically interpretable procedure plans.",
+  "Building on ATM22 (Airway Tree Modeling): Multi-site, Multi-domain Airway Tree Modeling, which focused on binary airway segmentation, ATM26 extends airway tree modeling from binary segmentation to structured airway understanding, supporting clinically meaningful airway segmentation and branch-wise anatomical labeling.",
+];
+
+// Header paragraph for the Tracks section.
+export const TRACKS_INTRO =
+  "ATM26 is designed to promote robust, topology-aware, and clinically applicable airway modeling under realistic CT acquisition conditions, including variations in image spacing, image quality, and airway anatomy. The challenge includes two tracks, which participants may enter individually or together.";
+
+// Challenge news (mirrors the official announcement dates; sanity check
+// announcement omitted — sanity check is not part of the published phases).
+export const NEWS: NewsItem[] = [
+  {
+    date: "2026-08-20",
+    title: "Final test phase submission for Track 1 and Track 2 open!",
+    detail:
+      "See the official submission portal and the Submission Guidelines for detailed instructions. Contact the organizers if any problems occur.",
+  },
+  {
+    date: "2026-07-31",
+    title: "Validation phase submission for Track 1 and Track 2 open!",
+    detail:
+      "Refer to the official Submission Guidelines for detailed instructions before submitting.",
+  },
+  {
+    date: "2026-06-15",
+    title: "Challenge website and registration are now open!",
+    detail:
+      "Complete the registration procedure on the official Grand Challenge site, including applying for participation and signing the agreement, to gain access to the training data for Track 1 and Track 2.",
+  },
+];
 
 // Shown above the leaderboard. Validation Phase results are live;
 // Final Test Phase results remain confidential until the official release.
