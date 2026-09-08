@@ -2,7 +2,7 @@
 //
 // Keep participant-facing wording, dates, named organizers, logos, outbound
 // links and track-specific details here rather than scattered through UI
-// components. Facts that are not yet approved are clearly marked PLACEHOLDER.
+// components.
 
 export interface NavItem {
   id: string;
@@ -36,14 +36,27 @@ export const SITE = {
   intro:
     "ATM26 invites teams to develop and submit algorithms for automatic airway segmentation and anatomical labeling from computed tomography (CT) images. Submissions are evaluated by the organizers on a held-out test set, and the results are published on a public leaderboard.",
   organizer: "Institute of Medical Robotics, Shanghai Jiao Tong University",
-  organizerPlaceholderNote:
-    "PLACEHOLDER: organizer wording and logos are provisional and must be confirmed before public release.",
 };
+
+// Public asset paths, served from <base>/img/ (Vite copies public/ verbatim).
+// Renderers resolve them against the site base path.
+export const IMAGES = {
+  banner: "img/banner.webp",
+  sensar: "img/sensar.webp",
+  miccai: "img/miccai.webp",
+};
+
+export interface OrganizerInstitution {
+  name: string;
+  members: string;
+  logo?: string;
+}
 
 export const NAV_ITEMS: NavItem[] = [
   { id: "home", label: "Home" },
   { id: "overview", label: "Overview" },
   { id: "tracks", label: "Tracks" },
+  { id: "organizers", label: "Organizers" },
   { id: "leaderboard", label: "Leaderboard" },
   { id: "rules", label: "Rules" },
   { id: "timeline", label: "Timeline" },
@@ -103,24 +116,66 @@ export const LEADERBOARD_NOTICE =
 
 export const TIMELINE: TimelineItem[] = [
   {
-    date: "PLACEHOLDER",
-    title: "Challenge announcement and registration open",
-    detail: "Date to be confirmed before public release.",
+    date: "2026-06-15",
+    title: "Registration open & release of training data",
+    detail: "Registration opens and training data for Track 1 and Track 2 is released.",
   },
   {
-    date: "PLACEHOLDER",
-    title: "Test Phase opens",
-    detail: "Participants submit their algorithms via the official Grand Challenge platform.",
+    date: "2026-07-15",
+    title: "Validation phase submission open",
+    detail: "Open for validation phase submission for Track 1 and Track 2.",
   },
   {
-    date: "PLACEHOLDER",
-    title: "Test Phase closes",
-    detail: "Final submissions are frozen and evaluated.",
+    date: "2026-08-20",
+    title: "Final test phase submission open",
+    detail: "Open for final test phase submission for Track 1 and Track 2.",
   },
   {
-    date: "PLACEHOLDER",
-    title: "Results and leaderboard publication",
-    detail: "Final leaderboard is published on this site.",
+    date: "2026-09-30",
+    title: "Deadline for test phase submission",
+    detail: "Test phase submissions close; final submissions are frozen and evaluated.",
+  },
+];
+
+export const ORGANIZERS: OrganizerInstitution[] = [
+  {
+    name: "Shanghai Key Laboratory of Flexible Medical Robotics, Tongren Hospital, Shanghai Jiao Tong University",
+    members: "Guang-Zhong Yang, Hanxiao Zhang",
+  },
+  {
+    name: "Institute of Medical Robotics, Shanghai Jiao Tong University",
+    members: "Guang-Zhong Yang, Yun Gu, Yaoyu Liu, Junyang Wu, Kefan Wang, Shangkun Li",
+    logo: "img/org-imr.webp",
+  },
+  {
+    name: "Shanghai Artificial Intelligence Laboratory",
+    members: "Minghui Zhang, Yirong Chen",
+    logo: "img/org-sail.webp",
+  },
+  {
+    name: "Shanghai Chest Hospital",
+    members: "Fangfang Xie, Chunxi Zhang, Jiayuan Sun",
+    logo: "img/org-chest.webp",
+  },
+  {
+    name: "Imperial College London",
+    members: "Guang Yang",
+    logo: "img/org-imperial.webp",
+  },
+  {
+    name: "Technical University of Munich",
+    members: "Dianye Huang, Nassir Navab",
+    logo: "img/org-tum.webp",
+  },
+  {
+    name: "Politecnico di Milano",
+    members: "Elena De Momi",
+    logo: "img/org-poli.webp",
+  },
+  {
+    name: "Medical Image Insights",
+    members: "Pengcheng Shi, Xinglin Zhang",
+    logo: "img/org-mi.webp",
   },
 ];
 

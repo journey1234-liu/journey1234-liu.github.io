@@ -50,7 +50,6 @@ function renderShell(route: string, content: string): string {
     </main>
     <footer class="site-footer">
       <p>${escapeHtml(SITE.organizer)}</p>
-      <p class="muted">${escapeHtml(SITE.organizerPlaceholderNote)}</p>
       <p class="muted">${escapeHtml(pageLabel)} — ${escapeHtml(SITE.fullTitle)}</p>
     </footer>`;
 }

@@ -4,12 +4,15 @@
 import {
   SITE,
   LINKS,
+  IMAGES,
   TRACKS,
   RANKING_POLICY_DESCRIPTION,
   TIMELINE,
+  ORGANIZERS,
   FAQ,
   CONTACT,
 } from "./content";
+import { resolveAsset } from "./basePath";
 
 function escapeHtml(value: unknown): string {
   return String(value ?? "")
@@ -35,6 +38,13 @@ export function renderHome(): string {
     .join("");
 
   return `
+    <section class="panel hero-banner-panel">
+      <img
+        class="hero-banner"
+        src="${escapeHtml(resolveAsset(IMAGES.banner))}"
+        alt="${escapeHtml(SITE.fullTitle)} banner"
+      />
+    </section>
     <section class="panel hero">
       <div class="section-kicker">Airway Tree Modeling &middot; 2026</div>
       <h1>${escapeHtml(SITE.title)}</h1>
@@ -50,7 +60,7 @@ export function renderHome(): string {
       <div class="section-kicker">Timeline</div>
       <h2>Status</h2>
       <ul class="timeline-compact">${timelineSummary || "<li>Timeline to be announced.</li>"}</ul>
-      <p class="muted">${escapeHtml(SITE.organizerPlaceholderNote)}</p>
+      <p><a href="#/timeline">Full timeline</a></p>
     </section>`;
 }
 
@@ -132,7 +142,6 @@ export function renderRules(): string {
       </p>
       <h2>Ranking policy</h2>
       <p>${escapeHtml(RANKING_POLICY_DESCRIPTION)}</p>
-      <p class="muted">${escapeHtml(SITE.organizerPlaceholderNote)}</p>
     </section>`;
 }
 
@@ -148,7 +157,6 @@ export function renderTimeline(): string {
     <section class="panel">
       <h1>Timeline</h1>
       <ol class="timeline">${items || "<li>Timeline to be announced.</li>"}</ol>
-      <p class="muted">${escapeHtml(SITE.organizerPlaceholderNote)}</p>
     </section>`;
 }
 
@@ -173,7 +181,36 @@ export function renderContact(): string {
       <h1>Contact</h1>
       <p>${escapeHtml(CONTACT.note)}</p>
       <p>Email: <a href="mailto:${escapeHtml(CONTACT.email)}">${escapeHtml(CONTACT.email)}</a></p>
-      <p class="muted">${escapeHtml(SITE.organizerPlaceholderNote)}</p>
+    </section>`;
+}
+
+export function renderOrganizers(): string {
+  const cards = ORGANIZERS.map(
+    (org) => `
+      <div class="org-card">
+        <div class="org-logo-col">
+          ${
+            org.logo
+              ? `<img src="${escapeHtml(resolveAsset(org.logo))}" alt="${escapeHtml(org.name)} logo" loading="lazy" />`
+              : ""
+          }
+        </div>
+        <div>
+          <h2>${escapeHtml(org.name)}</h2>
+          <p>${escapeHtml(org.members)}</p>
+        </div>
+      </div>`,
+  ).join("");
+
+  return `
+    <section class="panel">
+      <h1>Organizers</h1>
+      <p>ATM26 is organized by the following partners. For challenge-related questions, contact the organizers by email.</p>
+      <div class="org-logo-row">
+        <img class="org-network-logo" src="${escapeHtml(resolveAsset(IMAGES.sensar))}" alt="SENSAR Network" loading="lazy" />
+        <img class="org-network-logo" src="${escapeHtml(resolveAsset(IMAGES.miccai))}" alt="MICCAI 2026" loading="lazy" />
+      </div>
+      <div class="org-list">${cards}</div>
     </section>`;
 }
 
@@ -183,6 +220,8 @@ export function renderStaticPage(route: string): string {
       return renderOverview();
     case "tracks":
       return renderTracks();
+    case "organizers":
+      return renderOrganizers();
     case "rules":
       return renderRules();
     case "timeline":
