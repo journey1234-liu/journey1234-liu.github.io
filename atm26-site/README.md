@@ -139,10 +139,10 @@ website validates the top-level structure and ignores malformed optional
 display fields. It never fetches the evaluation server, Google Sheets, a
 database, or any private endpoint at runtime.
 
-While Final Test Phase results remain confidential, the committed
-`leaderboard.json` contains **placeholder/sample teams and values**; the
-leaderboard page shows a "Sample data" notice driven by `LEADERBOARD_NOTICE` in
-`content.ts`. Set that notice to `""` when the official snapshot is published.
+The committed `leaderboard.json` carries live Validation Phase results for
+both tracks; the Final Test Phase stays empty and confidential until the
+official release. The leaderboard page notice is driven by `LEADERBOARD_NOTICE`
+in `content.ts`.
 
 ## Personal → Organization migration
 

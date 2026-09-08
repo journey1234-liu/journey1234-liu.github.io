@@ -116,11 +116,10 @@ export const TRACKS: TrackInfo[] = [
 export const RANKING_POLICY_DESCRIPTION =
   "Each metric is ranked independently; ties receive the average of the ranks they occupy. A submission's final score is the mean of its metric ranks, and the lowest mean rank is placed first.";
 
-// Shown above the leaderboard. Sanity Check and Validation Phase results are
-// live; Final Test Phase results remain confidential until the official
-// release.
+// Shown above the leaderboard. Validation Phase results are live;
+// Final Test Phase results remain confidential until the official release.
 export const LEADERBOARD_NOTICE =
-  "Sanity Check and Validation Phase results are live. Final Test Phase results remain confidential until the official release.";
+  "Validation Phase results are live. Final Test Phase results remain confidential until the official release.";
 
 export const TIMELINE: TimelineItem[] = [
   {
@@ -226,7 +225,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "Is the leaderboard final?",
     answer:
-      "Sanity Check and Validation Phase results are live and mirror the official Grand Challenge leaderboards. Final Test Phase results are confidential and are released by the organizers after the official publication.",
+      "Validation Phase results are live and mirror the official Grand Challenge leaderboard. Final Test Phase results are confidential and are released by the organizers after the official publication.",
   },
 ];
 
