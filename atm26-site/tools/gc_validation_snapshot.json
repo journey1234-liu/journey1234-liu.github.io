@@ -1,69 +1,12 @@
 {
-  "generated_at": "2026-09-08T13:39:51+00:00",
+  "_source": "Frozen mirror of the official Grand Challenge validation-phase leaderboards (fetched 2026-09-08). Merged by publish_leaderboard.py --mode real; do not edit by hand.",
+  "schema_version": 2,
+  "generated_at": "2026-09-08T10:28:15+00:00",
+  "ranking_policy": {
+    "method": "mean rank across metrics; ties use average rank",
+    "submission_selection": "latest approved successful submission per team and track"
+  },
   "phases": {
-    "final-test": {
-      "label": "Final Test Phase",
-      "tracks": {
-        "track-1": {
-          "entries": [],
-          "metrics": [
-            {
-              "higher_is_better": true,
-              "name": "DSC"
-            },
-            {
-              "higher_is_better": true,
-              "name": "clDice"
-            },
-            {
-              "higher_is_better": true,
-              "name": "TLD"
-            },
-            {
-              "higher_is_better": true,
-              "name": "BD"
-            },
-            {
-              "higher_is_better": false,
-              "name": "Betti0Error"
-            }
-          ]
-        },
-        "track-2": {
-          "entries": [],
-          "metrics": [
-            {
-              "higher_is_better": true,
-              "name": "ACC"
-            },
-            {
-              "higher_is_better": true,
-              "name": "F1"
-            },
-            {
-              "higher_is_better": true,
-              "name": "SC"
-            },
-            {
-              "higher_is_better": false,
-              "name": "TD"
-            },
-            {
-              "higher_is_better": true,
-              "name": "TAcc"
-            },
-            {
-              "higher_is_better": true,
-              "name": "mDice"
-            },
-            {
-              "higher_is_better": true,
-              "name": "mclDice"
-            }
-          ]
-        }
-      }
-    },
     "validation": {
       "label": "Validation Phase",
       "tracks": {
@@ -791,10 +734,5 @@
         }
       }
     }
-  },
-  "ranking_policy": {
-    "method": "mean rank across metrics; ties use average rank",
-    "submission_selection": "latest approved successful submission per team and track"
-  },
-  "schema_version": 2
+  }
 }
