@@ -41,10 +41,9 @@ export function renderHome(): string {
       <p class="subtitle">${escapeHtml(SITE.tagline)}</p>
       <p class="lede">${escapeHtml(SITE.intro)}</p>
       <div class="cta-row">
-        ${ctaLink(LINKS.registration, "Register")}
-        ${ctaLink(LINKS.submission, "Submit a Docker container")}
         <a class="cta" href="#/leaderboard">View leaderboard</a>
         <a class="cta cta-secondary" href="#/rules">Rules &amp; submission guide</a>
+        ${ctaLink(LINKS.officialSite, "Official challenge site")}
       </div>
     </section>
     <section class="panel">
@@ -61,10 +60,10 @@ export function renderOverview(): string {
       <h1>Challenge Overview</h1>
       <p>${escapeHtml(SITE.intro)}</p>
       <p>
-        The workflow is: register, prepare a Docker container that reads a CT
-        image and writes a segmentation, submit it through the submission form,
-        and the organizers evaluate it on a held-out test set. Results are
-        published on the public leaderboard.
+        Registration and submission are handled on the official Grand Challenge
+        platform, not on this website. Prepare an algorithm that reads a CT
+        image and writes a segmentation; the organizers evaluate submissions on
+        a held-out test set and publish the results on the public leaderboard.
       </p>
       <h2>Task</h2>
       <p>Automatic airway-tree modeling from chest CT, evaluated across two complementary tracks.</p>
@@ -115,16 +114,14 @@ export function renderRules(): string {
     <section class="panel">
       <h1>Rules and Submission Guide</h1>
       <h2>How to submit</h2>
-      <ol>
-        <li>Register through the registration form.</li>
-        <li>Package your algorithm as a Docker container.</li>
-        <li>Upload the saved image (as a <code>.tar.gz</code>) through the submission form.</li>
-      </ol>
       <p>
-        Submission is handled through the existing Google Forms — this website
-        does not implement uploads.
-        ${ctaLink(LINKS.registration, "Registration form", "cta-inline")}
-        ${ctaLink(LINKS.submission, "Submission form", "cta-inline")}
+        Registration and submission are handled on the official Grand Challenge
+        platform, not on this website. Use the official site to register your
+        team and to follow the current submission guidelines.
+      </p>
+      <p>
+        ${ctaLink(LINKS.officialSite, "Official challenge site", "cta-inline")}
+        ${ctaLink(LINKS.submissionGuidelines, "Submission Guidelines", "cta-inline")}
       </p>
       <h2>Container contract</h2>
       <p>

@@ -34,7 +34,7 @@ export const SITE = {
   tagline:
     "A public benchmark challenge for automatic airway-tree modeling from chest CT.",
   intro:
-    "ATM26 invites teams to develop and submit algorithms for automatic airway segmentation and anatomical labeling from computed tomography (CT) images. Participants submit Docker containers; organizers evaluate them on a held-out test set and publish a public leaderboard.",
+    "ATM26 invites teams to develop and submit algorithms for automatic airway segmentation and anatomical labeling from computed tomography (CT) images. Submissions are evaluated by the organizers on a held-out test set, and the results are published on a public leaderboard.",
   organizer: "Institute of Medical Robotics, Shanghai Jiao Tong University",
   organizerPlaceholderNote:
     "PLACEHOLDER: organizer wording and logos are provisional and must be confirmed before public release.",
@@ -51,13 +51,13 @@ export const NAV_ITEMS: NavItem[] = [
   { id: "contact", label: "Contact" },
 ];
 
-// Outbound calls to action. The exact form URLs are configurable content; the
-// placeholders below must be replaced with the real Google Forms before launch.
+// Outbound links. Registration and submission are handled on the official
+// Grand Challenge platform, not on this site; the organizer contact email is
+// the public challenge address published there.
 export const LINKS = {
-  registration: "https://forms.gle/PLACEHOLDER_REGISTRATION",
-  submission: "https://forms.gle/PLACEHOLDER_SUBMISSION",
-  canonicalExternal: "",
-  contactEmail: "atm26-organizers@example.com", // PLACEHOLDER
+  officialSite: "https://atm26.grand-challenge.org/",
+  submissionGuidelines: "https://atm26.grand-challenge.org/submission-guidelines/",
+  contactEmail: "IMR-ATM22@outlook.com",
 };
 
 export const TRACKS: TrackInfo[] = [
@@ -110,7 +110,7 @@ export const TIMELINE: TimelineItem[] = [
   {
     date: "PLACEHOLDER",
     title: "Test Phase opens",
-    detail: "Participants submit Docker containers via the submission form.",
+    detail: "Participants submit their algorithms via the official Grand Challenge platform.",
   },
   {
     date: "PLACEHOLDER",
@@ -128,12 +128,12 @@ export const FAQ: FaqItem[] = [
   {
     question: "How do I register for ATM26?",
     answer:
-      "Complete the registration form (see the link in the header/Home page). You will receive further instructions by email.",
+      "Visit the official ATM26 Grand Challenge site and click Join to register your team. Registration and the signed data usage agreement are required before dataset access is granted.",
   },
   {
     question: "How do I submit an algorithm?",
     answer:
-      "Submissions are Docker containers uploaded through the submission form. The Rules and Submission Guide page describes the required interface.",
+      "Algorithm submission is handled on the official Grand Challenge platform. See the Submission Guidelines there for the current submission portal and container interface.",
   },
   {
     question: "Which metrics are used for ranking?",
