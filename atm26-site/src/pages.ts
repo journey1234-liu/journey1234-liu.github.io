@@ -9,6 +9,7 @@ import {
   RANKING_POLICY_DESCRIPTION,
   TIMELINE,
   ORGANIZERS,
+  CITATIONS,
   FAQ,
   CONTACT,
 } from "./content";
@@ -160,6 +161,23 @@ export function renderTimeline(): string {
     </section>`;
 }
 
+export function renderCitation(): string {
+  const items = CITATIONS.map(
+    (c, i) => `
+      <li>
+        <strong>[${i + 1}]</strong> ${escapeHtml(c.authors)} ${escapeHtml(c.title)}
+        <em>${escapeHtml(c.venue)}</em>
+        ${c.link ? ` <a href="${escapeHtml(c.link)}" rel="noopener noreferrer" target="_blank">${escapeHtml(c.link)}</a>` : ""}
+      </li>`,
+  ).join("");
+  return `
+    <section class="panel">
+      <h1>Citation</h1>
+      <p>If using the ATM26 dataset, please cite the following papers:</p>
+      <ol class="citation-list">${items}</ol>
+    </section>`;
+}
+
 export function renderFaq(): string {
   const items = FAQ.map(
     (item) => `
@@ -226,6 +244,8 @@ export function renderStaticPage(route: string): string {
       return renderRules();
     case "timeline":
       return renderTimeline();
+    case "citation":
+      return renderCitation();
     case "faq":
       return renderFaq();
     case "contact":

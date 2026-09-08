@@ -28,6 +28,13 @@ export interface FaqItem {
   answer: string;
 }
 
+export interface CitationItem {
+  authors: string;
+  title: string;
+  venue: string;
+  link?: string;
+}
+
 export const SITE = {
   title: "ATM26 Challenge",
   fullTitle: "ATM26 — Airway Tree Modeling 2026",
@@ -60,6 +67,7 @@ export const NAV_ITEMS: NavItem[] = [
   { id: "leaderboard", label: "Leaderboard" },
   { id: "rules", label: "Rules" },
   { id: "timeline", label: "Timeline" },
+  { id: "citation", label: "Citation" },
   { id: "faq", label: "FAQ" },
   { id: "contact", label: "Contact" },
 ];
@@ -79,13 +87,12 @@ export const TRACKS: TrackInfo[] = [
     title: "Track 1 — Binary Airway Segmentation",
     short: "Segment the airway tree from chest CT.",
     description:
-      "Produce a binary segmentation mask of the airway tree. Predictions are evaluated for overlap (DSC, clDice, TLD, BD) and topological error (Betti0).",
+      "Produce a binary segmentation mask of the airway tree. Predictions are ranked by overlap (DSC, clDice, TLD, BD); methods are encouraged to preserve airway completeness, connectivity and distal branch structures.",
     metrics: [
       { name: "DSC", higherIsBetter: true, note: "Dice similarity coefficient" },
       { name: "clDice", higherIsBetter: true, note: "Centerline Dice" },
       { name: "TLD", higherIsBetter: true, note: "Tree-length detection" },
       { name: "BD", higherIsBetter: true, note: "Branch detection" },
-      { name: "Betti0Error", higherIsBetter: false, note: "Lower is better" },
     ],
   },
   {
@@ -97,10 +104,11 @@ export const TRACKS: TrackInfo[] = [
     metrics: [
       { name: "ACC", higherIsBetter: true, note: "Branch classification accuracy" },
       { name: "F1", higherIsBetter: true, note: "Branch F1 score" },
-      { name: "SC", higherIsBetter: true, note: "Specificity" },
-      { name: "TD", higherIsBetter: false, note: "Tree discrepancy; lower is better" },
-      { name: "mDice", higherIsBetter: true, note: "Multi-class Dice" },
-      { name: "mclDice", higherIsBetter: true, note: "Multi-class clDice" },
+      { name: "SC", higherIsBetter: true, note: "Subtree consistency" },
+      { name: "TD", higherIsBetter: false, note: "Topological distance; lower is better" },
+      { name: "TAcc", higherIsBetter: true, note: "Tree accuracy" },
+      { name: "mDice", higherIsBetter: true, note: "Mean Dice (multi-class)" },
+      { name: "mclDice", higherIsBetter: true, note: "Mean clDice (multi-class)" },
     ],
   },
 ];
@@ -108,11 +116,11 @@ export const TRACKS: TrackInfo[] = [
 export const RANKING_POLICY_DESCRIPTION =
   "Each metric is ranked independently; ties receive the average of the ranks they occupy. A submission's final score is the mean of its metric ranks, and the lowest mean rank is placed first.";
 
-// Shown above the leaderboard. While Final Test Phase results remain
-// confidential the site publishes placeholder/sample data; set to "" once the
-// official leaderboard is released.
+// Shown above the leaderboard. Sanity Check and Validation Phase results are
+// live; Final Test Phase results remain confidential until the official
+// release.
 export const LEADERBOARD_NOTICE =
-  "Sample data — the leaderboard currently shows placeholder results. Final Test Phase results remain confidential until the official release.";
+  "Sanity Check and Validation Phase results are live. Final Test Phase results remain confidential until the official release.";
 
 export const TIMELINE: TimelineItem[] = [
   {
@@ -131,9 +139,9 @@ export const TIMELINE: TimelineItem[] = [
     detail: "Open for final test phase submission for Track 1 and Track 2.",
   },
   {
-    date: "2026-09-30",
-    title: "Deadline for test phase submission",
-    detail: "Test phase submissions close; final submissions are frozen and evaluated.",
+    date: "2026-09-22",
+    title: "Deadline for final test phase submission",
+    detail: "11:59 PM PT (Pacific Time) on 22 September 2026 — final test phase submissions close.",
   },
 ];
 
@@ -179,6 +187,26 @@ export const ORGANIZERS: OrganizerInstitution[] = [
   },
 ];
 
+export const CITATIONS: CitationItem[] = [
+  {
+    authors: "Zhang, M., et al.",
+    title: "Multi-site, multi-domain airway tree modeling.",
+    venue: "Medical Image Analysis, 2023 Dec 90:102957. doi: 10.1016/j.media.2023.102957.",
+    link: "https://doi.org/10.1016/j.media.2023.102957",
+  },
+  {
+    authors: "Li, C., Zhang, M., Zhang, C. and Gu, Y., 2025.",
+    title: "Reflecting topology consistency and abnormality via learnable attentions for airway labeling.",
+    venue: "International Journal of Computer Assisted Radiology and Surgery, 20(7), pp.1315-1323.",
+  },
+  {
+    authors: "Zhang, M., Li, C., Xie, F., Liu, Y., Zhang, H., Wu, J., Zhang, C., Yang, J., Sun, J., Yang, G.Z. and Gu, Y., 2024.",
+    title: "Airmorph: Topology-preserving deep learning for pulmonary airway analysis.",
+    venue: "arXiv preprint arXiv:2412.11039.",
+    link: "https://arxiv.org/abs/2412.11039",
+  },
+];
+
 export const FAQ: FaqItem[] = [
   {
     question: "How do I register for ATM26?",
@@ -193,12 +221,12 @@ export const FAQ: FaqItem[] = [
   {
     question: "Which metrics are used for ranking?",
     answer:
-      "Track 1 uses DSC, clDice, TLD, BD and Betti0Error. Track 2 uses ACC, F1, SC, TD, mDice and mclDice. See the Tracks page for details.",
+      "Track 1 uses DSC, clDice, TLD and BD. Track 2 uses ACC, F1, SC, TD, TAcc, mDice and mclDice. See the Tracks page for details.",
   },
   {
     question: "Is the leaderboard final?",
     answer:
-      "The Test Phase leaderboard may show sample data while results are being finalized. The official ranking is published by the organizers.",
+      "Sanity Check and Validation Phase results are live and mirror the official Grand Challenge leaderboards. Final Test Phase results are confidential and are released by the organizers after the official publication.",
   },
 ];
 

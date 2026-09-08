@@ -582,6 +582,16 @@ summary {
   color: var(--muted);
 }
 
+/* Citation ------------------------------------------------------------------ */
+.citation-list li {
+  margin-bottom: 0.75rem;
+  line-height: 1.55;
+}
+
+.citation-list em {
+  color: var(--muted);
+}
+
 /* Responsive --------------------------------------------------------------- */
 @media (max-width: 640px) {
   .header-inner {
