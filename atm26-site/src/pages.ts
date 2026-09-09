@@ -122,7 +122,7 @@ export function renderHome(): string {
     <section class="panel">
       <div class="section-kicker">How to submit</div>
       <h2>Participation</h2>
-      <p>Registration and submission are handled on the official Grand Challenge platform, not on this website.</p>
+      <p>Registration and the data usage agreement are handled on the official Grand Challenge site; submissions go through the phase-specific portals on the Rules page and are evaluated on the organizers' own machines.</p>
       <ol>
         <li>Register for the challenge and sign the agreement on the official site.</li>
         <li>Prepare your algorithm as a Docker container (reads the CT from <code>/input</code>, writes the result to <code>/output</code>).</li>
