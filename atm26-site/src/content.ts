@@ -103,7 +103,7 @@ export const TRACKS: TrackInfo[] = [
   {
     slug: "track-2",
     title: "Track 2 · Branch-wise Anatomical Labeling",
-    short: "Label airway branches into 20 classes (19 anatomical labels + background).",
+    short: "Label airway branches into the 20 scored airway classes (labels 0–20; class 20 is a real scored branch).",
     description:
       "Track 2 moves beyond binary segmentation toward structured airway understanding. Participants are required to assign anatomical labels to airway branches and generate an anatomically consistent airway representation. Target labels include the segmental airway branches. This task is designed to support automated route planning, lesion-to-airway association, and standardized anatomical reporting for endobronchial intervention.",
     metrics: [
@@ -326,7 +326,7 @@ export const COMMON_PITFALLS: PitfallItem[] = [
     note: "Bake all weights and dependencies into the image (containers run with --network none), and do not over-prune the provided base — removing training-side packages breaks nnUNetPredictor initialization.",
   },
   {
-    title: "Track 2: labels 0-20, keep class 20",
-    note: "The Track-2 scheme is labels 0-20 (class 20 is a real scored branch; trachea = 19); keep the class-20 output head and verify np.unique(prediction) is a subset of {0,...,20} — truncating to 0-19 forfeits real class-20 Dice on the cases whose ground truth contains it.",
+    title: "Track 2: labels 0–20, keep class 20",
+    note: "The Track-2 scheme is labels 0–20 (class 20 is a real scored branch; trachea = 19); keep the class-20 output head and verify np.unique(prediction) is a subset of {0,...,20} — truncating to 0–19 forfeits real class-20 Dice on the cases whose ground truth contains it.",
   },
 ];
