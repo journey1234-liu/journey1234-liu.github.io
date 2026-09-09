@@ -614,6 +614,41 @@ summary {
   margin-bottom: 0.7rem;
 }
 
+/* Rules page: submission portals & tips -------------------------------------- */
+.portal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.portal-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+}
+
+.portal-card h3 {
+  margin-top: 0;
+}
+
+.portal-facts {
+  margin: 0 0 0.5rem;
+  padding-left: 1.25rem;
+}
+
+.portal-facts li {
+  margin-bottom: 0.5rem;
+}
+
+.tips-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.tips-list li {
+  margin-bottom: 0.7rem;
+}
+
 .home-tracks {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

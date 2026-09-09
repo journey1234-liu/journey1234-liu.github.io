@@ -18,8 +18,9 @@ describe("Rules page common pitfalls", () => {
     const html = renderRules();
     expect(html).toContain("<h2>Common pitfalls</h2>");
     expect(html).toContain("labels are 0&ndash;20 (class 20 is a real scored branch)");
-    expect((html.match(/<ul class="pitfall-list">/g) ?? []).length).toBe(1);
-    expect((html.match(/<li><strong>/g) ?? []).length).toBe(COMMON_PITFALLS.length);
+    const pitfallList = /<ul class="pitfall-list">([\s\S]*?)<\/ul>/.exec(html)?.[1] ?? "";
+    expect(pitfallList).not.toBe("");
+    expect((pitfallList.match(/<li><strong>/g) ?? []).length).toBe(COMMON_PITFALLS.length);
   });
 
   it("contains no anatomical branch names anywhere in the block content", () => {

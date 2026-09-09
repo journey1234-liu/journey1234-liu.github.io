@@ -16,6 +16,8 @@ import {
   FAQ,
   CONTACT,
   COMMON_PITFALLS,
+  SUBMISSION_PORTALS,
+  SUBMISSION_TIPS,
 } from "./content";
 import { resolveAsset } from "./basePath";
 
@@ -26,6 +28,32 @@ function escapeHtml(value: unknown): string {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+/** Inline link placeholders used inside content.ts strings. */
+const INLINE_LINKS: Record<string, { href: string; label: string }> = {
+  leaderboard: { href: "#/leaderboard/validation", label: "leaderboard" },
+  guidelines: {
+    href: "https://github.com/EndoluminalSurgicalVision-IMR/Airway-Tree-Modeling-26/tree/master/baseline-and-submission-guideline",
+    label: "guidelines",
+  },
+  "batch contract section": {
+    href: "https://github.com/EndoluminalSurgicalVision-IMR/Airway-Tree-Modeling-26/tree/master/baseline-and-submission-guideline#batch-execution-validation--final-test-phases",
+    label: "batch contract section",
+  },
+};
+
+/** Escape plain text, then expand {placeholder} tokens into safe inline links. */
+function renderInlineLinks(value: string): string {
+  let html = escapeHtml(value);
+  for (const [token, link] of Object.entries(INLINE_LINKS)) {
+    const rel = link.href.startsWith("http")
+      ? ' rel="noopener noreferrer" target="_blank"'
+      : "";
+    const anchor = `<a href="${escapeHtml(link.href)}"${rel}>${escapeHtml(link.label)}</a>`;
+    html = html.replaceAll(`{${token}}`, anchor);
+  }
+  return html;
 }
 
 /** Render an outbound link; placeholder URLs become a clearly marked pending label. */
@@ -98,8 +126,12 @@ export function renderHome(): string {
       <ol>
         <li>Register for the challenge and sign the agreement on the official site.</li>
         <li>Prepare your algorithm as a Docker container (reads the CT from <code>/input</code>, writes the result to <code>/output</code>).</li>
-        <li>Follow the submission guidelines on the official site to submit your container.</li>
+        <li>Submit your container through the phase-specific submission portal on the Rules page.</li>
       </ol>
+      <div class="cta-row">
+        <a class="cta" href="#/rules">Submit to Validation Phase</a>
+        <a class="cta cta-secondary" href="#/rules">Submit to Final Test Phase</a>
+      </div>
       <p>
         ${ctaLink(LINKS.officialSite, "Official challenge site", "cta-inline")}
         ${ctaLink(LINKS.submissionGuidelines, "Submission Guidelines", "cta-inline")}
@@ -149,19 +181,45 @@ export function renderTracks(): string {
 }
 
 export function renderRules(): string {
+  const portalCards = SUBMISSION_PORTALS.map(
+    (portal) => `
+      <div class="portal-card">
+        <h3>${escapeHtml(portal.title)}</h3>
+        <ul class="portal-facts">
+          ${portal.facts.map((fact) => `<li>${renderInlineLinks(fact)}</li>`).join("")}
+        </ul>
+        <p>
+          <a
+            class="cta-inline"
+            href="${escapeHtml(portal.formUrl)}"
+            rel="noopener noreferrer"
+            target="_blank"
+          >Open submission form</a>
+        </p>
+      </div>`,
+  ).join("");
+  const tipsHtml = SUBMISSION_TIPS.map(
+    (tip) => `<li><strong>${escapeHtml(tip.title)}</strong> — ${renderInlineLinks(tip.note)}</li>`,
+  ).join("");
+
   return `
     <section class="panel">
       <h1>Rules and Submission Guide</h1>
       <h2>How to submit</h2>
       <p>
-        Registration and submission are handled on the official Grand Challenge
-        platform, not on this website. Use the official site to register your
-        team and to follow the current submission guidelines.
+        Register for the challenge and sign the data usage agreement on the
+        official Grand Challenge site. Your algorithm container is submitted
+        through the phase-specific portal below (Final Test or Validation) and
+        is evaluated on the organizers' own machines.
       </p>
       <p>
         ${ctaLink(LINKS.officialSite, "Official challenge site", "cta-inline")}
         ${ctaLink(LINKS.submissionGuidelines, "Submission Guidelines", "cta-inline")}
       </p>
+      <h2>Submission portals</h2>
+      <div class="portal-grid">${portalCards}</div>
+      <h2>Submission tips</h2>
+      <ul class="tips-list">${tipsHtml}</ul>
       <h2>Container contract</h2>
       <p>
         Submitted containers read the input CT image from <code>/input</code> and

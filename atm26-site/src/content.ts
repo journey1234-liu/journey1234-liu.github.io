@@ -255,7 +255,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "How do I submit an algorithm?",
     answer:
-      "Algorithm submission is handled on the official Grand Challenge platform. See the Submission Guidelines there for the current submission portal and container interface.",
+      "Registration and the data usage agreement are handled on the official Grand Challenge site. Your container is then submitted through the phase-specific submission portal on the Rules page (Final Test or Validation form) and evaluated on the organizers' own machines.",
   },
   {
     question: "Which metrics are used for ranking?",
@@ -328,5 +328,73 @@ export const COMMON_PITFALLS: PitfallItem[] = [
   {
     title: "Track 2: labels 0–20, keep class 20",
     note: "The Track-2 scheme is labels 0–20 (class 20 is a real scored branch; trachea = 19); keep the class-20 output head and verify np.unique(prediction) is a subset of {0,...,20} — truncating to 0–19 forfeits real class-20 Dice on the cases whose ground truth contains it.",
+  },
+];
+
+export interface SubmissionPortal {
+  title: string;
+  formUrl: string;
+  facts: string[];
+}
+
+// Submission portals and tips (Rules page) — form URLs and facts taken
+// verbatim from the official submission-guidelines text (see
+// specs/site-rules-submission-portals-tips.md). Inline link placeholders
+// ({leaderboard}, {guidelines}, {batch contract section}) are expanded by the
+// Rules renderer; everything else is plain text.
+export const SUBMISSION_PORTALS: SubmissionPortal[] = [
+  {
+    title: "Final Test Phase Submission",
+    formUrl:
+      "https://docs.google.com/forms/d/e/1FAIpQLSfPv_OVm_PkOmF4YgsNW-zren6tDdrUzzZCV_J3oMSDMks13A/viewform?usp=sharing&ouid=117378226219491671209",
+    facts: [
+      "Submissions are evaluated on the organizers' own machines (off-GC platform); we stop receiving Final Test Phase submissions on Sep 22, 11:59 PM Pacific Time.",
+      "Leaderboard results of the final test phase shall be released near the ATM26 Workshop on Oct 1st.",
+    ],
+  },
+  {
+    title: "Validation Phase Submission",
+    formUrl:
+      "https://docs.google.com/forms/d/e/1FAIpQLSdwPtoBXp3iyy-s0S2lp629Vpq75OogvS8Xcr-B_bciSQGIPg/viewform?usp=sharing&ouid=117378226219491671209",
+    facts: [
+      "The organizers built their own evaluation platform, with the {leaderboard} migrated from Grand-Challenge; leaderboard results of the validation phase shall be dynamically updated.",
+      "For the validation phase submission you only need to provide your email address and team name used during registration.",
+    ],
+  },
+];
+
+export interface SubmissionTip {
+  title: string;
+  note: string;
+}
+
+export const SUBMISSION_TIPS: SubmissionTip[] = [
+  {
+    title: "Re-pack your algorithm for batch execution",
+    note: "Follow the example algorithm docker in the official {guidelines} — your container will receive the whole test set in one run (the whole validation set for the validation phase), rather than one case per run; details in the {batch contract section}.",
+  },
+  {
+    title: "Test locally before submission",
+    note: "It is recommended that your candidate Docker container is tested locally first.",
+  },
+  {
+    title: "Attach a brief PDF methodological report",
+    note: "Final Test phase only; attach it along with the Docker container and fill out the form table carefully.",
+  },
+  {
+    title: "Validation phase paper trail",
+    note: "Only your registration email address and team name are needed (no PDF report for this phase).",
+  },
+  {
+    title: "Submission frequency limit",
+    note: "Once per week per participant for Track-1 and Track-2 in the Final Test phase; once per 48 hours in the Validation phase (limited computation resources).",
+  },
+  {
+    title: "Evaluation takes hours and results arrive by email",
+    note: "Our system may take hours to finish evaluating your submission, then sends you an email containing the evaluated metrics or failure logs.",
+  },
+  {
+    title: "Deadlines and release",
+    note: "Final Test submissions stop Sep 22, 11:59 PM PT; final-test leaderboard results are released near the ATM26 Workshop on Oct 1st; validation-phase leaderboard results are dynamically updated.",
   },
 ];
