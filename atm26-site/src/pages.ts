@@ -15,6 +15,7 @@ import {
   CITATIONS,
   FAQ,
   CONTACT,
+  COMMON_PITFALLS,
 } from "./content";
 import { resolveAsset } from "./basePath";
 
@@ -168,6 +169,16 @@ export function renderRules(): string {
         described in the challenge documentation distributed to registered
         participants.
       </p>
+      <h2>Common pitfalls</h2>
+      <p>
+        Track-2 labels are 0&ndash;20 (class 20 is a real scored branch). Avoid
+        these common submission mistakes:
+      </p>
+      <ul class="pitfall-list">
+        ${COMMON_PITFALLS.map(
+          (item) => `<li><strong>${escapeHtml(item.title)}</strong> — ${escapeHtml(item.note)}</li>`,
+        ).join("")}
+      </ul>
       <h2>Ranking policy</h2>
       <p>${escapeHtml(RANKING_POLICY_DESCRIPTION)}</p>
     </section>`;

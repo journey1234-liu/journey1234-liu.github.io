@@ -273,3 +273,60 @@ export const CONTACT = {
   email: LINKS.contactEmail,
   note: "For challenge-related questions, contact the organizers by email.",
 };
+
+export interface PitfallItem {
+  title: string;
+  note: string;
+}
+
+// Submission pitfalls shown in the "Common pitfalls" block of the Rules page.
+export const COMMON_PITFALLS: PitfallItem[] = [
+  {
+    title: "Tag your image before saving",
+    note: "Always build with 'docker build -t name:tag .' and save with 'docker save name:tag'; an untagged archive is rejected during intake ('archive has no tagged Docker/OCI image').",
+  },
+  {
+    title: "Upload a complete, readable, ASCII-named archive",
+    note: "Check the file size after upload, test it with 'tar tzf', and keep the file name ASCII-only with no spaces — truncated uploads and accented or illegal characters in the name are rejected.",
+  },
+  {
+    title: "Run the container as a non-root user",
+    note: "Add a 'USER user' directive to your Dockerfile; images configured to run as root are rejected before execution.",
+  },
+  {
+    title: "Build on the CUDA 11.8 base",
+    note: "The evaluation GPU driver supports CUDA up to 12.0 — use the 'atm26-nnunetv2:2.6.4-cuda11.8' base (or the provided cu118 recipe); cuda12.4-based images fail at the first GPU call.",
+  },
+  {
+    title: "Declare the batch mode labels",
+    note: "Include both 'LABEL org.atm26.batch=\"1\"' and 'LABEL org.grand-challenge.api-method=\"exec\"'; without them your container runs once per case (model reloaded each time) instead of once over the whole test set.",
+  },
+  {
+    title: "Discover inputs by globbing, assume no case count",
+    note: "Read all cases by globbing '/input/images/lung-ct/*.mha' and loop; do not assume a single case or rely on the inputs.json shape — real submissions crashed on the batch set with exactly that per-case assumption.",
+  },
+  {
+    title: "Write one .mha per case, embedded and uint8",
+    note: "Output exactly '<case-id>.mha' per case under '/output/images/<output-slug>/' (no output.mha in batch mode, no .nii.gz), uint8, compressed MHA with the pixel data embedded (ElementDataFile = LOCAL); missing, duplicate, unmatched or externally-referenced outputs are rejected.",
+  },
+  {
+    title: "Keep memory flat across the whole test set",
+    note: "Load the model once, use torch.inference_mode() and release large tensors per case (del, torch.cuda.empty_cache(), gc.collect()), and keep accumulators in uint8 on CPU — a 150-case run was killed with full-volume float maps on the GPU.",
+  },
+  {
+    title: "Stay under the 40 GB output limit",
+    note: "Write uint8 and compressed MHA; uncompressed float volumes across the full test set exceed the platform output cap and fail the run.",
+  },
+  {
+    title: "Do not write to the home directory",
+    note: "Point cache and config directories to writable paths (e.g., 'ENV MPLCONFIGDIR=/tmp/mplconfig'); a read-only $HOME broke a real run at the first per-case plot call.",
+  },
+  {
+    title: "Build a fully self-contained image",
+    note: "Bake all weights and dependencies into the image (containers run with --network none), and do not over-prune the provided base — removing training-side packages breaks nnUNetPredictor initialization.",
+  },
+  {
+    title: "Track 2: labels 0-20, keep class 20",
+    note: "The Track-2 scheme is labels 0-20 (class 20 is a real scored branch; trachea = 19); keep the class-20 output head and verify np.unique(prediction) is a subset of {0,...,20} — truncating to 0-19 forfeits real class-20 Dice on the cases whose ground truth contains it.",
+  },
+];
