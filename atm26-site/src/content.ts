@@ -378,12 +378,8 @@ export const SUBMISSION_TIPS: SubmissionTip[] = [
     note: "It is recommended that your candidate Docker container is tested locally first.",
   },
   {
-    title: "Attach a brief PDF methodological report",
-    note: "Final Test phase only; attach it along with the Docker container and fill out the form table carefully.",
-  },
-  {
-    title: "Validation phase paper trail",
-    note: "Only your registration email address and team name are needed (no PDF report for this phase).",
+    title: "[Final Test Phase Only] Attach a brief PDF methodological report",
+    note: "Final Test phase only: attach a brief PDF methodological report together with the Docker container and carefully fill out the form table. For the Validation phase, only your registration email address and team name are needed (no PDF report).",
   },
   {
     title: "Submission frequency limit",

@@ -3,7 +3,6 @@
 
 import {
   SITE,
-  LINKS,
   IMAGES,
   TRACKS,
   INTRODUCTION,
@@ -56,15 +55,6 @@ function renderInlineLinks(value: string): string {
   return html;
 }
 
-/** Render an outbound link; placeholder URLs become a clearly marked pending label. */
-function ctaLink(url: string, label: string, className = "cta"): string {
-  if (!url || url.includes("PLACEHOLDER")) {
-    return `<span class="${className} is-pending" title="Link pending approval">${escapeHtml(label)} (pending)</span>`;
-  }
-  const rel = url.startsWith("http") ? 'rel="noopener noreferrer" target="_blank"' : "";
-  return `<a class="${className}" href="${escapeHtml(url)}" ${rel}>${escapeHtml(label)}</a>`;
-}
-
 export function renderHome(): string {
   const introHtml = INTRODUCTION.map((p) => `<p>${escapeHtml(p)}</p>`).join("");
   const newsHtml = NEWS.length
@@ -79,9 +69,6 @@ export function renderHome(): string {
         <p>${escapeHtml(track.short)}</p>
       </div>`,
   ).join("");
-  const timelineSummary = TIMELINE.slice(0, 3)
-    .map((item) => `<li><strong>${escapeHtml(item.date)}</strong> — ${escapeHtml(item.title)}</li>`)
-    .join("");
 
   return `
     <section class="panel hero-banner-panel">
@@ -98,8 +85,8 @@ export function renderHome(): string {
       <p class="lede">${escapeHtml(SITE.intro)}</p>
       <div class="cta-row">
         <a class="cta" href="#/leaderboard">View leaderboard</a>
-        <a class="cta cta-secondary" href="#/rules">Rules &amp; submission guide</a>
-        ${ctaLink(LINKS.officialSite, "Official challenge site")}
+        <a class="cta" href="#/rules">Submit to Validation Phase</a>
+        <a class="cta cta-secondary" href="#/rules">Submit to Final Test Phase</a>
       </div>
     </section>
     <section class="panel">
@@ -118,31 +105,6 @@ export function renderHome(): string {
       <div class="home-tracks">${trackCards}</div>
       <p class="muted">${escapeHtml(TRACKS_INTRO)}</p>
       <p><a href="#/tracks">Metric definitions and track details</a></p>
-    </section>
-    <section class="panel">
-      <div class="section-kicker">How to submit</div>
-      <h2>Participation</h2>
-      <p>Registration and the data usage agreement are handled on the official Grand Challenge site; submissions go through the phase-specific portals on the Rules page and are evaluated on the organizers' own machines.</p>
-      <ol>
-        <li>Register for the challenge and sign the agreement on the official site.</li>
-        <li>Prepare your algorithm as a Docker container (reads the CT from <code>/input</code>, writes the result to <code>/output</code>).</li>
-        <li>Submit your container through the phase-specific submission portal on the Rules page.</li>
-      </ol>
-      <div class="cta-row">
-        <a class="cta" href="#/rules">Submit to Validation Phase</a>
-        <a class="cta cta-secondary" href="#/rules">Submit to Final Test Phase</a>
-      </div>
-      <p>
-        ${ctaLink(LINKS.officialSite, "Official challenge site", "cta-inline")}
-        ${ctaLink(LINKS.submissionGuidelines, "Submission Guidelines", "cta-inline")}
-        <a class="cta-inline" href="#/rules">Rules &amp; container contract</a>
-      </p>
-    </section>
-    <section class="panel">
-      <div class="section-kicker">Timeline</div>
-      <h2>Status</h2>
-      <ul class="timeline-compact">${timelineSummary || "<li>Timeline to be announced.</li>"}</ul>
-      <p><a href="#/timeline">Full timeline</a></p>
     </section>`;
 }
 
@@ -211,10 +173,6 @@ export function renderRules(): string {
         official Grand Challenge site. Your algorithm container is submitted
         through the phase-specific portal below (Final Test or Validation) and
         is evaluated on the organizers' own machines.
-      </p>
-      <p>
-        ${ctaLink(LINKS.officialSite, "Official challenge site", "cta-inline")}
-        ${ctaLink(LINKS.submissionGuidelines, "Submission Guidelines", "cta-inline")}
       </p>
       <h2>Submission portals</h2>
       <div class="portal-grid">${portalCards}</div>
