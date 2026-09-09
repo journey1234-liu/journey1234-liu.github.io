@@ -6,12 +6,18 @@ import { COMMON_PITFALLS } from "../src/content";
 import { renderRules } from "../src/pages";
 
 describe("Rules page common pitfalls", () => {
-  it("exposes 12 structured pitfalls with non-empty titles and notes", () => {
-    expect(COMMON_PITFALLS.length).toBe(12);
+  it("exposes 11 structured pitfalls with non-empty titles and notes", () => {
+    expect(COMMON_PITFALLS.length).toBe(11);
     for (const item of COMMON_PITFALLS) {
       expect(item.title.trim()).not.toBe("");
       expect(item.note.trim()).not.toBe("");
     }
+  });
+
+  it("no longer lists the removed Track-2 label-range entry", () => {
+    const titles = COMMON_PITFALLS.map((item) => item.title);
+    expect(titles).not.toContain("Track 2: labels 0–20, keep class 20");
+    expect(renderRules()).not.toContain("Track 2: labels 0–20, keep class 20");
   });
 
   it("renders the Common pitfalls heading, intro and one list item per entry", () => {

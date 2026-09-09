@@ -325,10 +325,6 @@ export const COMMON_PITFALLS: PitfallItem[] = [
     title: "Build a fully self-contained image",
     note: "Bake all weights and dependencies into the image (containers run with --network none), and do not over-prune the provided base — removing training-side packages breaks nnUNetPredictor initialization.",
   },
-  {
-    title: "Track 2: labels 0–20, keep class 20",
-    note: "The Track-2 scheme is labels 0–20 (class 20 is a real scored branch; trachea = 19); keep the class-20 output head and verify np.unique(prediction) is a subset of {0,...,20} — truncating to 0–19 forfeits real class-20 Dice on the cases whose ground truth contains it.",
-  },
 ];
 
 export interface SubmissionPortal {
