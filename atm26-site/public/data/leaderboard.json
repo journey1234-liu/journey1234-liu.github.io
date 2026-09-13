@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-12T10:00:04+00:00",
+  "generated_at": "2026-09-13T17:30:05+00:00",
   "phases": {
     "final-test": {
       "label": "Final Test Phase",
@@ -97,12 +97,12 @@
                 "BD": 0.9841
               },
               "metric_ranks": {
-                "DSC": 17.0,
+                "DSC": 18.0,
                 "clDice": 1.0,
                 "TLD": 2.0,
                 "BD": 2.0
               },
-              "mean_rank": 5.5,
+              "mean_rank": 5.75,
               "submission_timestamp": "2026-08-24"
             },
             {
@@ -115,12 +115,12 @@
                 "BD": 0.9797
               },
               "metric_ranks": {
-                "DSC": 19.0,
+                "DSC": 20.0,
                 "clDice": 2.0,
                 "TLD": 3.0,
                 "BD": 3.0
               },
-              "mean_rank": 6.75,
+              "mean_rank": 7.0,
               "submission_timestamp": "2026-09-01"
             },
             {
@@ -143,24 +143,6 @@
             },
             {
               "rank": 4.0,
-              "team_display_name": "QibiaoWu (usst)",
-              "metrics": {
-                "DSC": 0.9388,
-                "clDice": 0.9078,
-                "TLD": 0.9786,
-                "BD": 0.9723
-              },
-              "metric_ranks": {
-                "DSC": 16.0,
-                "clDice": 8.0,
-                "TLD": 4.0,
-                "BD": 4.0
-              },
-              "mean_rank": 8.0,
-              "submission_timestamp": "2026-07-30"
-            },
-            {
-              "rank": 5.0,
               "team_display_name": "dsuh0i (KADS)",
               "metrics": {
                 "DSC": 0.9497,
@@ -178,25 +160,25 @@
               "submission_timestamp": "2026-08-16"
             },
             {
-              "mean_rank": 9.0,
+              "rank": 5.0,
+              "team_display_name": "QibiaoWu (usst)",
               "metrics": {
-                "DSC": 0.9528804796021209,
-                "clDice": 0.9036387120881801,
-                "TLD": 0.9633018180339313,
-                "BD": 0.9426586442337755
+                "DSC": 0.9388,
+                "clDice": 0.9078,
+                "TLD": 0.9786,
+                "BD": 0.9723
               },
-              "rank": 6.5,
-              "submission_timestamp": "2026-09-12T03:17:48+00:00",
-              "team_display_name": "junqiangchen (junqiangmler)",
               "metric_ranks": {
-                "DSC": 7.0,
+                "DSC": 17.0,
                 "clDice": 9.0,
-                "TLD": 10.0,
-                "BD": 10.0
-              }
+                "TLD": 4.0,
+                "BD": 4.0
+              },
+              "mean_rank": 8.5,
+              "submission_timestamp": "2026-07-30"
             },
             {
-              "rank": 6.5,
+              "rank": 6.0,
               "team_display_name": "坤坤kk",
               "metrics": {
                 "DSC": 0.9632,
@@ -214,50 +196,32 @@
               "submission_timestamp": "2026-09-06"
             },
             {
-              "rank": 8.0,
-              "team_display_name": "adinath@dukre",
-              "metrics": {
-                "DSC": 0.9407,
-                "clDice": 0.9019,
-                "TLD": 0.9746,
-                "BD": 0.9657
-              },
-              "metric_ranks": {
-                "DSC": 13.0,
-                "clDice": 10.0,
-                "TLD": 7.0,
-                "BD": 7.0
-              },
               "mean_rank": 9.25,
-              "submission_timestamp": "2026-09-07"
-            },
-            {
-              "rank": 9.5,
-              "team_display_name": "BeiNingWu (TopoATM)",
               "metrics": {
-                "DSC": 0.947,
-                "clDice": 0.8933,
-                "TLD": 0.975,
-                "BD": 0.9706
+                "DSC": 0.9528804796021209,
+                "clDice": 0.9036387120881801,
+                "BD": 0.9426586442337755,
+                "TLD": 0.9633018180339313
               },
+              "rank": 7.0,
+              "submission_timestamp": "2026-09-12T03:17:48+00:00",
+              "team_display_name": "junqiangchen (junqiangmler)",
               "metric_ranks": {
-                "DSC": 12.0,
-                "clDice": 16.0,
-                "TLD": 5.0,
-                "BD": 5.0
-              },
-              "mean_rank": 9.5,
-              "submission_timestamp": "2026-08-14"
+                "DSC": 7.0,
+                "clDice": 10.0,
+                "TLD": 10.0,
+                "BD": 10.0
+              }
             },
             {
               "mean_rank": 9.5,
               "metrics": {
                 "DSC": 0.9504506079207183,
                 "clDice": 0.9098096545567311,
-                "TLD": 0.9578904307588896,
-                "BD": 0.9347022870830424
+                "BD": 0.9347022870830424,
+                "TLD": 0.9578904307588896
               },
-              "rank": 9.5,
+              "rank": 8.0,
               "submission_timestamp": "2026-09-11T17:30:31+00:00",
               "team_display_name": "CYX-AI (cyxai)",
               "metric_ranks": {
@@ -268,19 +232,55 @@
               }
             },
             {
+              "rank": 9.0,
+              "team_display_name": "adinath@dukre",
+              "metrics": {
+                "DSC": 0.9407,
+                "clDice": 0.9019,
+                "TLD": 0.9746,
+                "BD": 0.9657
+              },
+              "metric_ranks": {
+                "DSC": 14.0,
+                "clDice": 11.0,
+                "TLD": 7.0,
+                "BD": 7.0
+              },
               "mean_rank": 9.75,
+              "submission_timestamp": "2026-09-07"
+            },
+            {
+              "rank": 10.0,
+              "team_display_name": "BeiNingWu (TopoATM)",
+              "metrics": {
+                "DSC": 0.947,
+                "clDice": 0.8933,
+                "TLD": 0.975,
+                "BD": 0.9706
+              },
+              "metric_ranks": {
+                "DSC": 13.0,
+                "clDice": 17.0,
+                "TLD": 5.0,
+                "BD": 5.0
+              },
+              "mean_rank": 10.0,
+              "submission_timestamp": "2026-08-14"
+            },
+            {
+              "mean_rank": 10.25,
               "metrics": {
                 "DSC": 0.9406832579972507,
                 "clDice": 0.9018608047893764,
-                "TLD": 0.9746051925469633,
-                "BD": 0.9656697996521717
+                "BD": 0.9656697996521717,
+                "TLD": 0.9746051925469633
               },
               "rank": 11.5,
               "submission_timestamp": "2026-09-12T00:08:36+00:00",
               "team_display_name": "adinath@dukre (genmi)",
               "metric_ranks": {
-                "DSC": 14.0,
-                "clDice": 11.0,
+                "DSC": 15.0,
+                "clDice": 12.0,
                 "TLD": 6.0,
                 "BD": 8.0
               }
@@ -295,12 +295,12 @@
                 "BD": 0.9853
               },
               "metric_ranks": {
-                "DSC": 18.0,
-                "clDice": 19.0,
+                "DSC": 19.0,
+                "clDice": 20.0,
                 "TLD": 1.0,
                 "BD": 1.0
               },
-              "mean_rank": 9.75,
+              "mean_rank": 10.25,
               "submission_timestamp": "2026-08-14"
             },
             {
@@ -316,31 +316,13 @@
                 "DSC": 8.0,
                 "clDice": 4.5,
                 "TLD": 15.0,
-                "BD": 16.0
+                "BD": 17.0
               },
-              "mean_rank": 10.875,
+              "mean_rank": 11.125,
               "submission_timestamp": "2026-08-25"
             },
             {
-              "rank": 14.0,
-              "team_display_name": "Bingyu_Yang",
-              "metrics": {
-                "DSC": 0.9404,
-                "clDice": 0.8909,
-                "TLD": 0.9716,
-                "BD": 0.9679
-              },
-              "metric_ranks": {
-                "DSC": 15.0,
-                "clDice": 17.0,
-                "TLD": 8.0,
-                "BD": 6.0
-              },
-              "mean_rank": 11.5,
-              "submission_timestamp": "2026-09-01"
-            },
-            {
-              "rank": 15.0,
+              "rank": 14.5,
               "team_display_name": "AlexandraErtl",
               "metrics": {
                 "DSC": 0.9553,
@@ -350,15 +332,51 @@
               },
               "metric_ranks": {
                 "DSC": 5.0,
-                "clDice": 18.0,
+                "clDice": 19.0,
                 "TLD": 12.0,
                 "BD": 12.0
               },
-              "mean_rank": 11.75,
+              "mean_rank": 12.0,
               "submission_timestamp": "2026-08-20"
             },
             {
+              "rank": 14.5,
+              "team_display_name": "Bingyu_Yang",
+              "metrics": {
+                "DSC": 0.9404,
+                "clDice": 0.8909,
+                "TLD": 0.9716,
+                "BD": 0.9679
+              },
+              "metric_ranks": {
+                "DSC": 16.0,
+                "clDice": 18.0,
+                "TLD": 8.0,
+                "BD": 6.0
+              },
+              "mean_rank": 12.0,
+              "submission_timestamp": "2026-09-01"
+            },
+            {
+              "mean_rank": 12.75,
+              "metrics": {
+                "DSC": 0.9492091920897492,
+                "clDice": 0.909469918068313,
+                "BD": 0.894007662398861,
+                "TLD": 0.9289720393613125
+              },
               "rank": 16.0,
+              "submission_timestamp": "2026-09-13T17:24:30+00:00",
+              "team_display_name": "vladimirxi (boricuabronchi)",
+              "metric_ranks": {
+                "DSC": 11.0,
+                "clDice": 8.0,
+                "TLD": 17.0,
+                "BD": 15.0
+              }
+            },
+            {
+              "rank": 17.0,
               "team_display_name": "LIDAY",
               "metrics": {
                 "DSC": 0.9587,
@@ -368,15 +386,15 @@
               },
               "metric_ranks": {
                 "DSC": 3.0,
-                "clDice": 12.0,
-                "TLD": 18.0,
-                "BD": 18.0
+                "clDice": 13.0,
+                "TLD": 19.0,
+                "BD": 19.0
               },
-              "mean_rank": 12.75,
+              "mean_rank": 13.5,
               "submission_timestamp": "2026-08-12"
             },
             {
-              "rank": 17.5,
+              "rank": 18.5,
               "team_display_name": "kkdls19 (Organizers)",
               "metrics": {
                 "DSC": 0.9475,
@@ -385,16 +403,16 @@
                 "BD": 0.8939
               },
               "metric_ranks": {
-                "DSC": 11.0,
-                "clDice": 13.0,
+                "DSC": 12.0,
+                "clDice": 14.0,
                 "TLD": 16.0,
-                "BD": 15.0
+                "BD": 16.0
               },
-              "mean_rank": 13.75,
+              "mean_rank": 14.5,
               "submission_timestamp": "2026-07-23"
             },
             {
-              "rank": 17.5,
+              "rank": 18.5,
               "team_display_name": "s1mple",
               "metrics": {
                 "DSC": 0.9552,
@@ -404,33 +422,33 @@
               },
               "metric_ranks": {
                 "DSC": 6.0,
-                "clDice": 15.0,
-                "TLD": 17.0,
-                "BD": 17.0
+                "clDice": 16.0,
+                "TLD": 18.0,
+                "BD": 18.0
               },
-              "mean_rank": 13.75,
+              "mean_rank": 14.5,
               "submission_timestamp": "2026-09-08"
             },
             {
-              "mean_rank": 14.0,
+              "mean_rank": 14.75,
               "metrics": {
                 "DSC": 0.9568870085465171,
                 "clDice": 0.8956246025249958,
-                "TLD": 0.8512427190027151,
-                "BD": 0.7571238210897246
+                "BD": 0.7571238210897246,
+                "TLD": 0.8512427190027151
               },
-              "rank": 19.0,
+              "rank": 20.0,
               "submission_timestamp": "2026-09-12T09:52:36+00:00",
               "team_display_name": "ZhaoChenming (zhaochenming)",
               "metric_ranks": {
                 "DSC": 4.0,
-                "clDice": 14.0,
-                "TLD": 19.0,
-                "BD": 19.0
+                "clDice": 15.0,
+                "TLD": 20.0,
+                "BD": 20.0
               }
             },
             {
-              "rank": 20.0,
+              "rank": 21.0,
               "team_display_name": "jamie24618 (SJTU_SS_4)",
               "metrics": {
                 "DSC": 0.712,
@@ -439,12 +457,12 @@
                 "BD": 0.4448
               },
               "metric_ranks": {
-                "DSC": 20.0,
-                "clDice": 20.0,
-                "TLD": 20.0,
-                "BD": 20.0
+                "DSC": 21.0,
+                "clDice": 21.0,
+                "TLD": 21.0,
+                "BD": 21.0
               },
-              "mean_rank": 20.0,
+              "mean_rank": 21.0,
               "submission_timestamp": "2026-07-27"
             }
           ]
@@ -485,12 +503,12 @@
               "mean_rank": 2.7142857142857144,
               "metrics": {
                 "ACC": 0.9534789324844681,
-                "mclDice": 0.8339433164935135,
-                "SC": 0.927780872958342,
-                "TAcc": 0.9733463035047883,
-                "F1": 0.9458000535594608,
+                "mDice": 0.797476438779624,
                 "TD": 0.8372678359755922,
-                "mDice": 0.797476438779624
+                "SC": 0.927780872958342,
+                "F1": 0.9458000535594608,
+                "TAcc": 0.9733463035047883,
+                "mclDice": 0.8339433164935135
               },
               "rank": 1.0,
               "submission_timestamp": "2026-09-11T16:01:04+00:00",
@@ -581,12 +599,12 @@
               "mean_rank": 5.857142857142857,
               "metrics": {
                 "ACC": 0.9464145948742502,
-                "mclDice": 0.8184049443788621,
-                "SC": 0.9512684094181336,
-                "TAcc": 0.9731254565446206,
-                "F1": 0.9333868564178444,
+                "mDice": 0.7300121602318923,
                 "TD": 0.9337993104802269,
-                "mDice": 0.7300121602318923
+                "SC": 0.9512684094181336,
+                "F1": 0.9333868564178444,
+                "TAcc": 0.9731254565446206,
+                "mclDice": 0.8184049443788621
               },
               "rank": 5.0,
               "submission_timestamp": "2026-09-10T07:20:19+00:00",
@@ -773,12 +791,12 @@
               "mean_rank": 11.0,
               "metrics": {
                 "ACC": 0.8705529257959748,
-                "mclDice": 0.8364630804810498,
-                "SC": 0.6244297922606808,
-                "TAcc": 0.9023118124847371,
-                "F1": 0.8891605981162206,
+                "mDice": 0.8096437165176485,
                 "TD": 4.222056839308514,
-                "mDice": 0.8096437165176485
+                "SC": 0.6244297922606808,
+                "F1": 0.8891605981162206,
+                "TAcc": 0.9023118124847371,
+                "mclDice": 0.8364630804810498
               },
               "rank": 13.0,
               "submission_timestamp": "2026-09-11T06:40:28+00:00",
@@ -797,12 +815,12 @@
               "mean_rank": 11.285714285714286,
               "metrics": {
                 "ACC": 0.898912395637711,
-                "mclDice": 0.8130764568668456,
-                "SC": 0.7272995854436771,
-                "TAcc": 0.9321859791479115,
-                "F1": 0.9054188079059908,
+                "mDice": 0.741490947728715,
                 "TD": 2.6891245530456245,
-                "mDice": 0.741490947728715
+                "SC": 0.7272995854436771,
+                "F1": 0.9054188079059908,
+                "TAcc": 0.9321859791479115,
+                "mclDice": 0.8130764568668456
               },
               "rank": 14.0,
               "submission_timestamp": "2026-09-04T07:40:09+00:00",
@@ -869,12 +887,12 @@
               "mean_rank": 17.0,
               "metrics": {
                 "ACC": 0.7360642381829182,
-                "mclDice": 0.7337941599765533,
-                "SC": 0.4272313943519704,
-                "TAcc": 0.8043505158992581,
-                "F1": 0.759541293025461,
+                "mDice": 0.7160237825962432,
                 "TD": 8.273357276807369,
-                "mDice": 0.7160237825962432
+                "SC": 0.4272313943519704,
+                "F1": 0.759541293025461,
+                "TAcc": 0.8043505158992581,
+                "mclDice": 0.7337941599765533
               },
               "rank": 17.0,
               "submission_timestamp": "2026-09-12T08:27:48+00:00",
