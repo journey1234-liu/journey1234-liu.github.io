@@ -379,7 +379,11 @@ export const SUBMISSION_TIPS: SubmissionTip[] = [
   },
   {
     title: "Submission frequency limit",
-    note: "Once per week per participant for Track-1 and Track-2 in the Final Test phase; once per 48 hours in the Validation phase (limited computation resources).",
+    note: "Once per week per participant for Track-1 and Track-2 in the Final Test phase; once per 48 hours in the Validation phase (limited computation resources). The limit counts evaluated submissions only — a run that fails does not use up your slot.",
+  },
+  {
+    title: "A failed run does not use up your submission limit",
+    note: "If your container is rejected at intake or fails during evaluation, it does not count against the frequency limit: our platform removes that submission's records, so your next slot is free right away. Fix the problem and submit again immediately — do not wait for the 48-hour or weekly window to pass. If the form still reports that you are rate-limited, contact the organizers.",
   },
   {
     title: "Evaluation takes hours and results arrive by email",

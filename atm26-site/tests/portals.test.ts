@@ -39,7 +39,7 @@ describe("submission portals and tips", () => {
   });
 
   it("exposes tips with the merged Final-Test PDF entry and no separate paper-trail entry", () => {
-    expect(SUBMISSION_TIPS.length).toBe(6);
+    expect(SUBMISSION_TIPS.length).toBe(7);
     const titles = SUBMISSION_TIPS.map((tip) => tip.title);
     expect(titles).toContain("[Final Test Phase Only] Attach a brief PDF methodological report");
     expect(titles).not.toContain("Validation phase paper trail");
@@ -47,6 +47,21 @@ describe("submission portals and tips", () => {
       tip.title.startsWith("[Final Test Phase Only]"),
     );
     expect(merged?.note).toContain("For the Validation phase, only your registration email address and team name are needed (no PDF report).");
+  });
+
+  it("states explicitly that a failed run does not consume the submission limit", () => {
+    const titles = SUBMISSION_TIPS.map((tip) => tip.title);
+    const idx = titles.indexOf("A failed run does not use up your submission limit");
+    expect(idx).toBeGreaterThan(-1);
+    // sits directly after the frequency-limit tip so submitters read them together
+    expect(titles[idx - 1]).toBe("Submission frequency limit");
+    const note = SUBMISSION_TIPS[idx].note;
+    expect(note).toContain("does not count against the frequency limit");
+    expect(note).toContain("submit again immediately");
+    const limitNote = SUBMISSION_TIPS[idx - 1].note;
+    expect(limitNote).toContain("a run that fails does not use up your slot");
+    const html = renderRules();
+    expect(html).toContain("A failed run does not use up your submission limit");
   });
 
   it("renders both portals with open-external links and all tips on the Rules page", () => {
