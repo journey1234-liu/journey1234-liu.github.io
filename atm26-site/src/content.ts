@@ -327,10 +327,17 @@ export const COMMON_PITFALLS: PitfallItem[] = [
   },
 ];
 
+export interface PortalBackupForm {
+  label: string;
+  url: string;
+}
+
 export interface SubmissionPortal {
   title: string;
   formUrl: string;
   facts: string[];
+  /** Optional secondary upload route, shown under the primary form link. */
+  backupForm?: PortalBackupForm;
 }
 
 // Submission portals and tips (Rules page) — form URLs and facts taken
@@ -347,6 +354,10 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
       "Submissions are evaluated on the organizers' own machines (off-GC platform); we stop receiving Final Test Phase submissions on Sep 22, 11:59 PM Pacific Time.",
       "Leaderboard results of the final test phase shall be released near the ATM26 Workshop on Oct 1st.",
     ],
+    backupForm: {
+      label: "Google Drive Upload Backup Form",
+      url: "https://docs.google.com/forms/d/e/1FAIpQLSdc7J-rJMTg45IvSqnJRpd1byCbNVF0q_2dtaa0Cn6g15t9ng/viewform?usp=dialog",
+    },
   },
   {
     title: "Validation Phase Submission",

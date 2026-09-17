@@ -158,6 +158,19 @@ export function renderRules(): string {
             target="_blank"
           >Open submission form</a>
         </p>
+        ${
+          portal.backupForm
+            ? `<p class="backup-form">
+          Backup upload:
+          <a
+            class="cta-inline"
+            href="${escapeHtml(portal.backupForm.url)}"
+            rel="noopener noreferrer"
+            target="_blank"
+          >${escapeHtml(portal.backupForm.label)}</a>
+        </p>`
+            : ""
+        }
       </div>`,
   ).join("");
   const tipsHtml = SUBMISSION_TIPS.map(

@@ -15,6 +15,9 @@ const VALIDATION_FORM =
   "https://docs.google.com/forms/d/e/1FAIpQLSdwPtoBXp3iyy-s0S2lp629Vpq75OogvS8Xcr-B_bciSQGIPg/viewform?usp=sharing&ouid=117378226219491671209";
 const GUIDELINE_URL =
   "https://github.com/EndoluminalSurgicalVision-IMR/Airway-Tree-Modeling-26/tree/master/baseline-and-submission-guideline";
+const BACKUP_FORM =
+  "https://docs.google.com/forms/d/e/1FAIpQLSdc7J-rJMTg45IvSqnJRpd1byCbNVF0q_2dtaa0Cn6g15t9ng/viewform?usp=dialog";
+const BACKUP_LABEL = "Google Drive Upload Backup Form";
 
 describe("submission portals and tips", () => {
   it("keeps the two official form URLs verbatim", () => {
@@ -25,6 +28,29 @@ describe("submission portals and tips", () => {
       "Final Test Phase Submission",
       "Validation Phase Submission",
     ]);
+  });
+
+  it("lists the Google Drive upload backup form on the Final Test card only", () => {
+    const finalTest = SUBMISSION_PORTALS.find(
+      (portal) => portal.title === "Final Test Phase Submission",
+    );
+    expect(finalTest?.backupForm?.url).toBe(BACKUP_FORM);
+    expect(finalTest?.backupForm?.label).toBe(BACKUP_LABEL);
+    expect(SUBMISSION_PORTALS.filter((portal) => portal.backupForm).length).toBe(1);
+    expect(
+      SUBMISSION_PORTALS.find((portal) => portal.title.startsWith("Validation"))
+        ?.backupForm,
+    ).toBeUndefined();
+
+    const html = renderRules();
+    expect((html.match(new RegExp(BACKUP_LABEL, "g")) ?? []).length).toBe(1);
+    // card segments: [0] = Final Test (up to the next card), [1] = Validation
+    const cards = html.split('<div class="portal-card">').slice(1);
+    expect(cards.length).toBe(2);
+    expect(cards[0]).toContain(BACKUP_FORM);
+    expect(cards[0]).toContain(BACKUP_LABEL);
+    expect(cards[0]).toContain("Open submission form");
+    expect(cards[1]).not.toContain(BACKUP_FORM);
   });
 
   it("tips carry no anatomy names; rendered page expands every inline placeholder", () => {
