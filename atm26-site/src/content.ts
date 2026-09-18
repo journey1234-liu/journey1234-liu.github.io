@@ -136,16 +136,22 @@ export const TRACKS_INTRO =
 // announcement omitted — sanity check is not part of the published phases).
 export const NEWS: NewsItem[] = [
   {
+    date: "2026-09-18",
+    title: "Updated submission rules for the Validation and Final Test Phases",
+    detail:
+      "Validation Phase submissions are now limited to once per day. The Final Test Phase now counts only one successful submission per participant, and Final Test results are not displayed — you will only be notified whether your submission succeeded. Teams that have submitted to the Validation Phase but have not submitted to the Final Test Phase will have their best-performing Validation model used for Final ranking; if you do not wish to participate or prefer to submit yourself, please notify the organizers by email.",
+  },
+  {
     date: "2026-08-20",
     title: "Final test phase submission for Track 1 and Track 2 open!",
     detail:
-      "See the official submission portal and the Submission Guidelines for detailed instructions. Contact the organizers if any problems occur.",
+      "See the official submission portal for detailed instructions. Contact the organizers if any problems occur.",
   },
   {
     date: "2026-07-31",
     title: "Validation phase submission for Track 1 and Track 2 open!",
     detail:
-      "Refer to the official Submission Guidelines for detailed instructions before submitting.",
+      "Refer to the official submission portal for detailed instructions before submitting.",
   },
   {
     date: "2026-06-15",
@@ -352,6 +358,7 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
       "https://docs.google.com/forms/d/e/1FAIpQLSfPv_OVm_PkOmF4YgsNW-zren6tDdrUzzZCV_J3oMSDMks13A/viewform?usp=sharing&ouid=117378226219491671209",
     facts: [
       "Submissions are evaluated on the organizers' own machines (off-GC platform); we stop receiving Final Test Phase submissions on Sep 22, 11:59 PM Pacific Time.",
+      "Only one successful submission counts per participant. Final Test results are not displayed during the phase — you are only notified whether your submission succeeded.",
       "Leaderboard results of the final test phase shall be released near the ATM26 Workshop on Oct 1st.",
     ],
     backupForm: {
@@ -365,6 +372,7 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
       "https://docs.google.com/forms/d/e/1FAIpQLSdwPtoBXp3iyy-s0S2lp629Vpq75OogvS8Xcr-B_bciSQGIPg/viewform?usp=sharing&ouid=117378226219491671209",
     facts: [
       "The organizers built their own evaluation platform, with the {leaderboard} migrated from Grand-Challenge; leaderboard results of the validation phase shall be dynamically updated.",
+      "Validation Phase submissions are limited to once per day.",
       "For the validation phase submission you only need to provide your email address and team name used during registration.",
     ],
   },
@@ -390,15 +398,15 @@ export const SUBMISSION_TIPS: SubmissionTip[] = [
   },
   {
     title: "Submission frequency limit",
-    note: "Once per week per participant for Track-1 and Track-2 in the Final Test phase; once per 48 hours in the Validation phase (limited computation resources). The limit counts evaluated submissions only — a run that fails does not use up your slot.",
+    note: "The Final Test Phase counts only one successful submission per participant for Track-1 and Track-2. The Validation Phase allows one submission per day (limited computation resources). The limit counts evaluated submissions only — a run that fails does not use up your slot.",
   },
   {
     title: "A failed run does not use up your submission limit",
-    note: "If your container is rejected at intake or fails during evaluation, it does not count against the frequency limit: our platform removes that submission's records, so your next slot is free right away. Fix the problem and submit again immediately — do not wait for the 48-hour or weekly window to pass. If the form still reports that you are rate-limited, contact the organizers.",
+    note: "If your container is rejected at intake or fails during evaluation, it does not count against the frequency limit: our platform removes that submission's records, so your next slot is free right away. Fix the problem and submit again immediately — do not wait for the daily or one-time window to pass. If the form still reports that you are rate-limited, contact the organizers.",
   },
   {
     title: "Evaluation takes hours and results arrive by email",
-    note: "Our system may take hours to finish evaluating your submission, then sends you an email containing the evaluated metrics or failure logs.",
+    note: "Our system may take hours to finish evaluating your submission, then sends you an email. For the Final Test Phase the email only confirms whether your submission succeeded; the evaluated metrics remain confidential until the official release.",
   },
   {
     title: "Deadlines and release",

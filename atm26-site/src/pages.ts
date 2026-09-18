@@ -57,11 +57,6 @@ function renderInlineLinks(value: string): string {
 
 export function renderHome(): string {
   const introHtml = INTRODUCTION.map((p) => `<p>${escapeHtml(p)}</p>`).join("");
-  const newsHtml = NEWS.length
-    ? NEWS.map(
-        (n) => `<li><strong>${escapeHtml(n.date)}</strong> — ${escapeHtml(n.title)}<br /><span class="muted">${escapeHtml(n.detail)}</span></li>`,
-      ).join("")
-    : "<li>No news yet.</li>";
   const trackCards = TRACKS.map(
     (track) => `
       <div class="home-track">
@@ -93,11 +88,6 @@ export function renderHome(): string {
       <div class="section-kicker">Challenge</div>
       <h2>About ATM26</h2>
       ${introHtml}
-    </section>
-    <section class="panel">
-      <div class="section-kicker">News</div>
-      <h2>Latest updates</h2>
-      <ul class="news-list">${newsHtml}</ul>
     </section>
     <section class="panel">
       <div class="section-kicker">Tasks</div>
@@ -176,6 +166,11 @@ export function renderRules(): string {
   const tipsHtml = SUBMISSION_TIPS.map(
     (tip) => `<li><strong>${escapeHtml(tip.title)}</strong> — ${renderInlineLinks(tip.note)}</li>`,
   ).join("");
+  const newsHtml = NEWS.length
+    ? NEWS.map(
+        (n) => `<li><strong>${escapeHtml(n.date)}</strong> — ${escapeHtml(n.title)}<br /><span class="muted">${escapeHtml(n.detail)}</span></li>`,
+      ).join("")
+    : "<li>No news yet.</li>";
 
   return `
     <section class="panel">
@@ -189,6 +184,8 @@ export function renderRules(): string {
       </p>
       <h2>Submission portals</h2>
       <div class="portal-grid">${portalCards}</div>
+      <h2>News</h2>
+      <ul class="news-list">${newsHtml}</ul>
       <h2>Submission tips</h2>
       <ul class="tips-list">${tipsHtml}</ul>
       <h2>Container contract</h2>
