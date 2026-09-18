@@ -132,6 +132,15 @@ export const INTRODUCTION: string[] = [
 export const TRACKS_INTRO =
   "ATM26 is designed to promote robust, topology-aware, and clinically applicable airway modeling under realistic CT acquisition conditions, including variations in image spacing, image quality, and airway anatomy. The challenge includes two tracks, which participants may enter individually or together.";
 
+// Prominent deadline banner on the home page, directly below the hero CTA row
+// and above the News list. The emphasised fragment is rendered bold.
+export const DEADLINE_NOTICE = {
+  kicker: "Deadline",
+  before: "Final Test Phase submissions close on",
+  emphasis: "22 September 2026, 11:59 PM (PT)",
+  after: ".",
+};
+
 // Challenge news (mirrors the official announcement dates; sanity check
 // announcement omitted — sanity check is not part of the published phases).
 export const NEWS: NewsItem[] = [

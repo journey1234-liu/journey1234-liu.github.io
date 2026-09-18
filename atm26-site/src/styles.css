@@ -595,6 +595,29 @@ summary {
 }
 
 /* Home sections -------------------------------------------------------------- */
+.deadline-card {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  border-left: 6px solid var(--primary);
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+}
+
+.deadline-card .section-kicker {
+  margin-bottom: 0.35rem;
+}
+
+.deadline-text {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.deadline-text strong {
+  font-size: 1.2rem;
+  color: var(--primary);
+}
+
 .news-list {
   margin: 0;
   padding-left: 1.25rem;
