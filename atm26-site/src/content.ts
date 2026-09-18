@@ -145,13 +145,13 @@ export const NEWS: NewsItem[] = [
     date: "2026-08-20",
     title: "Final test phase submission for Track 1 and Track 2 open!",
     detail:
-      "See the official submission portal for detailed instructions. Contact the organizers if any problems occur.",
+      "See the official submission portal and the Submission Guidelines for detailed instructions. Contact the organizers if any problems occur.",
   },
   {
     date: "2026-07-31",
     title: "Validation phase submission for Track 1 and Track 2 open!",
     detail:
-      "Refer to the official submission portal for detailed instructions before submitting.",
+      "Refer to the official Submission Guidelines for detailed instructions before submitting.",
   },
   {
     date: "2026-06-15",
