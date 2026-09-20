@@ -135,10 +135,11 @@ export const TRACKS_INTRO =
 // Prominent deadline banner on the home page, directly below the hero CTA row
 // and above the News list. The emphasised fragment is rendered bold.
 export const DEADLINE_NOTICE = {
-  kicker: "Deadline",
+  kicker: "DEADLINE for MICCAI 2026",
   before: "Final Test Phase submissions close on",
   emphasis: "22 September 2026, 11:59 PM (PT)",
   after: ".",
+  note: "Post-MICCAI'26 Long Term validation and leaderboard on the way!",
 };
 
 // Challenge news (mirrors the official announcement dates; sanity check

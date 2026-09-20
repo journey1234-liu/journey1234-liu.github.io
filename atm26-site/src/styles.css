@@ -618,6 +618,13 @@ summary {
   color: var(--primary);
 }
 
+.deadline-note {
+  margin: 0.6rem 0 0;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
 .news-list {
   margin: 0;
   padding-left: 1.25rem;

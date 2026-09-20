@@ -96,6 +96,7 @@ export function renderHome(): string {
         ${escapeHtml(DEADLINE_NOTICE.before)}
         <strong>${escapeHtml(DEADLINE_NOTICE.emphasis)}</strong>${escapeHtml(DEADLINE_NOTICE.after)}
       </p>
+      <p class="deadline-note">${escapeHtml(DEADLINE_NOTICE.note)}</p>
     </section>
     <section class="panel">
       <div class="section-kicker">News</div>
