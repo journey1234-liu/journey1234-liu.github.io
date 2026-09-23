@@ -132,14 +132,16 @@ export const INTRODUCTION: string[] = [
 export const TRACKS_INTRO =
   "ATM26 is designed to promote robust, topology-aware, and clinically applicable airway modeling under realistic CT acquisition conditions, including variations in image spacing, image quality, and airway anatomy. The challenge includes two tracks, which participants may enter individually or together.";
 
-// Prominent deadline banner on the home page, directly below the hero CTA row
-// and above the News list. The emphasised fragment is rendered bold.
+// Prominent submission-status banner on the home page, directly below the hero
+// CTA row and above the News list. The emphasised fragment is rendered bold.
+// Submissions are currently paused, so this banner announces the temporary
+// closure instead of the (now elapsed) Final Test Phase deadline.
 export const DEADLINE_NOTICE = {
-  kicker: "DEADLINE for MICCAI 2026",
-  before: "Final Test Phase submissions close on",
-  emphasis: "22 September 2026, 11:59 PM (PT)",
+  kicker: "SUBMISSION STATUS",
+  before: "Submissions for Track 1 and Track 2 are",
+  emphasis: "temporarily closed",
   after: ".",
-  note: "Post-MICCAI'26 Long Term validation and leaderboard on the way!",
+  note: "The Final Test Phase closed on 22 September 2026, 11:59 PM (PT). Post-MICCAI'26 long-term validation and the leaderboard release are on the way — please check back here for reopening announcements.",
 };
 
 // Challenge news (mirrors the official announcement dates; sanity check
