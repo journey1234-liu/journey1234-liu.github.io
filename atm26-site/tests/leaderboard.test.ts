@@ -214,11 +214,13 @@ describe("board paging", () => {
     (/<tbody>([\s\S]*?)<\/tbody>/.exec(html)?.[1].match(/<tr>/g) ?? []).length;
 
   it("shows 20 rows per page by default and reports the range", () => {
+    const total = track().entries.length; // 28 Validation Track-1 rows today
+    expect(total).toBeGreaterThan(DEFAULT_PAGE_SIZE);
     const html = renderBoard("Validation Phase", "track-1", track(), "", ASC);
-    expect(bodyRows(html)).toBe(20);
+    expect(bodyRows(html)).toBe(DEFAULT_PAGE_SIZE);
     expect(html).toContain('<option value="20" selected>20</option>');
-    expect(html).toContain("1–20 of 30 teams");
-    expect(html).toContain("Page 1 of 2");
+    expect(html).toContain(`1–20 of ${total} teams`);
+    expect(html).toContain(`Page 1 of ${Math.ceil(total / DEFAULT_PAGE_SIZE)}`);
     expect(html).toContain('<button type="button" data-page="prev" disabled>');
   });
 
@@ -236,40 +238,45 @@ describe("board paging", () => {
   });
 
   it("honours a smaller page size and pages through the board", () => {
+    const total = track().entries.length;
+    const pages = Math.ceil(total / 10);
     const first = renderBoard("Validation Phase", "track-1", track(), "", ASC, {
       size: 10,
       index: 0,
     });
     expect(bodyRows(first)).toBe(10);
-    expect(first).toContain("1–10 of 30 teams");
-    expect(first).toContain("Page 1 of 3");
+    expect(first).toContain(`1–10 of ${total} teams`);
+    expect(first).toContain(`Page 1 of ${pages}`);
 
     const second = renderBoard("Validation Phase", "track-1", track(), "", ASC, {
       size: 10,
       index: 1,
     });
     expect(bodyRows(second)).toBe(10);
-    expect(second).toContain("11–20 of 30 teams");
-    expect(second).toContain("Page 2 of 3");
+    expect(second).toContain(`11–20 of ${total} teams`);
+    expect(second).toContain(`Page 2 of ${pages}`);
     expect(second).not.toBe(first);
   });
 
   it('shows every row and no page navigation for "All"', () => {
+    const total = track().entries.length;
     const html = renderBoard("Validation Phase", "track-1", track(), "", ASC, {
       size: 0,
       index: 0,
     });
-    expect(bodyRows(html)).toBe(30);
-    expect(html).toContain("1–30 of 30 teams");
+    expect(bodyRows(html)).toBe(total);
+    expect(html).toContain(`1–${total} of ${total} teams`);
     expect(html).not.toContain("lb-pagenav");
   });
 
   it("clamps an out-of-range page index to the last page", () => {
+    const total = track().entries.length;
+    const last = Math.ceil(total / 10) - 1;
     const page = { size: 10, index: 99 };
     const html = renderBoard("Validation Phase", "track-1", track(), "", ASC, page);
-    expect(page.index).toBe(2); // clamped in place
-    expect(html).toContain("21–30 of 30 teams");
-    expect(html).toContain("Page 3 of 3");
+    expect(page.index).toBe(last); // clamped in place
+    expect(html).toContain(`${last * 10 + 1}–${total} of ${total} teams`);
+    expect(html).toContain(`Page ${last + 1} of ${last + 1}`);
     expect(html).toContain('<button type="button" data-page="next" disabled>');
   });
 
