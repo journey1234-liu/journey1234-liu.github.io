@@ -110,8 +110,18 @@ describe("phase selector", () => {
     expect(validation).toBeLessThan(finalTest);
   });
 
-  it("still opens on the Final Test board by default", () => {
+  it("opens on the Validation board by default", () => {
     const html = renderShellHtml();
+    expect(html).toContain(
+      '<a class="lb-tab is-active" href="#/leaderboard/validation" aria-current="true">Validation Phase</a>',
+    );
+    expect(html).not.toContain(
+      '<a class="lb-tab is-active" href="#/leaderboard/final-test"',
+    );
+  });
+
+  it("marks the Final Test tab active when the route asks for it", () => {
+    const html = renderShellHtml("final-test");
     expect(html).toContain(
       '<a class="lb-tab is-active" href="#/leaderboard/final-test" aria-current="true">Final Test Phase</a>',
     );
@@ -120,11 +130,12 @@ describe("phase selector", () => {
     );
   });
 
-  it("marks the Validation tab active when the route asks for it", () => {
-    const html = renderShellHtml("validation");
-    expect(html).toContain(
-      '<a class="lb-tab is-active" href="#/leaderboard/validation" aria-current="true">Validation Phase</a>',
-    );
+  it("defaults to the unfrozen Validation phase, not the frozen Final Test phase", () => {
+    // Only the Final Test phase carries a results cutoff, and the shell renders
+    // the frozen notice of the active phase — so it proves which phase the
+    // default route resolved to.
+    expect(renderShellHtml()).not.toContain("Frozen snapshot");
+    expect(renderShellHtml("final-test")).toContain("Frozen snapshot");
   });
 });
 

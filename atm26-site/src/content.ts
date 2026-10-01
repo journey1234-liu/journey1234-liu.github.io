@@ -359,7 +359,7 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
       "https://docs.google.com/forms/d/e/1FAIpQLSfPv_OVm_PkOmF4YgsNW-zren6tDdrUzzZCV_J3oMSDMks13A/viewform?usp=sharing&ouid=117378226219491671209",
     facts: [
       "Submissions are evaluated on the organizers' own machines (off-GC platform); we stop receiving Final Test Phase submissions on Sep 22, 11:59 PM Pacific Time.",
-      "Only one successful submission counts per participant. Final Test results are not displayed during the phase — you are only notified whether your submission succeeded.",
+      "Only one successful submission counts per participant. Results were not displayed during the phase — you were only notified whether your submission succeeded; the scores are now published on the Final Test Phase leaderboard.",
       "Final Test Phase leaderboard results were released with the ATM26 Workshop on Oct 1st and are updated manually.",
     ],
     backupForm: {

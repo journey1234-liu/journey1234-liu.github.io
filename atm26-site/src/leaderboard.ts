@@ -97,24 +97,11 @@ export function renderLeaderboard(
   bindControls(container, snapshot, activePhaseId);
 }
 
-function resolvePhase(
-  snapshot: LeaderboardSnapshot,
-  activePhaseId: string | null,
-): { id: string; phase: PhaseLeaderboard } {
-  const entries = Object.entries(snapshot.phases);
-  if (entries.length === 0) {
-    return { id: "", phase: { tracks: {} } };
-  }
-  const found = entries.find(([id]) => id === activePhaseId);
-  return found ? { id: found[0], phase: found[1] } : { id: entries[0][0], phase: entries[0][1] };
-}
-
 /**
- * Display order of the phase buttons. The published snapshot lists
- * `final-test` first, and that first entry stays the landing phase — opening
- * the leaderboard shows the Final Test board — while the selector itself lists
- * the Validation Phase first. Phase ids outside this list keep their snapshot
- * order, after the known ones.
+ * Display order of the phase buttons, and therefore the landing phase: opening
+ * the leaderboard without a phase in the route selects the first entry here
+ * (the Validation Phase), not the first phase of the published snapshot.
+ * Phase ids outside this list keep their snapshot order, after the known ones.
  */
 const PHASE_DISPLAY_ORDER = ["validation", "final-test"];
 
@@ -129,6 +116,18 @@ function orderPhases(
     .map((entry, index) => ({ entry, index }))
     .sort((a, b) => rank(a.entry[0]) - rank(b.entry[0]) || a.index - b.index)
     .map(({ entry }) => entry);
+}
+
+function resolvePhase(
+  snapshot: LeaderboardSnapshot,
+  activePhaseId: string | null,
+): { id: string; phase: PhaseLeaderboard } {
+  const entries = orderPhases(snapshot.phases);
+  if (entries.length === 0) {
+    return { id: "", phase: { tracks: {} } };
+  }
+  const [id, phase] = entries.find(([phaseId]) => phaseId === activePhaseId) ?? entries[0];
+  return { id, phase };
 }
 
 function buildShell(snapshot: LeaderboardSnapshot, activePhaseId: string | null): string {
