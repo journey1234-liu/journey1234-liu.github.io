@@ -134,41 +134,31 @@ export const TRACKS_INTRO =
 
 // Prominent Track-3 status banner on the home page, directly below the hero
 // CTA row and above the News list. It replaces the former submission-status
-// notice: Track 3 is announced but not open yet. The emphasised fragment
-// ("COMING SOON") is rendered bold, larger, and in an amber accent colour.
+// notice: Track 3 is announced but not open yet. `title` is rendered bold and
+// italic in title case; the emphasised fragment ("COMING SOON") is rendered
+// bold, larger, and in an amber accent colour.
 export const TRACK3_NOTICE = {
   kicker: "TRACK-3 STATUS",
-  before: "Track 3: Landmark recognition for endobronchial intervention ",
+  title: "Track 3: Landmark Recognition for Endobronchial Intervention",
   emphasis: "COMING SOON",
   after: "!",
 };
 
-// Challenge news (mirrors the official announcement dates; sanity check
-// announcement omitted — sanity check is not part of the published phases).
+// Challenge news. Newest first; entries superseded by a later announcement are
+// retired from this list (sanity check announcement omitted — sanity check is
+// not part of the published phases).
 export const NEWS: NewsItem[] = [
   {
-    date: "2026-09-18",
-    title: "Updated submission rules for the Validation and Final Test Phases",
+    date: "2026-10-01",
+    title: "Track-1 & Track-2 submission re-opened!",
     detail:
-      "Validation Phase submissions are now limited to once per day. The Final Test Phase now counts only one successful submission per participant, and Final Test results are not displayed — you will only be notified whether your submission succeeded. Teams that have submitted to the Validation Phase but have not submitted to the Final Test Phase will have their best-performing Validation model used for Final ranking; if you do not wish to participate or prefer to submit yourself, please notify the organizers by email.",
+      "Both Validation Phase submissions and Final Test Phase submissions are now limited to once per day. Final Test Phase leaderboard is now public and updated manually.",
   },
   {
     date: "2026-08-20",
     title: "Final test phase submission for Track 1 and Track 2 open!",
     detail:
       "See the official submission portal and the Submission Guidelines for detailed instructions. Contact the organizers if any problems occur.",
-  },
-  {
-    date: "2026-07-31",
-    title: "Validation phase submission for Track 1 and Track 2 open!",
-    detail:
-      "Refer to the official Submission Guidelines for detailed instructions before submitting.",
-  },
-  {
-    date: "2026-06-15",
-    title: "Challenge website and registration are now open!",
-    detail:
-      "Complete the registration procedure on the official Grand Challenge site, including applying for participation and signing the agreement, to gain access to the training data for Track 1 and Track 2.",
   },
 ];
 

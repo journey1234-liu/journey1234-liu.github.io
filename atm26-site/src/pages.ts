@@ -93,7 +93,8 @@ export function renderHome(): string {
     <section class="panel status-card">
       <div class="section-kicker">${escapeHtml(TRACK3_NOTICE.kicker)}</div>
       <p class="status-text">
-        ${escapeHtml(TRACK3_NOTICE.before)}<strong class="status-emphasis">${escapeHtml(TRACK3_NOTICE.emphasis)}</strong>${escapeHtml(TRACK3_NOTICE.after)}
+        <strong class="status-title">${escapeHtml(TRACK3_NOTICE.title)}</strong>
+        <strong class="status-emphasis">${escapeHtml(TRACK3_NOTICE.emphasis)}</strong>${escapeHtml(TRACK3_NOTICE.after)}
       </p>
     </section>
     <section class="panel">

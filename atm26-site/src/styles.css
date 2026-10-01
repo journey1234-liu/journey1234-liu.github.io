@@ -649,6 +649,12 @@ summary {
   line-height: 1.5;
 }
 
+/* Track-3 title in the status banner: title case, bold and italic. */
+.status-title {
+  font-weight: 700;
+  font-style: italic;
+}
+
 /* "COMING SOON" in the Track-3 status banner: bold, enlarged, amber.
    Amber on --primary-soft measures 2.9:1; switch --accent-amber to #b45309
    (4.5:1) if strict WCAG AA contrast is required. */
