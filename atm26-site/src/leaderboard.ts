@@ -25,6 +25,12 @@ interface SortState {
   dir: "asc" | "desc";
 }
 
+/** Identity of the phase a board belongs to. */
+export interface PhaseHeading {
+  id: string;
+  label: string;
+}
+
 interface PageState {
   /** Rows per page; 0 means "show every row". */
   size: number;
@@ -271,7 +277,7 @@ function bindControls(
     if (resetPage) pageState.index = 0;
     const track: TrackLeaderboard = phase.tracks[trackId] ?? { metrics: [], entries: [] };
     boardsEl.innerHTML = renderBoard(
-      phase.label || activeId,
+      { id: activeId, label: phase.label || activeId },
       trackId,
       track,
       query,
@@ -305,17 +311,28 @@ function rangeLabel(start: number, shown: number, total: number): string {
 }
 
 /**
- * Pagination bar: rows-per-page selector, visible range and page navigation.
- * Exported for tests; `page.index` is clamped to the available pages.
+ * Header of the name column. Validation rows are keyed by Grand Challenge
+ * account — the board shows ``user (Team)`` for them — while the Final Test
+ * board ranks our own team registrations and shows the team alone.
+ */
+const TEAM_COLUMN_HEADERS: Record<string, string> = {
+  validation: "Username (Team)",
+};
+const DEFAULT_TEAM_HEADER = "Team";
+
+/**
+ * One page of a track's board. Exported for tests; `page.index` is clamped to
+ * the available pages, and the columns follow the phase (see above).
  */
 export function renderBoard(
-  phaseLabel: string,
+  phase: PhaseHeading,
   trackId: string,
   track: TrackLeaderboard,
   query: string,
   sortState: SortState,
   page: PageState = { size: DEFAULT_PAGE_SIZE, index: 0 },
 ): string {
+  const phaseLabel = phase.label;
   if (track.entries.length === 0) {
     return `<div class="lb-board">${emptyState(phaseLabel, trackId)}</div>`;
   }
@@ -336,7 +353,7 @@ export function renderBoard(
 
   const headers = [
     `<th scope="col" data-sort="rank" class="is-sortable">Rank</th>`,
-    `<th scope="col" class="lb-team">Team</th>`,
+    `<th scope="col" class="lb-team">${TEAM_COLUMN_HEADERS[phase.id] ?? DEFAULT_TEAM_HEADER}</th>`,
     ...metricNames.map(
       (name) => `<th scope="col" data-sort="${escapeHtml(name)}" class="is-sortable">${metricLabel(name)}</th>`,
     ),

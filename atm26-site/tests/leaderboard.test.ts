@@ -211,12 +211,22 @@ describe("Track-1 ranking metrics", () => {
 describe("board paging", () => {
   const track = () =>
     parseLeaderboard(loadFixture()).snapshot!.phases["validation"].tracks["track-1"];
+  const VALIDATION = { id: "validation", label: "Validation Phase" };
+  const FINAL_TEST = { id: "final-test", label: "Final Test Phase" };
   const ASC = { key: "rank", dir: "asc" as const };
   const bodyRows = (html: string): number =>
     (/<tbody>([\s\S]*?)<\/tbody>/.exec(html)?.[1].match(/<tr>/g) ?? []).length;
 
+  it("labels the name column per phase: usernames on Validation, teams on Final Test", () => {
+    const validation = renderBoard(VALIDATION, "track-1", track(), "", ASC);
+    expect(validation).toContain('<th scope="col" class="lb-team">Username (Team)</th>');
+    const finalTest = renderBoard(FINAL_TEST, "track-1", track(), "", ASC);
+    expect(finalTest).toContain('<th scope="col" class="lb-team">Team</th>');
+    expect(finalTest).not.toContain("Username (Team)");
+  });
+
   it("shows Betti0Error as the β₀ symbol while keeping the sort key", () => {
-    const html = renderBoard("Validation Phase", "track-1", track(), "", ASC);
+    const html = renderBoard(VALIDATION, "track-1", track(), "", ASC);
     expect(html).toContain(
       'data-sort="Betti0Error" class="is-sortable">&beta;<sub>0</sub> error</th>',
     );
@@ -230,7 +240,7 @@ describe("board paging", () => {
   it("shows 20 rows per page by default and reports the range", () => {
     const total = track().entries.length; // 28 Validation Track-1 rows today
     expect(total).toBeGreaterThan(DEFAULT_PAGE_SIZE);
-    const html = renderBoard("Validation Phase", "track-1", track(), "", ASC);
+    const html = renderBoard(VALIDATION, "track-1", track(), "", ASC);
     expect(bodyRows(html)).toBe(DEFAULT_PAGE_SIZE);
     expect(html).toContain('<option value="20" selected>20</option>');
     expect(html).toContain(`1–20 of ${total} teams`);
@@ -239,7 +249,7 @@ describe("board paging", () => {
   });
 
   it("offers 10 / 20 / 50 / all as rows-per-page choices", () => {
-    const html = renderBoard("Validation Phase", "track-1", track(), "", ASC);
+    const html = renderBoard(VALIDATION, "track-1", track(), "", ASC);
     const options = [...html.matchAll(/<option value="(\d+)"[^>]*>([^<]+)<\/option>/g)].map(
       (m) => [m[1], m[2]],
     );
@@ -254,7 +264,7 @@ describe("board paging", () => {
   it("honours a smaller page size and pages through the board", () => {
     const total = track().entries.length;
     const pages = Math.ceil(total / 10);
-    const first = renderBoard("Validation Phase", "track-1", track(), "", ASC, {
+    const first = renderBoard(VALIDATION, "track-1", track(), "", ASC, {
       size: 10,
       index: 0,
     });
@@ -262,7 +272,7 @@ describe("board paging", () => {
     expect(first).toContain(`1–10 of ${total} teams`);
     expect(first).toContain(`Page 1 of ${pages}`);
 
-    const second = renderBoard("Validation Phase", "track-1", track(), "", ASC, {
+    const second = renderBoard(VALIDATION, "track-1", track(), "", ASC, {
       size: 10,
       index: 1,
     });
@@ -274,7 +284,7 @@ describe("board paging", () => {
 
   it('shows every row and no page navigation for "All"', () => {
     const total = track().entries.length;
-    const html = renderBoard("Validation Phase", "track-1", track(), "", ASC, {
+    const html = renderBoard(VALIDATION, "track-1", track(), "", ASC, {
       size: 0,
       index: 0,
     });
@@ -287,7 +297,7 @@ describe("board paging", () => {
     const total = track().entries.length;
     const last = Math.ceil(total / 10) - 1;
     const page = { size: 10, index: 99 };
-    const html = renderBoard("Validation Phase", "track-1", track(), "", ASC, page);
+    const html = renderBoard(VALIDATION, "track-1", track(), "", ASC, page);
     expect(page.index).toBe(last); // clamped in place
     expect(html).toContain(`${last * 10 + 1}–${total} of ${total} teams`);
     expect(html).toContain(`Page ${last + 1} of ${last + 1}`);
@@ -295,7 +305,7 @@ describe("board paging", () => {
   });
 
   it("pages the filtered rows, not the whole board", () => {
-    const html = renderBoard("Validation Phase", "track-1", track(), "must-medai", ASC, {
+    const html = renderBoard(VALIDATION, "track-1", track(), "must-medai", ASC, {
       size: 10,
       index: 0,
     });
@@ -304,7 +314,7 @@ describe("board paging", () => {
   });
 
   it("renders no pager when the search matches nothing", () => {
-    const html = renderBoard("Validation Phase", "track-1", track(), "zzzz", ASC);
+    const html = renderBoard(VALIDATION, "track-1", track(), "zzzz", ASC);
     expect(html).toContain("No teams match");
     expect(html).not.toContain("lb-pager");
   });
