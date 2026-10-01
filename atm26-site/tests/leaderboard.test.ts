@@ -9,6 +9,8 @@ import {
   readStoredPageSize,
   DEFAULT_PAGE_SIZE,
 } from "../src/leaderboard";
+import { metricLabel } from "../src/metricLabels";
+import { renderTracks } from "../src/pages";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const dataPath = resolve(here, "../public/data/leaderboard.json");
@@ -213,6 +215,18 @@ describe("board paging", () => {
   const bodyRows = (html: string): number =>
     (/<tbody>([\s\S]*?)<\/tbody>/.exec(html)?.[1].match(/<tr>/g) ?? []).length;
 
+  it("shows Betti0Error as the β₀ symbol while keeping the sort key", () => {
+    const html = renderBoard("Validation Phase", "track-1", track(), "", ASC);
+    expect(html).toContain(
+      'data-sort="Betti0Error" class="is-sortable">&beta;<sub>0</sub> error</th>',
+    );
+    expect(html).not.toContain(">Betti0Error</th>");
+    // the other headers keep their plain names
+    for (const name of ["DSC", "clDice", "TLD", "BD"]) {
+      expect(html).toContain(`data-sort="${name}" class="is-sortable">${name}</th>`);
+    }
+  });
+
   it("shows 20 rows per page by default and reports the range", () => {
     const total = track().entries.length; // 28 Validation Track-1 rows today
     expect(total).toBeGreaterThan(DEFAULT_PAGE_SIZE);
@@ -341,6 +355,29 @@ describe("rows-per-page preference", () => {
     } finally {
       scope.window = previous;
     }
+  });
+});
+
+describe("metric labels", () => {
+  it("renders Betti0Error as β₀ error on the Tracks page too", () => {
+    const html = renderTracks();
+    expect(html).toContain("<td>&beta;<sub>0</sub> error</td>");
+    expect(html).toContain("Lower is better");
+    expect(html).not.toContain("<td>Betti0Error</td>");
+  });
+
+  it("falls back to the escaped metric name for unknown metrics", () => {
+    expect(metricLabel("DSC")).toBe("DSC");
+    expect(metricLabel("<img src=x>")).toBe("&lt;img src=x&gt;");
+  });
+
+  it("keeps the canonical name in the published data", () => {
+    const phases = loadFixture().phases as Record<
+      string,
+      { tracks: Record<string, { metrics: Array<{ name: string }> }> }
+    >;
+    const names = phases["validation"].tracks["track-1"].metrics.map((m) => m.name);
+    expect(names).toContain("Betti0Error");
   });
 });
 

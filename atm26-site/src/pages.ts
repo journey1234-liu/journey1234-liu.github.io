@@ -20,6 +20,7 @@ import {
   SUBMISSION_TIPS,
 } from "./content";
 import { resolveAsset } from "./basePath";
+import { metricLabel } from "./metricLabels";
 
 function escapeHtml(value: unknown): string {
   return String(value ?? "")
@@ -122,7 +123,7 @@ export function renderTracks(): string {
       .map(
         (metric) => `
         <tr>
-          <td>${escapeHtml(metric.name)}</td>
+          <td>${metricLabel(metric.name)}</td>
           <td>${metric.higherIsBetter ? "Higher is better" : "Lower is better"}</td>
           <td>${escapeHtml(metric.note)}</td>
         </tr>`,

@@ -101,7 +101,7 @@ export const TRACKS: TrackInfo[] = [
       {
         name: "Betti0Error",
         higherIsBetter: false,
-        note: "Difference in the number of connected components against the reference; lower is better",
+        note: "Betti-0 error: the difference in the number of connected components against the reference; lower is better",
       },
     ],
   },
@@ -288,7 +288,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "Which metrics are used for ranking?",
     answer:
-      "Track 1 uses DSC, clDice, TLD, BD and Betti0Error. Track 2 uses ACC, F1, SC, TD, TAcc, mDice and mclDice. See the Tracks page for details.",
+      "Track 1 uses DSC, clDice, TLD, BD and β₀ error. Track 2 uses ACC, F1, SC, TD, TAcc, mDice and mclDice. See the Tracks page for details.",
   },
   {
     question: "Is the leaderboard final?",

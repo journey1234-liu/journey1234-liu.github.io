@@ -10,6 +10,7 @@
 
 import { resolveAsset } from "./basePath";
 import { LEADERBOARD_NOTICE, PHASE_UPDATE_LOGS } from "./content";
+import { metricLabel } from "./metricLabels";
 import {
   type LeaderboardSnapshot,
   type PhaseLeaderboard,
@@ -337,7 +338,7 @@ export function renderBoard(
     `<th scope="col" data-sort="rank" class="is-sortable">Rank</th>`,
     `<th scope="col" class="lb-team">Team</th>`,
     ...metricNames.map(
-      (name) => `<th scope="col" data-sort="${escapeHtml(name)}" class="is-sortable">${escapeHtml(name)}</th>`,
+      (name) => `<th scope="col" data-sort="${escapeHtml(name)}" class="is-sortable">${metricLabel(name)}</th>`,
     ),
     `<th scope="col" class="is-sortable" data-sort="mean_rank">Mean rank</th>`,
   ].join("");
