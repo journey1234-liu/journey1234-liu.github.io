@@ -162,10 +162,10 @@ export const NEWS: NewsItem[] = [
   },
 ];
 
-// Shown above the leaderboard. Validation Phase results are live;
-// Final Test Phase results remain confidential until the official release.
+// Shown above the leaderboard. Both phases are public; the Final Test board is
+// a frozen snapshot the organizers update by hand.
 export const LEADERBOARD_NOTICE =
-  "Validation Phase results are live. Final Test Phase results remain confidential until the official release.";
+  "Validation and Final Test Phase results are live. The Final Test Phase leaderboard is public and updated manually by the organizers.";
 
 export const TIMELINE: TimelineItem[] = [
   {
@@ -272,7 +272,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "Is the leaderboard final?",
     answer:
-      "Validation Phase results are live and mirror the official Grand Challenge leaderboard. Final Test Phase results are confidential and are released by the organizers after the official publication.",
+      "Both leaderboards are public. The Validation Phase board mirrors the official Grand Challenge leaderboard, and the Final Test Phase board is updated manually by the organizers.",
   },
 ];
 
@@ -360,7 +360,7 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
     facts: [
       "Submissions are evaluated on the organizers' own machines (off-GC platform); we stop receiving Final Test Phase submissions on Sep 22, 11:59 PM Pacific Time.",
       "Only one successful submission counts per participant. Final Test results are not displayed during the phase — you are only notified whether your submission succeeded.",
-      "Leaderboard results of the final test phase shall be released near the ATM26 Workshop on Oct 1st.",
+      "Final Test Phase leaderboard results were released with the ATM26 Workshop on Oct 1st and are updated manually.",
     ],
     backupForm: {
       label: "Google Drive Upload Backup Form",
@@ -407,10 +407,10 @@ export const SUBMISSION_TIPS: SubmissionTip[] = [
   },
   {
     title: "Evaluation takes hours and results arrive by email",
-    note: "Our system may take hours to finish evaluating your submission, then sends you an email. For the Final Test Phase the email only confirms whether your submission succeeded; the evaluated metrics remain confidential until the official release.",
+    note: "Our system may take hours to finish evaluating your submission, then sends you an email. For the Final Test Phase the email only confirms whether your submission succeeded; the scores themselves appear on the Final Test Phase leaderboard, which is updated manually by the organizers.",
   },
   {
     title: "Deadlines and release",
-    note: "Final Test submissions stop Sep 22, 11:59 PM PT; final-test leaderboard results are released near the ATM26 Workshop on Oct 1st; validation-phase leaderboard results are dynamically updated.",
+    note: "Final Test submissions closed Sep 22, 11:59 PM PT; the Final Test Phase leaderboard is public and updated manually; the Validation Phase leaderboard is dynamically updated.",
   },
 ];

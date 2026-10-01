@@ -109,6 +109,28 @@ function resolvePhase(
   return found ? { id: found[0], phase: found[1] } : { id: entries[0][0], phase: entries[0][1] };
 }
 
+/**
+ * Display order of the phase buttons. The published snapshot lists
+ * `final-test` first, and that first entry stays the landing phase — opening
+ * the leaderboard shows the Final Test board — while the selector itself lists
+ * the Validation Phase first. Phase ids outside this list keep their snapshot
+ * order, after the known ones.
+ */
+const PHASE_DISPLAY_ORDER = ["validation", "final-test"];
+
+function orderPhases(
+  phases: Record<string, PhaseLeaderboard>,
+): Array<[string, PhaseLeaderboard]> {
+  const rank = (id: string): number => {
+    const index = PHASE_DISPLAY_ORDER.indexOf(id);
+    return index === -1 ? PHASE_DISPLAY_ORDER.length : index;
+  };
+  return Object.entries(phases)
+    .map((entry, index) => ({ entry, index }))
+    .sort((a, b) => rank(a.entry[0]) - rank(b.entry[0]) || a.index - b.index)
+    .map(({ entry }) => entry);
+}
+
 function buildShell(snapshot: LeaderboardSnapshot, activePhaseId: string | null): string {
   const { id: activeId, phase: activePhase } = resolvePhase(snapshot, activePhaseId);
   const policy = snapshot.ranking_policy;
@@ -129,7 +151,7 @@ function buildShell(snapshot: LeaderboardSnapshot, activePhaseId: string | null)
         </div>`
       : "";
 
-  const phaseTabs = Object.entries(snapshot.phases)
+  const phaseTabs = orderPhases(snapshot.phases)
     .map(([phaseId, phase]) => {
       const label = phase.label || phaseId;
       const isActive = phaseId === activeId;

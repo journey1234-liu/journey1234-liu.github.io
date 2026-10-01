@@ -3,12 +3,24 @@ import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateLeaderboard, parseLeaderboard } from "../src/leaderboardSchema";
+import { renderLeaderboard } from "../src/leaderboard";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const dataPath = resolve(here, "../public/data/leaderboard.json");
 
 function loadFixture(): Record<string, unknown> {
   return JSON.parse(readFileSync(dataPath, "utf-8"));
+}
+
+/** Renders the leaderboard shell without a DOM: only innerHTML is captured. */
+function renderShellHtml(activePhaseId: string | null = null): string {
+  const container = {
+    innerHTML: "",
+    querySelector: () => null,
+    querySelectorAll: () => [],
+  } as unknown as HTMLElement;
+  renderLeaderboard(container, loadFixture(), activePhaseId);
+  return container.innerHTML;
 }
 
 describe("public/data/leaderboard.json", () => {
@@ -85,6 +97,34 @@ describe("validateLeaderboard", () => {
     const result = validateLeaderboard(data);
     expect(result.ok).toBe(true);
     expect(result.errors).toEqual([]);
+  });
+});
+
+describe("phase selector", () => {
+  it("lists the Validation Phase button before the Final Test Phase button", () => {
+    const html = renderShellHtml();
+    const validation = html.indexOf(">Validation Phase</a>");
+    const finalTest = html.indexOf(">Final Test Phase</a>");
+    expect(validation).toBeGreaterThan(-1);
+    expect(finalTest).toBeGreaterThan(-1);
+    expect(validation).toBeLessThan(finalTest);
+  });
+
+  it("still opens on the Final Test board by default", () => {
+    const html = renderShellHtml();
+    expect(html).toContain(
+      '<a class="lb-tab is-active" href="#/leaderboard/final-test" aria-current="true">Final Test Phase</a>',
+    );
+    expect(html).not.toContain(
+      '<a class="lb-tab is-active" href="#/leaderboard/validation"',
+    );
+  });
+
+  it("marks the Validation tab active when the route asks for it", () => {
+    const html = renderShellHtml("validation");
+    expect(html).toContain(
+      '<a class="lb-tab is-active" href="#/leaderboard/validation" aria-current="true">Validation Phase</a>',
+    );
   });
 });
 
