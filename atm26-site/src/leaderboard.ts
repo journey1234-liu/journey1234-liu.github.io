@@ -33,12 +33,20 @@ interface PageState {
 
 /** Rows-per-page choices of the pager; 0 renders every filtered row. */
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 0];
-const DEFAULT_PAGE_SIZE = 20;
+export const DEFAULT_PAGE_SIZE = 20;
 const PAGE_SIZE_STORAGE_KEY = "atm26.leaderboard.pageSize";
 
-function readStoredPageSize(): number {
+/**
+ * Stored rows-per-page choice, or the default. Exported for tests.
+ *
+ * Only the offered sizes are accepted: a missing key (`getItem` → null) and
+ * any stale or hand-edited value fall back to the default instead of being
+ * coerced (`Number(null)` is 0, which would silently mean "All").
+ */
+export function readStoredPageSize(): number {
   try {
-    const stored = Number(window.localStorage.getItem(PAGE_SIZE_STORAGE_KEY));
+    const raw = window.localStorage.getItem(PAGE_SIZE_STORAGE_KEY);
+    const stored = raw ? Number(raw) : Number.NaN;
     return PAGE_SIZE_OPTIONS.includes(stored) ? stored : DEFAULT_PAGE_SIZE;
   } catch {
     return DEFAULT_PAGE_SIZE;

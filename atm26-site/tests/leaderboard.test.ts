@@ -3,7 +3,12 @@ import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateLeaderboard, parseLeaderboard } from "../src/leaderboardSchema";
-import { renderLeaderboard, renderBoard } from "../src/leaderboard";
+import {
+  renderLeaderboard,
+  renderBoard,
+  readStoredPageSize,
+  DEFAULT_PAGE_SIZE,
+} from "../src/leaderboard";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const dataPath = resolve(here, "../public/data/leaderboard.json");
@@ -281,6 +286,54 @@ describe("board paging", () => {
     const html = renderBoard("Validation Phase", "track-1", track(), "zzzz", ASC);
     expect(html).toContain("No teams match");
     expect(html).not.toContain("lb-pager");
+  });
+});
+
+describe("rows-per-page preference", () => {
+  const withStorage = (getItem: () => string | null): number => {
+    const scope = globalThis as { window?: unknown };
+    const previous = scope.window;
+    scope.window = { localStorage: { getItem, setItem: () => {} } };
+    try {
+      return readStoredPageSize();
+    } finally {
+      scope.window = previous;
+    }
+  };
+
+  it("falls back to 20 when nothing is stored", () => {
+    expect(withStorage(() => null)).toBe(DEFAULT_PAGE_SIZE);
+    expect(DEFAULT_PAGE_SIZE).toBe(20);
+  });
+
+  it("keeps a stored choice, including All", () => {
+    expect(withStorage(() => "10")).toBe(10);
+    expect(withStorage(() => "50")).toBe(50);
+    expect(withStorage(() => "0")).toBe(0);
+  });
+
+  it("ignores a stale or hand-edited value", () => {
+    expect(withStorage(() => "37")).toBe(DEFAULT_PAGE_SIZE);
+    expect(withStorage(() => "")).toBe(DEFAULT_PAGE_SIZE);
+    expect(withStorage(() => "lots")).toBe(DEFAULT_PAGE_SIZE);
+  });
+
+  it("survives a storage that throws (private mode)", () => {
+    const scope = globalThis as { window?: unknown };
+    const previous = scope.window;
+    scope.window = {
+      localStorage: {
+        getItem: () => {
+          throw new Error("denied");
+        },
+        setItem: () => {},
+      },
+    };
+    try {
+      expect(readStoredPageSize()).toBe(DEFAULT_PAGE_SIZE);
+    } finally {
+      scope.window = previous;
+    }
   });
 });
 
