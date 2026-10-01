@@ -20,7 +20,16 @@ export interface LeaderboardEntry {
   submission_timestamp?: string;
   method_label?: string;
   evaluation_protocol_version?: string;
+  /**
+   * How the row was produced. `"own"` is a container the team uploaded itself;
+   * `"seeded"` is the organizers' re-evaluation of the team's best Validation
+   * Phase model. Absent means the snapshot does not distinguish.
+   */
+  origin?: EntryOrigin;
 }
+
+/** How a Final Test row was produced. */
+export type EntryOrigin = "own" | "seeded";
 
 export interface TrackLeaderboard {
   metrics: MetricDefinition[];
@@ -30,6 +39,13 @@ export interface TrackLeaderboard {
 export interface PhaseLeaderboard {
   label?: string;
   tracks: Record<string, TrackLeaderboard>;
+  /**
+   * ISO timestamp of the results cutoff. When present the phase is a frozen
+   * snapshot: nothing submitted after this moment is included and the board is
+   * not updated live.
+   */
+  results_cutoff?: string;
+  frozen?: boolean;
 }
 
 export interface LeaderboardSnapshot {
@@ -46,6 +62,12 @@ export interface ValidationResult {
   ok: boolean;
   errors: string[];
   warnings: string[];
+  /**
+   * The document rebuilt from validated fields only, present when `ok`. Render
+   * from this rather than from the raw JSON: optional display fields are then
+   * guaranteed to have the types the renderer expects.
+   */
+  snapshot?: LeaderboardSnapshot;
 }
 
 // Every phase is expected to carry these two tracks.
@@ -126,6 +148,9 @@ function parseEntries(value: unknown, metrics: MetricDefinition[]): {
     if (typeof rawEntry.evaluation_protocol_version === "string") {
       entry.evaluation_protocol_version = rawEntry.evaluation_protocol_version;
     }
+    if (rawEntry.origin === "own" || rawEntry.origin === "seeded") {
+      entry.origin = rawEntry.origin;
+    }
     entries.push(entry);
   }
   return { entries, warnings };
@@ -182,10 +207,31 @@ export function validateLeaderboard(data: unknown): ValidationResult {
     }
     const phase: PhaseLeaderboard = { tracks };
     if (typeof rawPhase.label === "string") phase.label = rawPhase.label;
+    if (typeof rawPhase.results_cutoff === "string" && rawPhase.results_cutoff.length > 0) {
+      phase.results_cutoff = rawPhase.results_cutoff;
+    }
+    if (rawPhase.frozen === true) phase.frozen = true;
     phases[phaseId] = phase;
   }
 
-  return { ok: errors.length === 0, errors, warnings };
+  const snapshot: LeaderboardSnapshot = {
+    schema_version: 2,
+    generated_at: data.generated_at as string,
+    phases,
+  };
+  if (isRecord(data.ranking_policy)) {
+    const policy: { submission_selection?: string; method?: string } = {};
+    if (typeof data.ranking_policy.submission_selection === "string") {
+      policy.submission_selection = data.ranking_policy.submission_selection;
+    }
+    if (typeof data.ranking_policy.method === "string") {
+      policy.method = data.ranking_policy.method;
+    }
+    if (Object.keys(policy).length > 0) snapshot.ranking_policy = policy;
+  }
+
+  const ok = errors.length === 0;
+  return ok ? { ok, errors, warnings, snapshot } : { ok, errors, warnings };
 }
 
 /** Convenience: validate and narrow the type in one step. */
@@ -194,6 +240,6 @@ export function parseLeaderboard(data: unknown): {
   result: ValidationResult;
 } {
   const result = validateLeaderboard(data);
-  if (!result.ok) return { snapshot: null, result };
-  return { snapshot: data as LeaderboardSnapshot, result };
+  if (!result.ok || !result.snapshot) return { snapshot: null, result };
+  return { snapshot: result.snapshot, result };
 }

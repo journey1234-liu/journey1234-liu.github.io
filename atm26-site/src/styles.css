@@ -364,6 +364,41 @@ th.is-sortable:hover {
   margin-bottom: 1.25rem;
 }
 
+/* A closed phase: the board is a frozen snapshot, not a live one. */
+.lb-frozen {
+  background: var(--primary-soft);
+  border: 1px solid var(--border-strong);
+  border-left: 5px solid var(--primary);
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.lb-frozen strong {
+  color: var(--primary-dark);
+}
+
+/* Marks a row the organizers scored from the team's best validation model. */
+.lb-origin {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.08rem 0.4rem;
+  border-radius: 999px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.lb-origin-seeded {
+  background: #eef2ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+}
+
 .lb-toolbar {
   display: flex;
   flex-wrap: wrap;

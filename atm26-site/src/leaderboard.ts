@@ -44,6 +44,33 @@ function formatTimestamp(value: string | undefined): string {
   return escapeHtml(parsed.toISOString());
 }
 
+/** Human-readable UTC form of a results cutoff, e.g. "23 September 2026, 06:59 UTC". */
+function formatCutoff(value: string): string {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return escapeHtml(value);
+  const date = parsed.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  const time = parsed.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "UTC",
+  });
+  return escapeHtml(`${date}, ${time} UTC`);
+}
+
+/**
+ * Marker for a row the organizers produced rather than the team: the team's
+ * best Validation Phase model, re-evaluated on the Final Test set.
+ */
+function originBadge(entry: LeaderboardEntry): string {
+  if (entry.origin !== "seeded") return "";
+  return ` <span class="lb-origin lb-origin-seeded" title="Scored by the organizers from the team's best Validation Phase model — no own Final Test submission was made.">seeded</span>`;
+}
+
 function trackLabel(trackId: string): string {
   return trackId === "track-1" ? "Track 1" : "Track 2";
 }
@@ -83,11 +110,23 @@ function resolvePhase(
 }
 
 function buildShell(snapshot: LeaderboardSnapshot, activePhaseId: string | null): string {
-  const { id: activeId } = resolvePhase(snapshot, activePhaseId);
+  const { id: activeId, phase: activePhase } = resolvePhase(snapshot, activePhaseId);
   const policy = snapshot.ranking_policy;
   const policyText =
     policy?.method || policy?.submission_selection
       ? [policy.submission_selection, policy.method].filter(Boolean).join(" · ")
+      : "";
+
+  // A frozen phase carries its results cutoff: nothing submitted afterwards is
+  // in the board, so it must read as a static snapshot, not a live board.
+  const frozenNotice =
+    activePhase.results_cutoff !== undefined
+      ? `<div class="lb-frozen">
+          <strong>${activePhase.frozen ? "Frozen snapshot" : "Results cutoff"}:</strong>
+          this board contains no result submitted after
+          <strong>${formatCutoff(activePhase.results_cutoff)}</strong>
+          and is not updated live.
+        </div>`
       : "";
 
   const phaseTabs = Object.entries(snapshot.phases)
@@ -112,6 +151,7 @@ function buildShell(snapshot: LeaderboardSnapshot, activePhaseId: string | null)
       <div class="section-kicker">Results</div>
       <h2>Leaderboard</h2>
       ${LEADERBOARD_NOTICE ? `<div class="lb-notice">${escapeHtml(LEADERBOARD_NOTICE)}</div>` : ""}
+      ${frozenNotice}
       <div class="lb-meta">
         <span>Updated: ${formatTimestamp(snapshot.generated_at)}</span>
         ${policyText ? `<span>Ranking: ${escapeHtml(policyText)}</span>` : ""}
@@ -200,7 +240,7 @@ function renderBoard(
       (entry) => `
       <tr>
         <td class="lb-rank">${formatNumber(entry.rank)}</td>
-        <td class="lb-team">${escapeHtml(entry.team_display_name)}</td>
+        <td class="lb-team">${escapeHtml(entry.team_display_name)}${originBadge(entry)}</td>
         ${metricNames
           .map((name) => {
             const value = entry.metrics[name];

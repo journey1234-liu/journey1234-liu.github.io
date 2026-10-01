@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { validateLeaderboard } from "../src/leaderboardSchema";
+import { validateLeaderboard, parseLeaderboard } from "../src/leaderboardSchema";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const dataPath = resolve(here, "../public/data/leaderboard.json");
@@ -85,5 +85,81 @@ describe("validateLeaderboard", () => {
     const result = validateLeaderboard(data);
     expect(result.ok).toBe(true);
     expect(result.errors).toEqual([]);
+  });
+});
+
+describe("Final Test origin + results cutoff", () => {
+  const envelope = (phase: Record<string, unknown>) => ({
+    schema_version: 2,
+    generated_at: "2026-10-01T00:00:00Z",
+    phases: {
+      "final-test": {
+        tracks: { "track-1": { metrics: [], entries: [] }, "track-2": { metrics: [], entries: [] } },
+        ...phase,
+      },
+    },
+  });
+
+  it("keeps the seeded marker and drops unknown origins", () => {
+    const { snapshot } = parseLeaderboard({
+      schema_version: 2,
+      generated_at: "2026-10-01T00:00:00Z",
+      phases: {
+        "final-test": {
+          tracks: {
+            "track-1": {
+              metrics: [{ name: "DSC", higher_is_better: true }],
+              entries: [
+                { rank: 1, team_display_name: "own-team", metrics: { DSC: 0.9 }, origin: "own" },
+                { rank: 2, team_display_name: "seed-team", metrics: { DSC: 0.8 }, origin: "seeded" },
+                { rank: 3, team_display_name: "odd-team", metrics: { DSC: 0.7 }, origin: "something-else" },
+              ],
+            },
+            "track-2": { metrics: [], entries: [] },
+          },
+        },
+      },
+    });
+    const entries = snapshot!.phases["final-test"].tracks["track-1"].entries;
+    expect(entries[0].origin).toBe("own");
+    expect(entries[1].origin).toBe("seeded");
+    expect(entries[2].origin).toBeUndefined();
+  });
+
+  it("carries the frozen flag and the results cutoff of a phase", () => {
+    const { snapshot } = parseLeaderboard(
+      envelope({ frozen: true, results_cutoff: "2026-09-23T06:59:00+00:00" }),
+    );
+    const phase = snapshot!.phases["final-test"];
+    expect(phase.frozen).toBe(true);
+    expect(phase.results_cutoff).toBe("2026-09-23T06:59:00+00:00");
+  });
+
+  it("ignores a malformed cutoff and a non-true frozen flag", () => {
+    const { snapshot } = parseLeaderboard(
+      envelope({ frozen: "yes", results_cutoff: 12345 }),
+    );
+    const phase = snapshot!.phases["final-test"];
+    expect(phase.frozen).toBeUndefined();
+    expect(phase.results_cutoff).toBeUndefined();
+  });
+
+  it("publishes a Final Test board whose rows are all labelled", () => {
+    const data = loadFixture();
+    const phase = (data.phases as Record<string, {
+      frozen?: boolean;
+      results_cutoff?: string;
+      tracks: Record<string, { entries: Array<{ origin?: string; team_display_name: string }> }>;
+    }>)["final-test"];
+    if (phase.tracks["track-1"].entries.length === 0) return; // not released yet
+    expect(phase.frozen).toBe(true);
+    expect(typeof phase.results_cutoff).toBe("string");
+    for (const trackId of ["track-1", "track-2"]) {
+      const entries = phase.tracks[trackId].entries;
+      expect(entries.length).toBeGreaterThan(0);
+      for (const entry of entries) {
+        expect(["own", "seeded"]).toContain(entry.origin);
+      }
+    }
   });
 });
