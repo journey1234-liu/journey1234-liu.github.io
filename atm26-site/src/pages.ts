@@ -7,7 +7,7 @@ import {
   TRACKS,
   INTRODUCTION,
   TRACKS_INTRO,
-  DEADLINE_NOTICE,
+  TRACK3_NOTICE,
   NEWS,
   RANKING_POLICY_DESCRIPTION,
   TIMELINE,
@@ -90,13 +90,11 @@ export function renderHome(): string {
         <a class="cta cta-secondary" href="#/rules">Submit to Final Test Phase</a>
       </div>
     </section>
-    <section class="panel deadline-card">
-      <div class="section-kicker">${escapeHtml(DEADLINE_NOTICE.kicker)}</div>
-      <p class="deadline-text">
-        ${escapeHtml(DEADLINE_NOTICE.before)}
-        <strong>${escapeHtml(DEADLINE_NOTICE.emphasis)}</strong>${escapeHtml(DEADLINE_NOTICE.after)}
+    <section class="panel status-card">
+      <div class="section-kicker">${escapeHtml(TRACK3_NOTICE.kicker)}</div>
+      <p class="status-text">
+        ${escapeHtml(TRACK3_NOTICE.before)}<strong class="status-emphasis">${escapeHtml(TRACK3_NOTICE.emphasis)}</strong>${escapeHtml(TRACK3_NOTICE.after)}
       </p>
-      <p class="deadline-note">${escapeHtml(DEADLINE_NOTICE.note)}</p>
     </section>
     <section class="panel">
       <div class="section-kicker">News</div>

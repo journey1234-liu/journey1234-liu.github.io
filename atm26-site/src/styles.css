@@ -2,6 +2,7 @@
   --primary: #a41034;
   --primary-dark: #8c0d2c;
   --primary-soft: #fdf0f3;
+  --accent-amber: #d97706;
   --bg: #fafafa;
   --surface: #ffffff;
   --border: #e5e7eb;
@@ -630,7 +631,7 @@ summary {
 }
 
 /* Home sections -------------------------------------------------------------- */
-.deadline-card {
+.status-card {
   background: var(--primary-soft);
   border-color: var(--primary);
   border-left: 6px solid var(--primary);
@@ -638,26 +639,25 @@ summary {
   text-align: center;
 }
 
-.deadline-card .section-kicker {
+.status-card .section-kicker {
   margin-bottom: 0.35rem;
 }
 
-.deadline-text {
+.status-text {
   margin: 0;
   font-size: 1.05rem;
   line-height: 1.5;
 }
 
-.deadline-text strong {
-  font-size: 1.2rem;
-  color: var(--primary);
-}
-
-.deadline-note {
-  margin: 0.6rem 0 0;
-  font-size: 0.95rem;
-  font-style: italic;
-  color: var(--muted);
+/* "COMING SOON" in the Track-3 status banner: bold, enlarged, amber.
+   Amber on --primary-soft measures 2.9:1; switch --accent-amber to #b45309
+   (4.5:1) if strict WCAG AA contrast is required. */
+.status-emphasis {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--accent-amber);
+  white-space: nowrap;
 }
 
 .news-list {
