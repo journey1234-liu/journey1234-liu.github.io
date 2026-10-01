@@ -1,0 +1,4 @@
+{
+  "_comment": "Single source of truth for the personal homepage. Changing `atm26Url` moves every ATM26 link on the site; the token __ATM26_URL__ in index.html and data/news.json is replaced at build time (see build.mjs).",
+  "atm26Url": "/atm26/"
+}

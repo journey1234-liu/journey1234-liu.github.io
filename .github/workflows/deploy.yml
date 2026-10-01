@@ -1,0 +1,90 @@
+# This repository hosts two independent static sites. The pipeline is split per
+# site on purpose: each one is built on its own and assembled into its own
+# directory of the Pages artifact, so either can be extracted into a separate
+# repository (and domain) without touching the other.
+#
+#   | Site               | Source            | Deployed at |
+#   |--------------------|-------------------|-------------|
+#   | Personal homepage  | `sites/homepage/` | `/`         |
+#   | ATM26 Challenge    | `sites/atm26/`    | `/atm26/`   |
+#
+# Moving ATM26 to its own repository is a copy of `sites/atm26/` plus the
+# "ATM26 site" steps below — see `sites/atm26/README.md`.
+name: Deploy sites to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "sites/**"
+      - ".github/workflows/deploy.yml"
+  pull_request:
+    paths:
+      - "sites/**"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: sites/atm26/.nvmrc
+          cache: npm
+          cache-dependency-path: sites/atm26/package-lock.json
+
+      # --- Personal homepage (site root) -----------------------------------
+      - name: Build personal homepage
+        run: node sites/homepage/build.mjs --out deploy
+
+      # --- ATM26 Challenge site (/atm26/) ----------------------------------
+      - name: Install ATM26 site dependencies
+        working-directory: sites/atm26
+        run: npm ci
+
+      - name: Validate ATM26 leaderboard data and run tests
+        working-directory: sites/atm26
+        run: npm test
+
+      - name: Build ATM26 site (type-check + bundle)
+        working-directory: sites/atm26
+        run: npm run build
+
+      - name: Assemble Pages artifact
+        run: |
+          set -euo pipefail
+          mkdir -p deploy/atm26
+          cp -r sites/atm26/dist/. deploy/atm26/
+          test -f deploy/index.html
+          test -f deploy/atm26/index.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: deploy
+
+  deploy:
+    needs: build
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

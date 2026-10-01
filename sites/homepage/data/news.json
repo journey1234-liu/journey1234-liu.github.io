@@ -3,7 +3,7 @@
     "date": "2026-08-27",
     "content": "The ATM26 public leaderboard is live, covering the Validation and Final Test phases across Track 1 (airway segmentation) and Track 2 (anatomical labeling).",
     "links": [
-      { "text": "View leaderboard", "url": "/atm26/" }
+      { "text": "View leaderboard", "url": "__ATM26_URL__" }
     ]
   }
 ]
