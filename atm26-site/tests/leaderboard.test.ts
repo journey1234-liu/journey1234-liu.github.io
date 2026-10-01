@@ -139,6 +139,68 @@ describe("phase selector", () => {
   });
 });
 
+describe("Track-1 ranking metrics", () => {
+  const TRACK_1 = ["DSC", "clDice", "TLD", "BD", "Betti0Error"];
+
+  it("ranks Track-1 on the five documented metrics in both phases", () => {
+    const phases = loadFixture().phases as Record<
+      string,
+      { tracks: Record<string, { metrics: Array<{ name: string; higher_is_better: boolean }> }> }
+    >;
+    for (const phaseId of ["validation", "final-test"]) {
+      const metrics = phases[phaseId].tracks["track-1"].metrics;
+      expect(metrics.map((m) => m.name)).toEqual(TRACK_1);
+      // Betti0Error is the one lower-is-better metric of Track 1.
+      const betti = metrics.find((m) => m.name === "Betti0Error");
+      expect(betti?.higher_is_better).toBe(false);
+    }
+  });
+
+  it("publishes a numeric Betti0Error for every ranked Track-1 row", () => {
+    const phases = loadFixture().phases as Record<
+      string,
+      {
+        tracks: Record<
+          string,
+          { entries: Array<{ team_display_name: string; metrics: Record<string, unknown> }> }
+        >;
+      }
+    >;
+    for (const phaseId of ["validation", "final-test"]) {
+      const entries = phases[phaseId].tracks["track-1"].entries;
+      if (entries.length === 0) continue; // phase not released yet
+      for (const entry of entries) {
+        expect(
+          typeof entry.metrics.Betti0Error,
+          `${phaseId}/${entry.team_display_name}`,
+        ).toBe("number");
+      }
+    }
+  });
+
+  it("keeps the ranking policy honest for a lower-is-better metric", () => {
+    // The published row order must follow mean_rank, which must equal the mean
+    // of the per-metric ranks — including Betti0Error's.
+    const phase = (loadFixture().phases as Record<string, {
+      tracks: Record<string, {
+        metrics: Array<{ name: string }>;
+        entries: Array<{
+          rank: number;
+          mean_rank: number;
+          metric_ranks: Record<string, number>;
+          team_display_name: string;
+        }>;
+      }>;
+    }>)["validation"].tracks["track-1"];
+    const names = phase.metrics.map((m) => m.name);
+    for (const entry of phase.entries) {
+      const expected =
+        names.reduce((sum, name) => sum + entry.metric_ranks[name], 0) / names.length;
+      expect(entry.mean_rank, entry.team_display_name).toBeCloseTo(expected, 9);
+    }
+  });
+});
+
 describe("Final Test origin + results cutoff", () => {
   const envelope = (phase: Record<string, unknown>) => ({
     schema_version: 2,

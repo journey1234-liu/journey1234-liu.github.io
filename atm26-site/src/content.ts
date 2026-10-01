@@ -98,6 +98,11 @@ export const TRACKS: TrackInfo[] = [
       { name: "clDice", higherIsBetter: true, note: "Centerline Dice" },
       { name: "TLD", higherIsBetter: true, note: "Tree-length detection" },
       { name: "BD", higherIsBetter: true, note: "Branch detection" },
+      {
+        name: "Betti0Error",
+        higherIsBetter: false,
+        note: "Difference in the number of connected components against the reference; lower is better",
+      },
     ],
   },
   {
@@ -267,7 +272,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "Which metrics are used for ranking?",
     answer:
-      "Track 1 uses DSC, clDice, TLD and BD. Track 2 uses ACC, F1, SC, TD, TAcc, mDice and mclDice. See the Tracks page for details.",
+      "Track 1 uses DSC, clDice, TLD, BD and Betti0Error. Track 2 uses ACC, F1, SC, TD, TAcc, mDice and mclDice. See the Tracks page for details.",
   },
   {
     question: "Is the leaderboard final?",
