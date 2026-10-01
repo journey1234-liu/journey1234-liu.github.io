@@ -3,12 +3,13 @@
 // The leaderboard is the only dynamically updated part of the public site. It
 // fetches the deployed `data/leaderboard.json` (resolved against the base
 // path), validates it, and renders each phase (validation / final-test / …)
-// with a Track 1 / Track 2 selector, client-side sorting and team-name search.
-// It degrades to a generic message when the file is unavailable or malformed,
-// and never exposes fetch errors or internal data.
+// with a Track 1 / Track 2 selector, client-side sorting, team-name search and
+// paging (rows per page is adjustable: 10 / 20 / 50 / all). It degrades to a
+// generic message when the file is unavailable or malformed, and never exposes
+// fetch errors or internal data.
 
 import { resolveAsset } from "./basePath";
-import { LEADERBOARD_NOTICE } from "./content";
+import { LEADERBOARD_NOTICE, PHASE_UPDATE_LOGS } from "./content";
 import {
   type LeaderboardSnapshot,
   type PhaseLeaderboard,
@@ -21,6 +22,35 @@ import {
 interface SortState {
   key: "rank" | string;
   dir: "asc" | "desc";
+}
+
+interface PageState {
+  /** Rows per page; 0 means "show every row". */
+  size: number;
+  /** 0-based index of the visible page. */
+  index: number;
+}
+
+/** Rows-per-page choices of the pager; 0 renders every filtered row. */
+const PAGE_SIZE_OPTIONS = [10, 20, 50, 0];
+const DEFAULT_PAGE_SIZE = 20;
+const PAGE_SIZE_STORAGE_KEY = "atm26.leaderboard.pageSize";
+
+function readStoredPageSize(): number {
+  try {
+    const stored = Number(window.localStorage.getItem(PAGE_SIZE_STORAGE_KEY));
+    return PAGE_SIZE_OPTIONS.includes(stored) ? stored : DEFAULT_PAGE_SIZE;
+  } catch {
+    return DEFAULT_PAGE_SIZE;
+  }
+}
+
+function storePageSize(size: number): void {
+  try {
+    window.localStorage.setItem(PAGE_SIZE_STORAGE_KEY, String(size));
+  } catch {
+    // Storage unavailable (private mode, disabled cookies): keep it in memory.
+  }
 }
 
 function escapeHtml(value: unknown): string {
@@ -150,6 +180,8 @@ function buildShell(snapshot: LeaderboardSnapshot, activePhaseId: string | null)
         </div>`
       : "";
 
+  const updateLogHtml = renderUpdateLog(activeId);
+
   const phaseTabs = orderPhases(snapshot.phases)
     .map(([phaseId, phase]) => {
       const label = phase.label || phaseId;
@@ -188,7 +220,26 @@ function buildShell(snapshot: LeaderboardSnapshot, activePhaseId: string | null)
         </label>
       </div>
       <div class="lb-boards"></div>
+      ${updateLogHtml}
     </section>`;
+}
+
+/** Update log of a phase, rendered under its board. Empty when none. */
+function renderUpdateLog(phaseId: string): string {
+  const entries = PHASE_UPDATE_LOGS[phaseId] ?? [];
+  if (entries.length === 0) return "";
+  return `
+      <div class="lb-updatelog">
+        <div class="section-kicker">Update log</div>
+        <ul>
+          ${entries
+            .map(
+              (entry) =>
+                `<li><strong>${escapeHtml(entry.date)}</strong>${escapeHtml(entry.note)}</li>`,
+            )
+            .join("")}
+        </ul>
+      </div>`;
 }
 
 function bindControls(
@@ -205,11 +256,20 @@ function bindControls(
   if (!boardsEl || !searchEl) return;
 
   const sortState: SortState = { key: "rank", dir: "asc" };
+  const pageState: PageState = { size: readStoredPageSize(), index: 0 };
 
-  const renderActive = (trackId: string, query: string): void => {
+  const renderActive = (trackId: string, query: string, resetPage = true): void => {
+    if (resetPage) pageState.index = 0;
     const track: TrackLeaderboard = phase.tracks[trackId] ?? { metrics: [], entries: [] };
-    boardsEl.innerHTML = renderBoard(phase.label || activeId, trackId, track, query, sortState);
-    bindTableSort(boardsEl, track, sortState, renderActive);
+    boardsEl.innerHTML = renderBoard(
+      phase.label || activeId,
+      trackId,
+      track,
+      query,
+      sortState,
+      pageState,
+    );
+    bindBoard(boardsEl, track, sortState, pageState, renderActive);
   };
 
   let activeTrack: string = TRACK_IDS[0];
@@ -229,12 +289,23 @@ function bindControls(
   renderActive(activeTrack, "");
 }
 
-function renderBoard(
+function rangeLabel(start: number, shown: number, total: number): string {
+  const noun = total === 1 ? "team" : "teams";
+  if (shown === 0) return `No ${noun}`;
+  return `${start + 1}–${start + shown} of ${total} ${noun}`;
+}
+
+/**
+ * Pagination bar: rows-per-page selector, visible range and page navigation.
+ * Exported for tests; `page.index` is clamped to the available pages.
+ */
+export function renderBoard(
   phaseLabel: string,
   trackId: string,
   track: TrackLeaderboard,
   query: string,
   sortState: SortState,
+  page: PageState = { size: DEFAULT_PAGE_SIZE, index: 0 },
 ): string {
   if (track.entries.length === 0) {
     return `<div class="lb-board">${emptyState(phaseLabel, trackId)}</div>`;
@@ -247,6 +318,13 @@ function renderBoard(
   const metricNames = track.metrics.map((metric) => metric.name);
   const sorted = [...visible].sort((a, b) => compareEntries(a, b, sortState));
 
+  const total = sorted.length;
+  const size = page.size > 0 ? page.size : Math.max(total, 1);
+  const pageCount = Math.max(1, Math.ceil(total / size));
+  page.index = Math.min(Math.max(page.index, 0), pageCount - 1);
+  const start = page.index * size;
+  const pageRows = sorted.slice(start, start + size);
+
   const headers = [
     `<th scope="col" data-sort="rank" class="is-sortable">Rank</th>`,
     `<th scope="col" class="lb-team">Team</th>`,
@@ -256,7 +334,7 @@ function renderBoard(
     `<th scope="col" class="is-sortable" data-sort="mean_rank">Mean rank</th>`,
   ].join("");
 
-  const rows = sorted
+  const rows = pageRows
     .map(
       (entry) => `
       <tr>
@@ -273,10 +351,41 @@ function renderBoard(
     )
     .join("");
 
+  const pager =
+    total > 0
+      ? `
+      <div class="lb-pager">
+        <label class="lb-pagesize">
+          <span>Rows per page</span>
+          <select id="lb-page-size">
+            ${PAGE_SIZE_OPTIONS.map(
+              (option) =>
+                `<option value="${option}"${option === page.size ? " selected" : ""}>${
+                  option === 0 ? "All" : option
+                }</option>`,
+            ).join("")}
+          </select>
+        </label>
+        <span class="lb-range">${rangeLabel(start, pageRows.length, total)}</span>
+        ${
+          pageCount > 1
+            ? `<span class="lb-pagenav">
+          <button type="button" data-page="prev"${page.index === 0 ? " disabled" : ""}>Previous</button>
+          <span class="lb-pageinfo">Page ${page.index + 1} of ${pageCount}</span>
+          <button type="button" data-page="next"${
+            page.index >= pageCount - 1 ? " disabled" : ""
+          }>Next</button>
+        </span>`
+            : ""
+        }
+      </div>`
+      : "";
+
   return `
     <div class="lb-board">
       ${visible.length === 0 && query ? `<p class="lb-empty">No teams match “${escapeHtml(query)}”.</p>` : ""}
       ${visible.length > 0 ? `
+      ${pager}
       <div class="lb-table-wrap">
         <table>
           <thead><tr>${headers}</tr></thead>
@@ -301,12 +410,21 @@ function compareEntries(a: LeaderboardEntry, b: LeaderboardEntry, sortState: Sor
   return a.team_display_name.localeCompare(b.team_display_name);
 }
 
-function bindTableSort(
+function bindBoard(
   board: HTMLElement,
   track: TrackLeaderboard,
   sortState: SortState,
-  renderActive: (trackId: string, query: string) => void,
+  pageState: PageState,
+  renderActive: (trackId: string, query: string, resetPage?: boolean) => void,
 ): void {
+  // The board is re-rendered in place, so the surrounding controls are read
+  // back from the DOM instead of being captured.
+  const currentTrack = (): string =>
+    board.closest(".panel")?.querySelector<HTMLButtonElement>(".lb-tab[data-track].is-active")
+      ?.dataset.track ?? TRACK_IDS[0];
+  const currentQuery = (): string =>
+    board.closest(".panel")?.querySelector<HTMLInputElement>("#lb-search")?.value ?? "";
+
   const headers = board.querySelectorAll<HTMLTableCellElement>("th[data-sort]");
   for (const header of headers) {
     header.addEventListener("click", () => {
@@ -319,11 +437,22 @@ function bindTableSort(
         sortState.key = key;
         sortState.dir = naturalDesc ? "desc" : "asc";
       }
-      const searchEl = board.parentElement?.querySelector<HTMLInputElement>("#lb-search");
-      const activeTrack = board
-        .closest(".panel")
-        ?.querySelector<HTMLButtonElement>(".lb-tab[data-track].is-active")?.dataset.track;
-      renderActive(activeTrack ?? "track-1", searchEl?.value ?? "");
+      renderActive(currentTrack(), currentQuery());
+    });
+  }
+
+  const sizeEl = board.querySelector<HTMLSelectElement>("#lb-page-size");
+  sizeEl?.addEventListener("change", () => {
+    pageState.size = Number(sizeEl.value);
+    if (!PAGE_SIZE_OPTIONS.includes(pageState.size)) pageState.size = DEFAULT_PAGE_SIZE;
+    storePageSize(pageState.size);
+    renderActive(currentTrack(), currentQuery());
+  });
+
+  for (const button of board.querySelectorAll<HTMLButtonElement>("button[data-page]")) {
+    button.addEventListener("click", () => {
+      pageState.index += button.dataset.page === "next" ? 1 : -1;
+      renderActive(currentTrack(), currentQuery(), false);
     });
   }
 }

@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateLeaderboard, parseLeaderboard } from "../src/leaderboardSchema";
-import { renderLeaderboard } from "../src/leaderboard";
+import { renderLeaderboard, renderBoard } from "../src/leaderboard";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const dataPath = resolve(here, "../public/data/leaderboard.json");
@@ -198,6 +198,108 @@ describe("Track-1 ranking metrics", () => {
         names.reduce((sum, name) => sum + entry.metric_ranks[name], 0) / names.length;
       expect(entry.mean_rank, entry.team_display_name).toBeCloseTo(expected, 9);
     }
+  });
+});
+
+describe("board paging", () => {
+  const track = () =>
+    parseLeaderboard(loadFixture()).snapshot!.phases["validation"].tracks["track-1"];
+  const ASC = { key: "rank", dir: "asc" as const };
+  const bodyRows = (html: string): number =>
+    (/<tbody>([\s\S]*?)<\/tbody>/.exec(html)?.[1].match(/<tr>/g) ?? []).length;
+
+  it("shows 20 rows per page by default and reports the range", () => {
+    const html = renderBoard("Validation Phase", "track-1", track(), "", ASC);
+    expect(bodyRows(html)).toBe(20);
+    expect(html).toContain('<option value="20" selected>20</option>');
+    expect(html).toContain("1–20 of 30 teams");
+    expect(html).toContain("Page 1 of 2");
+    expect(html).toContain('<button type="button" data-page="prev" disabled>');
+  });
+
+  it("offers 10 / 20 / 50 / all as rows-per-page choices", () => {
+    const html = renderBoard("Validation Phase", "track-1", track(), "", ASC);
+    const options = [...html.matchAll(/<option value="(\d+)"[^>]*>([^<]+)<\/option>/g)].map(
+      (m) => [m[1], m[2]],
+    );
+    expect(options).toEqual([
+      ["10", "10"],
+      ["20", "20"],
+      ["50", "50"],
+      ["0", "All"],
+    ]);
+  });
+
+  it("honours a smaller page size and pages through the board", () => {
+    const first = renderBoard("Validation Phase", "track-1", track(), "", ASC, {
+      size: 10,
+      index: 0,
+    });
+    expect(bodyRows(first)).toBe(10);
+    expect(first).toContain("1–10 of 30 teams");
+    expect(first).toContain("Page 1 of 3");
+
+    const second = renderBoard("Validation Phase", "track-1", track(), "", ASC, {
+      size: 10,
+      index: 1,
+    });
+    expect(bodyRows(second)).toBe(10);
+    expect(second).toContain("11–20 of 30 teams");
+    expect(second).toContain("Page 2 of 3");
+    expect(second).not.toBe(first);
+  });
+
+  it('shows every row and no page navigation for "All"', () => {
+    const html = renderBoard("Validation Phase", "track-1", track(), "", ASC, {
+      size: 0,
+      index: 0,
+    });
+    expect(bodyRows(html)).toBe(30);
+    expect(html).toContain("1–30 of 30 teams");
+    expect(html).not.toContain("lb-pagenav");
+  });
+
+  it("clamps an out-of-range page index to the last page", () => {
+    const page = { size: 10, index: 99 };
+    const html = renderBoard("Validation Phase", "track-1", track(), "", ASC, page);
+    expect(page.index).toBe(2); // clamped in place
+    expect(html).toContain("21–30 of 30 teams");
+    expect(html).toContain("Page 3 of 3");
+    expect(html).toContain('<button type="button" data-page="next" disabled>');
+  });
+
+  it("pages the filtered rows, not the whole board", () => {
+    const html = renderBoard("Validation Phase", "track-1", track(), "must-medai", ASC, {
+      size: 10,
+      index: 0,
+    });
+    expect(bodyRows(html)).toBe(1);
+    expect(html).toContain("1–1 of 1 team");
+  });
+
+  it("renders no pager when the search matches nothing", () => {
+    const html = renderBoard("Validation Phase", "track-1", track(), "zzzz", ASC);
+    expect(html).toContain("No teams match");
+    expect(html).not.toContain("lb-pager");
+  });
+});
+
+describe("phase update log", () => {
+  it("sits under the Validation board with the Betti-0 entry", () => {
+    const html = renderShellHtml();
+    expect(html).toContain('<div class="section-kicker">Update log</div>');
+    expect(html).toContain("<strong>2026-10-01</strong>");
+    expect(html).toContain(
+      "We are adding Betti-0 error back to validation phase ranking metric to enable more comprehensive evaluation! Newer metric design are on the way.",
+    );
+    // below the board container
+    expect(html.indexOf("lb-boards")).toBeLessThan(html.indexOf("lb-updatelog"));
+  });
+
+  it("is not rendered for the Final Test phase", () => {
+    const html = renderShellHtml("final-test");
+    expect(html).not.toContain("lb-updatelog");
+    expect(html).not.toContain("Update log");
   });
 });
 

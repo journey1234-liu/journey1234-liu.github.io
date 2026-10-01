@@ -452,6 +452,88 @@ th.is-sortable:hover {
   margin-top: 0.25rem;
 }
 
+/* Pager: rows-per-page selector, visible range and page navigation ---------- */
+.lb-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.65rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.lb-pagesize {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.lb-pagesize select {
+  font: inherit;
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.lb-range {
+  white-space: nowrap;
+}
+
+.lb-pagenav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.lb-pagenav button {
+  font: inherit;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.lb-pagenav button:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.lb-pagenav button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.lb-pageinfo {
+  white-space: nowrap;
+}
+
+/* Update log under a phase's board ----------------------------------------- */
+.lb-updatelog {
+  margin-top: 1.5rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--border);
+}
+
+.lb-updatelog ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.lb-updatelog li {
+  color: var(--muted);
+}
+
+.lb-updatelog strong {
+  color: var(--text);
+  margin-right: 0.4rem;
+}
+
 .lb-empty,
 .lb-error {
   padding: 1.25rem;

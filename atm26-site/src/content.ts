@@ -126,6 +126,22 @@ export const TRACKS: TrackInfo[] = [
 export const RANKING_POLICY_DESCRIPTION =
   "Each metric is ranked independently; ties receive the average of the ranks they occupy. A submission's final score is the mean of its metric ranks, and the lowest mean rank is placed first.";
 
+export interface PhaseUpdateLogEntry {
+  date: string;
+  note: string;
+}
+
+// Shown under the leaderboard of the phase it is keyed by (phase id, e.g.
+// "validation"). Newest entry first.
+export const PHASE_UPDATE_LOGS: Record<string, PhaseUpdateLogEntry[]> = {
+  validation: [
+    {
+      date: "2026-10-01",
+      note: "We are adding Betti-0 error back to validation phase ranking metric to enable more comprehensive evaluation! Newer metric design are on the way.",
+    },
+  ],
+};
+
 // Introduction paragraphs (mirrors the official challenge description).
 export const INTRODUCTION: string[] = [
   "ATM26 is part of the SENSAR (Sino-European Surgical Autonomy in Robotics) Network challenges. The SENSAR Network is focused on innovative, reproducible solutions for surgical autonomy and robot assisted interventions. ATM26 is organized in conjunction with MICCAI 2026, which is to be held in Strasbourg, September 27 - October 1, 2026.",
