@@ -2,14 +2,19 @@
 //
 // The leaderboard is the only dynamically updated part of the public site. It
 // fetches the deployed `data/leaderboard.json` (resolved against the base
-// path), validates it, and renders each phase (validation / final-test / …)
-// with a Track 1 / Track 2 selector, client-side sorting, team-name search and
-// paging (rows per page is adjustable: 10 / 20 / 50 / all). It degrades to a
-// generic message when the file is unavailable or malformed, and never exposes
-// fetch errors or internal data.
+// path), validates it, and renders each phase (the MICCAI 26 archive phases and
+// the longterm leaderboard) with a Track 1 / Track 2 selector, client-side
+// sorting, team-name search and paging (rows per page is adjustable:
+// 10 / 20 / 50 / all). It degrades to a generic message when the file is
+// unavailable or malformed, and never exposes fetch errors or internal data.
 
 import { resolveAsset } from "./basePath";
-import { LEADERBOARD_NOTICE, PHASE_UPDATE_LOGS } from "./content";
+import {
+  LEADERBOARD_NOTICE,
+  PHASE_NOTICES,
+  PHASE_UPDATE_LOGS,
+  SUBMISSION_TAG_LABELS,
+} from "./content";
 import { metricLabel } from "./metricLabels";
 import {
   type LeaderboardSnapshot,
@@ -116,6 +121,17 @@ function originBadge(entry: LeaderboardEntry): string {
   return ` <span class="lb-origin lb-origin-seeded" title="Scored by the organizers from the team's best Validation Phase model — no own Final Test submission was made.">seeded</span>`;
 }
 
+/**
+ * Era tag of a longterm row: challenge submissions versus later ones. The chip
+ * carries the full tag text; the data only stores the short key.
+ */
+function tagBadge(entry: LeaderboardEntry): string {
+  const tag = entry.submission_tag;
+  if (!tag) return "";
+  const label = SUBMISSION_TAG_LABELS[tag] ?? tag;
+  return ` <span class="lb-tag lb-tag-${escapeHtml(tag)}" title="${escapeHtml(label)}">${escapeHtml(label)}</span>`;
+}
+
 function trackLabel(trackId: string): string {
   return trackId === "track-1" ? "Track 1" : "Track 2";
 }
@@ -145,10 +161,24 @@ export function renderLeaderboard(
 /**
  * Display order of the phase buttons, and therefore the landing phase: opening
  * the leaderboard without a phase in the route selects the first entry here
- * (the Validation Phase), not the first phase of the published snapshot.
- * Phase ids outside this list keep their snapshot order, after the known ones.
+ * (the frozen MICCAI 26 Final Test ranking), not the first phase of the
+ * published snapshot. Phase ids outside this list keep their snapshot order,
+ * after the known ones.
  */
-const PHASE_DISPLAY_ORDER = ["validation", "final-test"];
+const PHASE_DISPLAY_ORDER = [
+  "miccai26-final-test",
+  "miccai26-validation",
+  "longterm-validation",
+];
+
+/**
+ * Phase ids the site used before the MICCAI 26 archive split, so existing links
+ * and bookmarks (`#/leaderboard/validation`) keep working.
+ */
+const PHASE_ALIASES: Record<string, string> = {
+  validation: "longterm-validation",
+  "final-test": "miccai26-final-test",
+};
 
 function orderPhases(
   phases: Record<string, PhaseLeaderboard>,
@@ -171,7 +201,8 @@ function resolvePhase(
   if (entries.length === 0) {
     return { id: "", phase: { tracks: {} } };
   }
-  const [id, phase] = entries.find(([phaseId]) => phaseId === activePhaseId) ?? entries[0];
+  const requested = activePhaseId ? PHASE_ALIASES[activePhaseId] ?? activePhaseId : null;
+  const [id, phase] = entries.find(([phaseId]) => phaseId === requested) ?? entries[0];
   return { id, phase };
 }
 
@@ -196,6 +227,9 @@ function buildShell(snapshot: LeaderboardSnapshot, activePhaseId: string | null)
       : "";
 
   const updateLogHtml = renderUpdateLog(activeId);
+  const phaseNotice = PHASE_NOTICES[activeId]
+    ? `<div class="lb-phase-notice">${escapeHtml(PHASE_NOTICES[activeId])}</div>`
+    : "";
 
   const phaseTabs = orderPhases(snapshot.phases)
     .map(([phaseId, phase]) => {
@@ -234,6 +268,7 @@ function buildShell(snapshot: LeaderboardSnapshot, activePhaseId: string | null)
           <input type="search" id="lb-search" placeholder="Search teams…" autocomplete="off" />
         </label>
       </div>
+      ${phaseNotice}
       <div class="lb-boards"></div>
       ${updateLogHtml}
     </section>`;
@@ -316,7 +351,8 @@ function rangeLabel(start: number, shown: number, total: number): string {
  * board ranks our own team registrations and shows the team alone.
  */
 const TEAM_COLUMN_HEADERS: Record<string, string> = {
-  validation: "Username (Team)",
+  "miccai26-validation": "Username (Team)",
+  "longterm-validation": "Username (Team)",
 };
 const DEFAULT_TEAM_HEADER = "Team";
 
@@ -365,7 +401,7 @@ export function renderBoard(
       (entry) => `
       <tr>
         <td class="lb-rank">${formatNumber(entry.rank)}</td>
-        <td class="lb-team">${escapeHtml(entry.team_display_name)}${originBadge(entry)}</td>
+        <td class="lb-team">${escapeHtml(entry.team_display_name)}${originBadge(entry)}${tagBadge(entry)}</td>
         ${metricNames
           .map((name) => {
             const value = entry.metrics[name];

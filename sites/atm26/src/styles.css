@@ -513,6 +513,31 @@ th.is-sortable:hover {
   white-space: nowrap;
 }
 
+/* Era tag of a longterm-leaderboard row ------------------------------------- */
+.lb-tag {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.45rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.lb-tag-post-miccai26 {
+  border-color: var(--accent-amber);
+  color: var(--accent-amber);
+}
+
+/* Phase framing line above a board ------------------------------------------ */
+.lb-phase-notice {
+  margin: 0.5rem 0 0.75rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
 /* Update log under a phase's board ----------------------------------------- */
 .lb-updatelog {
   margin-top: 1.5rem;

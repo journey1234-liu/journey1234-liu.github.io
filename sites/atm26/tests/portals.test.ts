@@ -100,7 +100,7 @@ describe("submission portals and tips", () => {
     expect(html).toContain(escapedValidation);
     expect((html.match(/target="_blank"/g) ?? []).length).toBeGreaterThanOrEqual(2);
     expect(html).toContain(GUIDELINE_URL);
-    expect(html).toContain("#/leaderboard/validation");
+    expect(html).toContain("#/leaderboard/longterm-validation");
     expect((html.match(/<ul class="tips-list">/g) ?? []).length).toBe(1);
     const tipsList = /<ul class="tips-list">([\s\S]*?)<\/ul>/.exec(html)?.[1] ?? "";
     expect((tipsList.match(/<li><strong>/g) ?? []).length).toBe(SUBMISSION_TIPS.length);

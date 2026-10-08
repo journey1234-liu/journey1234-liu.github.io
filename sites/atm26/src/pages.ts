@@ -33,7 +33,7 @@ function escapeHtml(value: unknown): string {
 
 /** Inline link placeholders used inside content.ts strings. */
 const INLINE_LINKS: Record<string, { href: string; label: string }> = {
-  leaderboard: { href: "#/leaderboard/validation", label: "leaderboard" },
+  leaderboard: { href: "#/leaderboard/longterm-validation", label: "leaderboard" },
   guidelines: {
     href: "https://github.com/EndoluminalSurgicalVision-IMR/Airway-Tree-Modeling-26/tree/master/baseline-and-submission-guideline",
     label: "guidelines",

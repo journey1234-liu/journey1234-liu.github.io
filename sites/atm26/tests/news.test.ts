@@ -7,15 +7,22 @@ import { renderHome } from "../src/pages";
 const RETIRED_DATES = ["2026-09-18", "2026-07-31", "2026-06-15"];
 
 describe("home news list", () => {
-  it("lists exactly the two current announcements, newest first", () => {
-    expect(NEWS.map((n) => n.date)).toEqual(["2026-10-01", "2026-08-20"]);
+  it("lists the three current announcements, newest first", () => {
+    expect(NEWS.map((n) => n.date)).toEqual(["2026-10-08", "2026-10-01", "2026-08-20"]);
+  });
+
+  it("announces the MICCAI 26 archive and the longterm board", () => {
+    const latest = NEWS[0];
+    expect(latest.date).toBe("2026-10-08");
+    expect(latest.title).toBe("MICCAI 26 results frozen, Longterm Validation Leaderboard opened");
+    expect(latest.detail).toContain("MICCAI 26 challenge submission");
+    expect(latest.detail).toContain("Post-MICCAI 26 challenge submission");
   });
 
   it("carries the re-opening announcement verbatim", () => {
-    const latest = NEWS[0];
-    expect(latest.date).toBe("2026-10-01");
-    expect(latest.title).toBe("Track-1 & Track-2 submission re-opened!");
-    expect(latest.detail).toBe(
+    const reopening = NEWS.find((n) => n.date === "2026-10-01")!;
+    expect(reopening.title).toBe("Track-1 & Track-2 submission re-opened!");
+    expect(reopening.detail).toBe(
       "Both Validation Phase submissions and Final Test Phase submissions are now limited to once per day. Final Test Phase leaderboard is now public and updated manually.",
     );
   });

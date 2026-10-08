@@ -131,15 +131,39 @@ export interface PhaseUpdateLogEntry {
   note: string;
 }
 
-// Shown under the leaderboard of the phase it is keyed by (phase id, e.g.
-// "validation"). Newest entry first.
+// Shown under the leaderboard of the phase it is keyed by (phase id). Newest
+// entry first; entries shared by several phases are defined once.
+const LOG_ARCHIVE_SPLIT: PhaseUpdateLogEntry = {
+  date: "2026-10-08",
+  note: "The MICCAI 26 rankings are frozen on this leaderboard, and the Longterm Validation Leaderboard continues to grow: methods evaluated during the challenge are tagged “MICCAI 26 challenge submission”, anything submitted afterwards “Post-MICCAI 26 challenge submission”.",
+};
+
+const LOG_BETTI: PhaseUpdateLogEntry = {
+  date: "2026-10-01",
+  note: "We are adding Betti-0 error back to validation phase ranking metric to enable more comprehensive evaluation! Newer metric design are on the way.",
+};
+
 export const PHASE_UPDATE_LOGS: Record<string, PhaseUpdateLogEntry[]> = {
-  validation: [
-    {
-      date: "2026-10-01",
-      note: "We are adding Betti-0 error back to validation phase ranking metric to enable more comprehensive evaluation! Newer metric design are on the way.",
-    },
-  ],
+  "miccai26-final-test": [LOG_ARCHIVE_SPLIT],
+  "miccai26-validation": [LOG_ARCHIVE_SPLIT, LOG_BETTI],
+  "longterm-validation": [LOG_ARCHIVE_SPLIT, LOG_BETTI],
+};
+
+// One-line framing above the board of a phase (the frozen cutoff notice is
+// rendered separately from the data itself).
+export const PHASE_NOTICES: Record<string, string> = {
+  "miccai26-final-test":
+    "Final ranking of the MICCAI 26 challenge: the Final Test Phase results, including the organizer-seeded models of teams that did not submit their own container.",
+  "miccai26-validation":
+    "Validation Phase ranking as it stood when the MICCAI 26 challenge closed. Kept as the challenge archive; the Longterm Validation Leaderboard carries the same methods forward.",
+  "longterm-validation":
+    "Continuously maintained validation leaderboard — every new submission is ranked here. Rows tagged “MICCAI 26 challenge submission” were evaluated during the challenge; later rows are tagged “Post-MICCAI 26 challenge submission”.",
+};
+
+// Human-readable text of the row tags (the data carries the short keys).
+export const SUBMISSION_TAG_LABELS: Record<string, string> = {
+  miccai26: "MICCAI 26 challenge submission",
+  "post-miccai26": "Post-MICCAI 26 challenge submission",
 };
 
 // Introduction paragraphs (mirrors the official challenge description).
@@ -170,6 +194,12 @@ export const TRACK3_NOTICE = {
 // not part of the published phases).
 export const NEWS: NewsItem[] = [
   {
+    date: "2026-10-08",
+    title: "MICCAI 26 results frozen, Longterm Validation Leaderboard opened",
+    detail:
+      "The MICCAI 26 Final Test and Validation rankings are now archived as the MICCAI 26 Leaderboard. Validation continues on the Longterm Validation Leaderboard: methods from the challenge keep their results with the tag “MICCAI 26 challenge submission”, and new submissions are tagged “Post-MICCAI 26 challenge submission”.",
+  },
+  {
     date: "2026-10-01",
     title: "Track-1 & Track-2 submission re-opened!",
     detail:
@@ -183,10 +213,10 @@ export const NEWS: NewsItem[] = [
   },
 ];
 
-// Shown above the leaderboard. Both phases are public; the Final Test board is
-// a frozen snapshot the organizers update by hand.
+// Shown above the leaderboard. The challenge is over: its results are archived
+// and a longterm board keeps running.
 export const LEADERBOARD_NOTICE =
-  "Validation and Final Test Phase results are live. The Final Test Phase leaderboard is public and updated manually by the organizers.";
+  "The MICCAI 26 challenge results are frozen (Final Test and Validation archives). The Longterm Validation Leaderboard stays open and is updated as new submissions arrive.";
 
 export const TIMELINE: TimelineItem[] = [
   {
@@ -393,7 +423,7 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
     formUrl:
       "https://docs.google.com/forms/d/e/1FAIpQLSdwPtoBXp3iyy-s0S2lp629Vpq75OogvS8Xcr-B_bciSQGIPg/viewform?usp=sharing&ouid=117378226219491671209",
     facts: [
-      "The organizers built their own evaluation platform, with the {leaderboard} migrated from Grand-Challenge; leaderboard results of the validation phase shall be dynamically updated.",
+      "The organizers built their own evaluation platform, with the {leaderboard} migrated from Grand-Challenge; the Longterm Validation Leaderboard is dynamically updated, while the MICCAI 26 results stay frozen.",
       "Validation Phase submissions are limited to once per day.",
       "For the validation phase submission you only need to provide your email address and team name used during registration.",
     ],

@@ -16,8 +16,9 @@ describe("published-results copy", () => {
     expect(allCopy).not.toMatch(/remain confidential/i);
   });
 
-  it("states that the Final Test board is public and updated manually", () => {
-    expect(content.LEADERBOARD_NOTICE).toContain("updated manually");
+  it("states that the MICCAI 26 results are frozen and the longterm board is open", () => {
+    expect(content.LEADERBOARD_NOTICE).toContain("MICCAI 26 challenge results are frozen");
+    expect(content.LEADERBOARD_NOTICE).toContain("Longterm Validation Leaderboard");
     const faq = content.FAQ.find((item) => item.question === "Is the leaderboard final?");
     expect(faq?.answer).toContain("Both leaderboards are public");
     expect(faq?.answer).toContain("updated manually by the organizers");
@@ -26,10 +27,20 @@ describe("published-results copy", () => {
       item.title.startsWith("Evaluation takes hours"),
     );
     expect(tip?.note).toContain("Final Test Phase leaderboard");
-    const deadlineTip = content.SUBMISSION_TIPS.find((item) =>
-      item.title.startsWith("Deadlines and release"),
+
+    // The era tags are explained wherever a reader can meet them.
+    expect(content.SUBMISSION_TAG_LABELS.miccai26).toBe("MICCAI 26 challenge submission");
+    expect(content.SUBMISSION_TAG_LABELS["post-miccai26"]).toBe(
+      "Post-MICCAI 26 challenge submission",
     );
-    expect(deadlineTip?.note).toContain("is public and updated manually");
+    expect(content.PHASE_NOTICES["longterm-validation"]).toContain(
+      "Post-MICCAI 26 challenge submission",
+    );
+    expect(Object.keys(content.PHASE_UPDATE_LOGS)).toEqual([
+      "miccai26-final-test",
+      "miccai26-validation",
+      "longterm-validation",
+    ]);
 
     const finalTestPortal = content.SUBMISSION_PORTALS.find((portal) =>
       portal.title.startsWith("Final Test Phase"),
