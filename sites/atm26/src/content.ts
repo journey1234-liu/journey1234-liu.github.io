@@ -321,8 +321,8 @@ export const WORKSHOP = {
     },
     {
       src: "img/workshop/photo-07.webp",
-      alt: "Three organizers posing on the workshop stage in front of the ATM26 title slide",
-      caption: "On stage after the closing session.",
+      alt: "Two workshop hosts and a guest posing on stage in front of the ATM26 title slide",
+      caption: "The two hosts with a guest.",
       width: 800,
       height: 600,
     },
