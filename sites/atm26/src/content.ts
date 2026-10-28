@@ -319,6 +319,13 @@ export const WORKSHOP = {
       width: 800,
       height: 600,
     },
+    {
+      src: "img/workshop/photo-07.webp",
+      alt: "Three organizers posing on the workshop stage in front of the ATM26 title slide",
+      caption: "On stage after the closing session.",
+      width: 800,
+      height: 600,
+    },
   ] as WorkshopPhoto[],
   resultsUrl:
     "https://atm26.grand-challenge.org/final-test-results-for-miccai-2026-workshop/",
