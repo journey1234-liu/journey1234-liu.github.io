@@ -37,6 +37,7 @@ sites/atm26/
   index.html                # SPA shell
   public/
     data/leaderboard.json   # versioned public leaderboard snapshot (generated)
+    img/workshop/           # MICCAI 2026 workshop day: agenda slide + 6 photos
   src/
     main.ts                 # entry point, hash routing, shell
     content.ts              # editable site copy, links, tracks, timeline, FAQ
@@ -55,6 +56,7 @@ sites/atm26/
     resultsCopy.test.ts     # no stale "results are confidential" copy
     portals.test.ts         # submission form URLs stay verbatim
     pitfalls.test.ts        # Rules page pitfalls contract
+    workshop.test.ts        # home workshop agenda + seamless photo strip contract
   tools/
     gc_validation_snapshot.json       # frozen GC validation mirror (public data)
     refresh_gc_validation_overlay.py  # re-reads GC: team labels + Betti0Error

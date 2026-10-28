@@ -9,6 +9,7 @@ import {
   TRACKS_INTRO,
   TRACK3_NOTICE,
   NEWS,
+  WORKSHOP,
   RANKING_POLICY_DESCRIPTION,
   TIMELINE,
   ORGANIZERS,
@@ -19,6 +20,7 @@ import {
   SUBMISSION_PORTALS,
   SUBMISSION_TIPS,
 } from "./content";
+import type { WorkshopAgendaItem, WorkshopPhoto } from "./content";
 import { resolveAsset } from "./basePath";
 import { metricLabel } from "./metricLabels";
 
@@ -55,6 +57,105 @@ function renderInlineLinks(value: string): string {
     html = html.replaceAll(`{${token}}`, anchor);
   }
   return html;
+}
+
+/** Badge shown after the session text for non-team agenda slots. */
+const AGENDA_KIND_LABEL: Partial<Record<WorkshopAgendaItem["kind"], string>> = {
+  invited: "Invited talk",
+  award: "Award ceremony",
+};
+
+function renderAgendaRow(item: WorkshopAgendaItem): string {
+  const badge = AGENDA_KIND_LABEL[item.kind];
+  return `
+          <tr>
+            <td class="workshop-time">${escapeHtml(item.time)}</td>
+            <td>${escapeHtml(item.session)}${
+              badge ? ` <span class="workshop-kind">${escapeHtml(badge)}</span>` : ""
+            }</td>
+            <td>${escapeHtml(item.speaker)}</td>
+          </tr>`;
+}
+
+/**
+ * One slide of the auto-scrolling photo strip. The strip renders the same set
+ * twice so a -50% translation loops seamlessly; the second copy is hidden from
+ * assistive technology to avoid reading every caption twice.
+ */
+function renderPhotoFigure(photo: WorkshopPhoto, duplicate: boolean): string {
+  return `
+            <figure class="photo-marquee-item"${duplicate ? ' aria-hidden="true"' : ""}>
+              <img
+                src="${escapeHtml(resolveAsset(photo.src))}"
+                alt="${escapeHtml(photo.alt)}"
+                width="${escapeHtml(photo.width)}"
+                height="${escapeHtml(photo.height)}"
+                decoding="async"
+              />
+              <figcaption>${escapeHtml(photo.caption)}</figcaption>
+            </figure>`;
+}
+
+/** Home-page section for the MICCAI 2026 workshop day: agenda + photos. */
+function renderWorkshopSection(): string {
+  const agendaRows = WORKSHOP.agenda.map(renderAgendaRow).join("");
+  const photoSet = WORKSHOP.photos.map((p) => renderPhotoFigure(p, false)).join("");
+  const photoSetDuplicate = WORKSHOP.photos.map((p) => renderPhotoFigure(p, true)).join("");
+
+  return `
+    <section class="panel workshop-panel" id="workshop">
+      <div class="section-kicker">${escapeHtml(WORKSHOP.kicker)}</div>
+      <h2>${escapeHtml(WORKSHOP.title)}</h2>
+      <ul class="workshop-meta">
+        <li><strong>When:</strong> ${escapeHtml(WORKSHOP.when)}</li>
+        <li><strong>Where:</strong> ${escapeHtml(WORKSHOP.where)}</li>
+        <li><strong>Hosts:</strong> ${escapeHtml(WORKSHOP.hosts)}</li>
+      </ul>
+      <p>${escapeHtml(WORKSHOP.intro)}</p>
+      <h3>Agenda</h3>
+      <p class="muted workshop-note">${escapeHtml(WORKSHOP.agendaNote)}</p>
+      <div class="table-wrap">
+        <table class="workshop-agenda">
+          <thead>
+            <tr>
+              <th scope="col">Time</th>
+              <th scope="col">Session</th>
+              <th scope="col">Speaker</th>
+            </tr>
+          </thead>
+          <tbody>${agendaRows}
+          </tbody>
+        </table>
+      </div>
+      <details class="workshop-slide">
+        <summary>Original agenda slide</summary>
+        <img
+          src="${escapeHtml(resolveAsset(WORKSHOP.agendaSlide.src))}"
+          alt="${escapeHtml(WORKSHOP.agendaSlide.alt)}"
+          loading="lazy"
+        />
+      </details>
+      <h3>${escapeHtml(WORKSHOP.photosTitle)}</h3>
+      <p class="muted workshop-note">${escapeHtml(WORKSHOP.photosNote)}</p>
+      <div class="photo-marquee" role="group" aria-label="Workshop photos">
+        <div
+          class="photo-marquee-track"
+          style="animation-duration: ${escapeHtml(WORKSHOP.photos.length * 8)}s"
+        >
+          <div class="photo-marquee-set">${photoSet}
+          </div>
+          <div class="photo-marquee-set" aria-hidden="true">${photoSetDuplicate}
+          </div>
+        </div>
+      </div>
+      <p class="workshop-results">
+        <a
+          href="${escapeHtml(WORKSHOP.resultsUrl)}"
+          rel="noopener noreferrer"
+          target="_blank"
+        >${escapeHtml(WORKSHOP.resultsLinkLabel)}</a>
+      </p>
+    </section>`;
 }
 
 export function renderHome(): string {
@@ -102,7 +203,7 @@ export function renderHome(): string {
       <div class="section-kicker">News</div>
       <h2>Latest updates</h2>
       <ul class="news-list">${newsHtml}</ul>
-    </section>
+    </section>${renderWorkshopSection()}
     <section class="panel">
       <div class="section-kicker">Challenge</div>
       <h2>About ATM26</h2>

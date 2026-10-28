@@ -850,6 +850,139 @@ summary {
   margin: 0;
 }
 
+/* Home: workshop day (agenda + auto-scrolling photo strip) ------------------- */
+.workshop-meta {
+  margin: 0 0 1rem;
+  padding-left: 1.15rem;
+}
+
+.workshop-meta li {
+  margin-bottom: 0.3rem;
+}
+
+.workshop-panel h3 {
+  font-size: 1.1rem;
+  margin: 1.75rem 0 0.5rem;
+}
+
+.workshop-note {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+}
+
+.workshop-agenda th,
+.workshop-agenda td {
+  text-align: left;
+  white-space: normal;
+}
+
+.workshop-agenda th:first-child,
+.workshop-agenda td.workshop-time {
+  white-space: nowrap;
+  width: 8.5rem;
+}
+
+.workshop-kind {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  vertical-align: 0.05rem;
+}
+
+.workshop-slide {
+  margin: 1rem 0 0;
+}
+
+.workshop-slide img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 0.75rem;
+  border-radius: 8px;
+}
+
+/* Seamless marquee: the same photo set is rendered twice, so translating the
+   track by exactly -50% lands on an identical frame. Each item keeps its
+   margin inside the set (no outer gap) to keep that 50% exact. */
+.photo-marquee {
+  position: relative;
+  overflow: hidden;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.photo-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: photo-marquee-scroll 48s linear infinite;
+}
+
+.photo-marquee:hover .photo-marquee-track,
+.photo-marquee:focus-within .photo-marquee-track {
+  animation-play-state: paused;
+}
+
+.photo-marquee-set {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-right: 1rem;
+}
+
+.photo-marquee-item {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.photo-marquee-item img {
+  display: block;
+  height: 220px;
+  width: auto;
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.photo-marquee-item figcaption {
+  margin-top: 0.4rem;
+  max-width: 19rem;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+@keyframes photo-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Without animation the strip becomes an ordinary horizontal scroller. */
+@media (prefers-reduced-motion: reduce) {
+  .photo-marquee {
+    overflow-x: auto;
+  }
+
+  .photo-marquee-track {
+    animation: none;
+  }
+
+  .photo-marquee-set[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+.workshop-results {
+  margin: 1.25rem 0 0;
+}
+
 /* Responsive --------------------------------------------------------------- */
 @media (max-width: 640px) {
   .header-inner {
@@ -891,5 +1024,14 @@ summary {
     flex: auto;
     justify-content: flex-start;
     min-height: 0;
+  }
+
+  .photo-marquee-item img {
+    height: 160px;
+  }
+
+  .workshop-agenda th:first-child,
+  .workshop-agenda td.workshop-time {
+    width: auto;
   }
 }

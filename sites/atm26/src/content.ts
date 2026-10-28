@@ -213,6 +213,118 @@ export const NEWS: NewsItem[] = [
   },
 ];
 
+export interface WorkshopAgendaItem {
+  /** Local time at the venue (CEST, UTC+2). */
+  time: string;
+  session: string;
+  speaker: string;
+  kind: "opening" | "team" | "invited" | "award";
+}
+
+export interface WorkshopPhoto {
+  src: string;
+  alt: string;
+  caption: string;
+  /** Intrinsic pixel size: reserves layout space before the image loads. */
+  width: number;
+  height: number;
+}
+
+// Workshop day (MICCAI 2026 satellite event, Thursday 1 October 2026).
+// Agenda, room/host details and the photos mirror the official page
+// https://atm26.grand-challenge.org/final-test-results-for-miccai-2026-workshop/
+export const WORKSHOP = {
+  kicker: "MICCAI 2026 WORKSHOP",
+  title: "ATM26 Workshop Day",
+  when: "Thursday, 1 October 2026, 10:30–12:30 CEST (UTC+2)",
+  where: "Room Amsterdam (G), MICCAI 2026, Strasbourg",
+  hosts: "Shangkun Li, Junyang Wu, Yaoyu Liu",
+  intro:
+    "The workshop closed the MICCAI 2026 challenge: the Final Test Phase rankings were announced, the top three teams of each track presented their methods, and two invited talks covered topology-guided tubular-structure modelling and agentic development for biomedical image analysis.",
+  agendaNote: "All times are local time at the venue (CEST, UTC+2).",
+  agenda: [
+    { time: "10:30–10:40", session: "Opening talk & ATM26 challenge summary", speaker: "Yaoyu Liu", kind: "opening" },
+    { time: "10:40–10:50", session: "Presentation + Q&A", speaker: "Alexander Berger", kind: "team" },
+    { time: "10:50–11:00", session: "Presentation + Q&A", speaker: "Qibiao Wu", kind: "team" },
+    { time: "11:00–11:10", session: "Presentation + Q&A", speaker: "Ruochong Lin", kind: "team" },
+    { time: "11:10–11:20", session: "Presentation + Q&A", speaker: "Junqiang Chen", kind: "team" },
+    { time: "11:20–11:30", session: "Presentation + Q&A", speaker: "Qingyao Tian", kind: "team" },
+    { time: "11:30–11:40", session: "Presentation + Q&A", speaker: "Ruochong Lin", kind: "team" },
+    {
+      time: "11:40–11:50",
+      session: "On the Topological Sculpting for Vessel-like Structure Segmentation",
+      speaker: "Minghui Zhang",
+      kind: "invited",
+    },
+    {
+      time: "11:50–12:00",
+      session: "Towards Agentic Development for Biomedical Image Analysis",
+      speaker: "Ziyan Huang",
+      kind: "invited",
+    },
+    {
+      time: "12:00–12:10",
+      session: "Beyond Voxel-wise Airway Segmentation and Classification & Track 3 Warm-up",
+      speaker: "Junyang Wu",
+      kind: "team",
+    },
+    { time: "12:10–12:20", session: "Award Ceremony & Conclusion", speaker: "Prof. Yun Gu", kind: "award" },
+  ] as WorkshopAgendaItem[],
+  agendaSlide: {
+    src: "img/workshop/agenda.webp",
+    alt: "Official ATM26 workshop agenda slide: schedule, room and Zoom details",
+  },
+  photosTitle: "Photos from the workshop",
+  photosNote: "The strip scrolls automatically and loops seamlessly; hover to pause.",
+  photos: [
+    {
+      src: "img/workshop/photo-01.webp",
+      alt: "Audience seated in the workshop room during a presentation",
+      caption: "The workshop room during the opening session.",
+      width: 800,
+      height: 600,
+    },
+    {
+      src: "img/workshop/photo-02.webp",
+      alt: "Group of workshop participants posing for a photo in the meeting room",
+      caption: "Participants after the sessions.",
+      width: 800,
+      height: 600,
+    },
+    {
+      src: "img/workshop/photo-03.webp",
+      alt: "Members of the audience listening to a talk",
+      caption: "The audience during a team presentation.",
+      width: 800,
+      height: 600,
+    },
+    {
+      src: "img/workshop/photo-04.webp",
+      alt: "Speaker at the podium presenting the ATM26 challenge overview slide",
+      caption: "Opening talk: the ATM26 challenge summary.",
+      width: 800,
+      height: 600,
+    },
+    {
+      src: "img/workshop/photo-05.webp",
+      alt: "Speaker presenting a slide on exploration and final training to the audience",
+      caption: "A participating team presenting its training strategy.",
+      width: 800,
+      height: 600,
+    },
+    {
+      src: "img/workshop/photo-06.webp",
+      alt: "Invited speaker presenting a slide on topological priors for 3D tubular structure modelling",
+      caption: "Invited talk on topology-guided 3D tubular-structure modelling.",
+      width: 800,
+      height: 600,
+    },
+  ] as WorkshopPhoto[],
+  resultsUrl:
+    "https://atm26.grand-challenge.org/final-test-results-for-miccai-2026-workshop/",
+  resultsLinkLabel: "Final Test results and workshop agenda on Grand Challenge",
+};
+
 // Shown above the leaderboard. The challenge is over: its results are archived
 // and a longterm board keeps running.
 export const LEADERBOARD_NOTICE =
