@@ -168,15 +168,19 @@ export function renderLeaderboard(
 const PHASE_DISPLAY_ORDER = [
   "miccai26-final-test",
   "miccai26-validation",
-  "longterm-validation",
+  "longterm-test",
 ];
 
 /**
- * Phase ids the site used before the MICCAI 26 archive split, so existing links
- * and bookmarks (`#/leaderboard/validation`) keep working.
+ * Phase ids the site used before the MICCAI 26 archive split and before the
+ * Longterm Validation board became the Longterm Test board, so existing links
+ * and bookmarks keep working. The old `validation` route pointed at what is now
+ * the live board; that live board continues the Final Test ranking, so the route
+ * now lands on the MICCAI 26 Validation archive it is named after.
  */
 const PHASE_ALIASES: Record<string, string> = {
-  validation: "longterm-validation",
+  "longterm-validation": "longterm-test",
+  validation: "miccai26-validation",
   "final-test": "miccai26-final-test",
 };
 
@@ -347,12 +351,11 @@ function rangeLabel(start: number, shown: number, total: number): string {
 
 /**
  * Header of the name column. Validation rows are keyed by Grand Challenge
- * account — the board shows ``user (Team)`` for them — while the Final Test
- * board ranks our own team registrations and shows the team alone.
+ * account — the board shows ``user (Team)`` for them — while the Final Test and
+ * Longterm Test boards rank our own team registrations and show the team alone.
  */
 const TEAM_COLUMN_HEADERS: Record<string, string> = {
   "miccai26-validation": "Username (Team)",
-  "longterm-validation": "Username (Team)",
 };
 const DEFAULT_TEAM_HEADER = "Team";
 

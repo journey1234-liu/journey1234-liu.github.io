@@ -149,16 +149,23 @@ Each phase (`validation`, `final-test`, …) carries the two tracks, so the
 leaderboard renders a phase selector plus a Track 1 / Track 2 selector. The
 phase id maps to the URL sub-route `#/leaderboard/<phase>`.
 
+The published snapshot carries three phases: `miccai26-final-test` and
+`miccai26-validation` (the frozen MICCAI 26 archives) and `longterm-test` (the
+Final Test ranking carried forward). `longterm-test` rows carry a
+`submission_tag`: `miccai26` for a frozen challenge result, `post-miccai26` for
+an evaluation scored after the challenge closed. Older routes
+(`#/leaderboard/longterm-validation`) are aliased in `leaderboard.ts`.
+
 Each entry exposes only public fields (`rank`, `team_display_name`, metric
 values, optional `metric_ranks`/`mean_rank`/`submission_timestamp`). The
 website validates the top-level structure and ignores malformed optional
 display fields. It never fetches the evaluation server, Google Sheets, a
 database, or any private endpoint at runtime.
 
-The committed `leaderboard.json` carries the live Validation Phase results for
-both tracks and the released Final Test Phase board (a frozen snapshot, marked
-as such on the page). The leaderboard page notice is driven by
-`LEADERBOARD_NOTICE` in `content.ts`; per-phase update logs live in
+The committed `leaderboard.json` carries the frozen MICCAI 26 archives and the
+live Longterm Test board (its frozen rows tagged as challenge submissions and
+later Final Test results tagged as post-challenge). The leaderboard page notice
+is driven by `LEADERBOARD_NOTICE` in `content.ts`; per-phase update logs live in
 `PHASE_UPDATE_LOGS`.
 
 ## Standalone repository

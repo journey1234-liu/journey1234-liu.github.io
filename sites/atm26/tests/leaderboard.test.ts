@@ -43,7 +43,7 @@ describe("public/data/leaderboard.json", () => {
     expect(Object.keys(phases)).toEqual([
       "miccai26-final-test",
       "miccai26-validation",
-      "longterm-validation",
+      "longterm-test",
     ]);
   });
 
@@ -56,9 +56,9 @@ describe("public/data/leaderboard.json", () => {
       expect(phases[phaseId].frozen, phaseId).toBe(true);
       expect(typeof phases[phaseId].results_cutoff, phaseId).toBe("string");
     }
-    expect(phases["longterm-validation"].frozen).toBeUndefined();
-    expect(phases["longterm-validation"].results_cutoff).toBeUndefined();
-    expect(phases["longterm-validation"].label).toBe("Longterm Validation");
+    expect(phases["longterm-test"].frozen).toBeUndefined();
+    expect(phases["longterm-test"].results_cutoff).toBeUndefined();
+    expect(phases["longterm-test"].label).toBe("Longterm Test");
   });
 
   it("tags every longterm row as a challenge or post-challenge submission", () => {
@@ -66,7 +66,7 @@ describe("public/data/leaderboard.json", () => {
       string,
       { tracks: Record<string, { entries: Array<{ team_display_name: string; submission_tag?: string }> }> }
     >;
-    const entries = Object.values(phases["longterm-validation"].tracks).flatMap((t) => t.entries);
+    const entries = Object.values(phases["longterm-test"].tracks).flatMap((t) => t.entries);
     expect(entries.length).toBeGreaterThan(0);
     for (const entry of entries) {
       expect(["miccai26", "post-miccai26"], entry.team_display_name).toContain(entry.submission_tag);
@@ -79,6 +79,33 @@ describe("public/data/leaderboard.json", () => {
         }
       }
     }
+  });
+
+  it("ranks the post-challenge deeptree result first on Track 2", () => {
+    const phases = loadFixture().phases as Record<
+      string,
+      {
+        tracks: Record<
+          string,
+          { entries: Array<{ rank: number; team_display_name: string; submission_tag?: string }> }
+        >;
+      }
+    >;
+    const top = phases["longterm-test"].tracks["track-2"].entries[0];
+    expect(top.team_display_name).toBe("deeptree");
+    expect(top.submission_tag).toBe("post-miccai26");
+    expect(top.rank).toBe(1);
+
+    // The team's frozen challenge submission is still on the board, below it.
+    const frozen = phases["longterm-test"].tracks["track-2"].entries.filter(
+      (entry) => entry.submission_tag === "miccai26" && entry.team_display_name === "deeptree",
+    );
+    expect(frozen).toHaveLength(1);
+    expect(frozen[0].rank).toBeGreaterThan(top.rank);
+
+    // The archive does not move: deeptree is still second on the frozen board.
+    const archive = phases["miccai26-final-test"].tracks["track-2"].entries;
+    expect(archive.find((entry) => entry.team_display_name === "deeptree")?.rank).toBe(2);
   });
 
   it("provides both tracks for every phase", () => {
@@ -134,7 +161,7 @@ describe("validateLeaderboard", () => {
     const phases = data.phases as Record<string, { tracks: Record<string, { entries: Array<Record<string, unknown>> }> }>;
     // The published snapshot may have no entries yet (empty leaderboard);
     // fabricate one so the malformed-field path is still exercised.
-    const track = phases["longterm-validation"].tracks["track-1"];
+    const track = phases["longterm-test"].tracks["track-1"];
     const entry = track.entries[0] ?? { rank: 1, team_display_name: "x", metrics: {} };
     entry.method_label = 123; // wrong type, ignored
     if (track.entries.length === 0) track.entries.push(entry);
@@ -150,7 +177,7 @@ describe("phase selector", () => {
     const order = [
       ">MICCAI 26 · Final Test</a>",
       ">MICCAI 26 · Validation</a>",
-      ">Longterm Validation</a>",
+      ">Longterm Test</a>",
     ].map((label) => html.indexOf(label));
     expect(order.every((index) => index > -1)).toBe(true);
     expect(order).toEqual([...order].sort((a, b) => a - b));
@@ -165,18 +192,23 @@ describe("phase selector", () => {
   });
 
   it("marks the longterm tab active when the route asks for it", () => {
-    const html = renderShellHtml("longterm-validation");
+    const html = renderShellHtml("longterm-test");
     expect(html).toContain(
-      '<a class="lb-tab is-active" href="#/leaderboard/longterm-validation" aria-current="true">Longterm Validation</a>',
+      '<a class="lb-tab is-active" href="#/leaderboard/longterm-test" aria-current="true">Longterm Test</a>',
     );
     expect(html).not.toContain("Frozen snapshot");
   });
 
   it("keeps the pre-split routes working through aliases", () => {
-    // #/leaderboard/validation and #/leaderboard/final-test were the old ids.
+    // #/leaderboard/validation and #/leaderboard/final-test were the old ids,
+    // and the live board was called longterm-validation before 2026-11-13.
+    const legacyLongterm = renderShellHtml("longterm-validation");
+    expect(legacyLongterm).toContain(
+      '<a class="lb-tab is-active" href="#/leaderboard/longterm-test"',
+    );
     const legacyValidation = renderShellHtml("validation");
     expect(legacyValidation).toContain(
-      '<a class="lb-tab is-active" href="#/leaderboard/longterm-validation"',
+      '<a class="lb-tab is-active" href="#/leaderboard/miccai26-validation"',
     );
     const legacyFinalTest = renderShellHtml("final-test");
     expect(legacyFinalTest).toContain(
@@ -185,7 +217,7 @@ describe("phase selector", () => {
   });
 
   it("frames each board in one line", () => {
-    expect(renderShellHtml("longterm-validation")).toContain("Continuously maintained validation leaderboard");
+    expect(renderShellHtml("longterm-test")).toContain("Continuously maintained Final Test leaderboard");
     expect(renderShellHtml("miccai26-validation")).toContain("as it stood when the MICCAI 26 challenge closed");
     expect(renderShellHtml("miccai26-final-test")).toContain("Final ranking of the MICCAI 26 challenge");
   });
@@ -199,7 +231,7 @@ describe("Track-1 ranking metrics", () => {
       string,
       { tracks: Record<string, { metrics: Array<{ name: string; higher_is_better: boolean }> }> }
     >;
-    for (const phaseId of ["longterm-validation", "miccai26-validation", "miccai26-final-test"]) {
+    for (const phaseId of ["longterm-test", "miccai26-validation", "miccai26-final-test"]) {
       const metrics = phases[phaseId].tracks["track-1"].metrics;
       expect(metrics.map((m) => m.name)).toEqual(TRACK_1);
       // Betti0Error is the one lower-is-better metric of Track 1.
@@ -218,7 +250,7 @@ describe("Track-1 ranking metrics", () => {
         >;
       }
     >;
-    for (const phaseId of ["longterm-validation", "miccai26-validation", "miccai26-final-test"]) {
+    for (const phaseId of ["longterm-test", "miccai26-validation", "miccai26-final-test"]) {
       const entries = phases[phaseId].tracks["track-1"].entries;
       if (entries.length === 0) continue; // phase not released yet
       for (const entry of entries) {
@@ -243,7 +275,7 @@ describe("Track-1 ranking metrics", () => {
           team_display_name: string;
         }>;
       }>;
-    }>)["longterm-validation"].tracks["track-1"];
+    }>)["longterm-test"].tracks["track-1"];
     const names = phase.metrics.map((m) => m.name);
     for (const entry of phase.entries) {
       const expected =
@@ -254,32 +286,40 @@ describe("Track-1 ranking metrics", () => {
 });
 
 describe("board paging", () => {
+  // The validation archive is the only board with enough rows to page through.
   const track = () =>
-    parseLeaderboard(loadFixture()).snapshot!.phases["longterm-validation"].tracks["track-1"];
-  const VALIDATION = { id: "longterm-validation", label: "Longterm Validation" };
+    parseLeaderboard(loadFixture()).snapshot!.phases["miccai26-validation"].tracks["track-1"];
+  const ARCHIVE = { id: "miccai26-validation", label: "MICCAI 26 · Validation" };
+  const LONGTERM = { id: "longterm-test", label: "Longterm Test" };
   const FINAL_TEST = { id: "miccai26-final-test", label: "MICCAI 26 · Final Test" };
   const ASC = { key: "rank", dir: "asc" as const };
   const bodyRows = (html: string): number =>
     (/<tbody>([\s\S]*?)<\/tbody>/.exec(html)?.[1].match(/<tr>/g) ?? []).length;
 
-  it("labels the name column per phase: usernames on the validation boards, teams on Final Test", () => {
-    for (const phase of [VALIDATION, { id: "miccai26-validation", label: "MICCAI 26 · Validation" }]) {
-      expect(renderBoard(phase, "track-1", track(), "", ASC)).toContain(
-        '<th scope="col" class="lb-team">Username (Team)</th>',
-      );
+  it("labels the name column per phase: usernames on the validation archive, teams elsewhere", () => {
+    expect(renderBoard(ARCHIVE, "track-1", track(), "", ASC)).toContain(
+      '<th scope="col" class="lb-team">Username (Team)</th>',
+    );
+    for (const phase of [FINAL_TEST, LONGTERM]) {
+      const html = renderBoard(phase, "track-1", track(), "", ASC);
+      expect(html, phase.id).toContain('<th scope="col" class="lb-team">Team</th>');
+      expect(html, phase.id).not.toContain("Username (Team)");
     }
-    const finalTest = renderBoard(FINAL_TEST, "track-1", track(), "", ASC);
-    expect(finalTest).toContain('<th scope="col" class="lb-team">Team</th>');
-    expect(finalTest).not.toContain("Username (Team)");
   });
 
   it("renders the era tag of a longterm row and nothing on the archive", () => {
     const snapshot = parseLeaderboard(loadFixture()).snapshot!;
     const longterm = renderBoard(
-      VALIDATION, "track-1", snapshot.phases["longterm-validation"].tracks["track-1"], "", ASC,
+      LONGTERM, "track-1", snapshot.phases["longterm-test"].tracks["track-1"], "", ASC,
     );
     expect(longterm).toContain("MICCAI 26 challenge submission");
     expect(longterm).not.toContain("Post-MICCAI 26 challenge submission");
+    // Track 2 carries the one post-challenge row, next to the frozen ones.
+    const longtermTrack2 = renderBoard(
+      LONGTERM, "track-2", snapshot.phases["longterm-test"].tracks["track-2"], "", ASC,
+    );
+    expect(longtermTrack2).toContain("Post-MICCAI 26 challenge submission");
+    expect(longtermTrack2).toContain("MICCAI 26 challenge submission");
     const archive = renderBoard(
       { id: "miccai26-validation", label: "MICCAI 26 · Validation" },
       "track-1", snapshot.phases["miccai26-validation"].tracks["track-1"], "", ASC,
@@ -288,7 +328,7 @@ describe("board paging", () => {
   });
 
   it("shows Betti0Error as the β₀ symbol while keeping the sort key", () => {
-    const html = renderBoard(VALIDATION, "track-1", track(), "", ASC);
+    const html = renderBoard(ARCHIVE, "track-1", track(), "", ASC);
     expect(html).toContain(
       'data-sort="Betti0Error" class="is-sortable">&beta;<sub>0</sub> error</th>',
     );
@@ -302,7 +342,7 @@ describe("board paging", () => {
   it("shows 20 rows per page by default and reports the range", () => {
     const total = track().entries.length; // 28 Validation Track-1 rows today
     expect(total).toBeGreaterThan(DEFAULT_PAGE_SIZE);
-    const html = renderBoard(VALIDATION, "track-1", track(), "", ASC);
+    const html = renderBoard(ARCHIVE, "track-1", track(), "", ASC);
     expect(bodyRows(html)).toBe(DEFAULT_PAGE_SIZE);
     expect(html).toContain('<option value="20" selected>20</option>');
     expect(html).toContain(`1–20 of ${total} teams`);
@@ -311,7 +351,7 @@ describe("board paging", () => {
   });
 
   it("offers 10 / 20 / 50 / all as rows-per-page choices", () => {
-    const html = renderBoard(VALIDATION, "track-1", track(), "", ASC);
+    const html = renderBoard(ARCHIVE, "track-1", track(), "", ASC);
     const options = [...html.matchAll(/<option value="(\d+)"[^>]*>([^<]+)<\/option>/g)].map(
       (m) => [m[1], m[2]],
     );
@@ -326,7 +366,7 @@ describe("board paging", () => {
   it("honours a smaller page size and pages through the board", () => {
     const total = track().entries.length;
     const pages = Math.ceil(total / 10);
-    const first = renderBoard(VALIDATION, "track-1", track(), "", ASC, {
+    const first = renderBoard(ARCHIVE, "track-1", track(), "", ASC, {
       size: 10,
       index: 0,
     });
@@ -334,7 +374,7 @@ describe("board paging", () => {
     expect(first).toContain(`1–10 of ${total} teams`);
     expect(first).toContain(`Page 1 of ${pages}`);
 
-    const second = renderBoard(VALIDATION, "track-1", track(), "", ASC, {
+    const second = renderBoard(ARCHIVE, "track-1", track(), "", ASC, {
       size: 10,
       index: 1,
     });
@@ -346,7 +386,7 @@ describe("board paging", () => {
 
   it('shows every row and no page navigation for "All"', () => {
     const total = track().entries.length;
-    const html = renderBoard(VALIDATION, "track-1", track(), "", ASC, {
+    const html = renderBoard(ARCHIVE, "track-1", track(), "", ASC, {
       size: 0,
       index: 0,
     });
@@ -359,7 +399,7 @@ describe("board paging", () => {
     const total = track().entries.length;
     const last = Math.ceil(total / 10) - 1;
     const page = { size: 10, index: 99 };
-    const html = renderBoard(VALIDATION, "track-1", track(), "", ASC, page);
+    const html = renderBoard(ARCHIVE, "track-1", track(), "", ASC, page);
     expect(page.index).toBe(last); // clamped in place
     expect(html).toContain(`${last * 10 + 1}–${total} of ${total} teams`);
     expect(html).toContain(`Page ${last + 1} of ${last + 1}`);
@@ -367,7 +407,7 @@ describe("board paging", () => {
   });
 
   it("pages the filtered rows, not the whole board", () => {
-    const html = renderBoard(VALIDATION, "track-1", track(), "must-medai", ASC, {
+    const html = renderBoard(ARCHIVE, "track-1", track(), "must-medai", ASC, {
       size: 10,
       index: 0,
     });
@@ -376,7 +416,7 @@ describe("board paging", () => {
   });
 
   it("renders no pager when the search matches nothing", () => {
-    const html = renderBoard(VALIDATION, "track-1", track(), "zzzz", ASC);
+    const html = renderBoard(ARCHIVE, "track-1", track(), "zzzz", ASC);
     expect(html).toContain("No teams match");
     expect(html).not.toContain("lb-pager");
   });
@@ -448,14 +488,14 @@ describe("metric labels", () => {
       string,
       { tracks: Record<string, { metrics: Array<{ name: string }> }> }
     >;
-    const names = phases["longterm-validation"].tracks["track-1"].metrics.map((m) => m.name);
+    const names = phases["longterm-test"].tracks["track-1"].metrics.map((m) => m.name);
     expect(names).toContain("Betti0Error");
   });
 });
 
 describe("phase update log", () => {
   it("announces the archive split on every board", () => {
-    for (const phaseId of ["miccai26-final-test", "miccai26-validation", "longterm-validation"]) {
+    for (const phaseId of ["miccai26-final-test", "miccai26-validation", "longterm-test"]) {
       const html = renderShellHtml(phaseId);
       expect(html, phaseId).toContain('<div class="section-kicker">Update log</div>');
       expect(html, phaseId).toContain("<strong>2026-10-08</strong>");
@@ -466,7 +506,7 @@ describe("phase update log", () => {
   });
 
   it("keeps the Betti-0 entry on the validation-family boards", () => {
-    for (const phaseId of ["miccai26-validation", "longterm-validation"]) {
+    for (const phaseId of ["miccai26-validation", "longterm-test"]) {
       const html = renderShellHtml(phaseId);
       expect(html, phaseId).toContain("<strong>2026-10-01</strong>");
       expect(html, phaseId).toContain("We are adding Betti-0 error back");

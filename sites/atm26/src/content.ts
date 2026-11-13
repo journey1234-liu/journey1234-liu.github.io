@@ -135,7 +135,12 @@ export interface PhaseUpdateLogEntry {
 // entry first; entries shared by several phases are defined once.
 const LOG_ARCHIVE_SPLIT: PhaseUpdateLogEntry = {
   date: "2026-10-08",
-  note: "The MICCAI 26 rankings are frozen on this leaderboard, and the Longterm Validation Leaderboard continues to grow: methods evaluated during the challenge are tagged “MICCAI 26 challenge submission”, anything submitted afterwards “Post-MICCAI 26 challenge submission”.",
+  note: "The MICCAI 26 rankings are frozen on this leaderboard, and the Longterm Test Leaderboard continues to grow: methods evaluated during the challenge are tagged “MICCAI 26 challenge submission”, anything submitted afterwards “Post-MICCAI 26 challenge submission”.",
+};
+
+const LOG_LONGTERM_TEST: PhaseUpdateLogEntry = {
+  date: "2026-11-13",
+  note: "The Longterm Test board now continues the Final Test ranking (it continued the Validation one before): deeptree's new Final Test result is ranked together with the frozen MICCAI 26 Final Test results and leads Track 2.",
 };
 
 const LOG_BETTI: PhaseUpdateLogEntry = {
@@ -146,7 +151,7 @@ const LOG_BETTI: PhaseUpdateLogEntry = {
 export const PHASE_UPDATE_LOGS: Record<string, PhaseUpdateLogEntry[]> = {
   "miccai26-final-test": [LOG_ARCHIVE_SPLIT],
   "miccai26-validation": [LOG_ARCHIVE_SPLIT, LOG_BETTI],
-  "longterm-validation": [LOG_ARCHIVE_SPLIT, LOG_BETTI],
+  "longterm-test": [LOG_LONGTERM_TEST, LOG_ARCHIVE_SPLIT, LOG_BETTI],
 };
 
 // One-line framing above the board of a phase (the frozen cutoff notice is
@@ -155,9 +160,9 @@ export const PHASE_NOTICES: Record<string, string> = {
   "miccai26-final-test":
     "Final ranking of the MICCAI 26 challenge: the Final Test Phase results, including the organizer-seeded models of teams that did not submit their own container.",
   "miccai26-validation":
-    "Validation Phase ranking as it stood when the MICCAI 26 challenge closed. Kept as the challenge archive; the Longterm Validation Leaderboard carries the same methods forward.",
-  "longterm-validation":
-    "Continuously maintained validation leaderboard — every new submission is ranked here. Rows tagged “MICCAI 26 challenge submission” were evaluated during the challenge; later rows are tagged “Post-MICCAI 26 challenge submission”.",
+    "Validation Phase ranking as it stood when the MICCAI 26 challenge closed. Kept as the challenge archive; it is no longer updated.",
+  "longterm-test":
+    "Continuously maintained Final Test leaderboard — the frozen MICCAI 26 Final Test results are ranked together with results scored after the challenge closed. Rows tagged “MICCAI 26 challenge submission” were evaluated during the challenge; later rows are tagged “Post-MICCAI 26 challenge submission”.",
 };
 
 // Human-readable text of the row tags (the data carries the short keys).
@@ -194,10 +199,16 @@ export const TRACK3_NOTICE = {
 // not part of the published phases).
 export const NEWS: NewsItem[] = [
   {
-    date: "2026-10-08",
-    title: "MICCAI 26 results frozen, Longterm Validation Leaderboard opened",
+    date: "2026-11-13",
+    title: "Longterm Test leaderboard opened — deeptree takes the Track 2 lead",
     detail:
-      "The MICCAI 26 Final Test and Validation rankings are now archived as the MICCAI 26 Leaderboard. Validation continues on the Longterm Validation Leaderboard: methods from the challenge keep their results with the tag “MICCAI 26 challenge submission”, and new submissions are tagged “Post-MICCAI 26 challenge submission”.",
+      "The Longterm Test board continues the Final Test ranking: the frozen MICCAI 26 Final Test results are ranked together with results scored after the challenge closed. The first post-challenge result, deeptree's new Final Test submission, leads Track 2 and is tagged “Post-MICCAI 26 challenge submission”; the frozen challenge rows keep the tag “MICCAI 26 challenge submission”.",
+  },
+  {
+    date: "2026-10-08",
+    title: "MICCAI 26 results frozen and archived",
+    detail:
+      "The MICCAI 26 Final Test and Validation rankings are now archived as the MICCAI 26 Leaderboard. The challenge rankings stay frozen as they stood when the challenge closed.",
   },
   {
     date: "2026-10-01",
@@ -335,7 +346,7 @@ export const WORKSHOP = {
 // Shown above the leaderboard. The challenge is over: its results are archived
 // and a longterm board keeps running.
 export const LEADERBOARD_NOTICE =
-  "The MICCAI 26 challenge results are frozen (Final Test and Validation archives). The Longterm Validation Leaderboard stays open and is updated as new submissions arrive.";
+  "The MICCAI 26 challenge results are frozen (Final Test and Validation archives). The Longterm Test Leaderboard stays open and is updated as new Final Test results arrive.";
 
 export const TIMELINE: TimelineItem[] = [
   {
@@ -542,7 +553,7 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
     formUrl:
       "https://docs.google.com/forms/d/e/1FAIpQLSdwPtoBXp3iyy-s0S2lp629Vpq75OogvS8Xcr-B_bciSQGIPg/viewform?usp=sharing&ouid=117378226219491671209",
     facts: [
-      "The organizers built their own evaluation platform, with the {leaderboard} migrated from Grand-Challenge; the Longterm Validation Leaderboard is dynamically updated, while the MICCAI 26 results stay frozen.",
+      "The organizers built their own evaluation platform, with the {leaderboard} migrated from Grand-Challenge; the Longterm Test Leaderboard is dynamically updated, while the MICCAI 26 results stay frozen.",
       "Validation Phase submissions are limited to once per day.",
       "For the validation phase submission you only need to provide your email address and team name used during registration.",
     ],

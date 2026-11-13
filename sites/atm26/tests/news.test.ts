@@ -7,16 +7,29 @@ import { renderHome } from "../src/pages";
 const RETIRED_DATES = ["2026-09-18", "2026-07-31", "2026-06-15"];
 
 describe("home news list", () => {
-  it("lists the three current announcements, newest first", () => {
-    expect(NEWS.map((n) => n.date)).toEqual(["2026-10-08", "2026-10-01", "2026-08-20"]);
+  it("lists the four current announcements, newest first", () => {
+    expect(NEWS.map((n) => n.date)).toEqual([
+      "2026-11-13",
+      "2026-10-08",
+      "2026-10-01",
+      "2026-08-20",
+    ]);
   });
 
-  it("announces the MICCAI 26 archive and the longterm board", () => {
+  it("announces the Longterm Test board and its first post-challenge result", () => {
     const latest = NEWS[0];
-    expect(latest.date).toBe("2026-10-08");
-    expect(latest.title).toBe("MICCAI 26 results frozen, Longterm Validation Leaderboard opened");
+    expect(latest.date).toBe("2026-11-13");
+    expect(latest.title).toBe(
+      "Longterm Test leaderboard opened — deeptree takes the Track 2 lead",
+    );
     expect(latest.detail).toContain("MICCAI 26 challenge submission");
     expect(latest.detail).toContain("Post-MICCAI 26 challenge submission");
+  });
+
+  it("announces the MICCAI 26 archive", () => {
+    const archive = NEWS[1];
+    expect(archive.date).toBe("2026-10-08");
+    expect(archive.title).toBe("MICCAI 26 results frozen and archived");
   });
 
   it("carries the re-opening announcement verbatim", () => {
