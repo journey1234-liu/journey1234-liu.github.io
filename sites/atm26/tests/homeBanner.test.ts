@@ -13,7 +13,7 @@ describe("home Track-3 status banner", () => {
     expect(html).toContain(
       '<strong class="status-title">Track 3: Landmark Recognition for Endobronchial Intervention</strong>',
     );
-    expect(html).toContain("COMING SOON");
+    expect(html).toContain("LEADERBOARD LIVE");
   });
 
   it("uses title case for every significant word of the title", () => {
@@ -27,11 +27,11 @@ describe("home Track-3 status banner", () => {
     expect(TRACK3_NOTICE.title).toContain(" for ");
   });
 
-  it('marks exactly "COMING SOON" as the emphasised fragment', () => {
-    expect(TRACK3_NOTICE.emphasis).toBe("COMING SOON");
+  it('marks exactly "LEADERBOARD LIVE" as the emphasised fragment', () => {
+    expect(TRACK3_NOTICE.emphasis).toBe("LEADERBOARD LIVE");
     const html = renderHome();
     expect(html).toContain(
-      '<strong class="status-emphasis">COMING SOON</strong>',
+      '<strong class="status-emphasis">LEADERBOARD LIVE</strong>',
     );
   });
 

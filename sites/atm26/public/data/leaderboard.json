@@ -1,6 +1,6 @@
 {
-  "schema_version": 2,
-  "generated_at": "2026-11-13T12:34:20+00:00",
+  "schema_version": 3,
+  "generated_at": "2026-11-15T01:08:02+00:00",
   "ranking_policy": {
     "method": "mean rank across metrics; ties use average rank",
     "submission_selection": "latest approved successful submission per team and track"
@@ -770,7 +770,11 @@
             }
           ]
         }
-      }
+      },
+      "track_order": [
+        "track-1",
+        "track-2"
+      ]
     },
     "miccai26-validation": {
       "label": "MICCAI 26 · Validation",
@@ -1925,7 +1929,11 @@
             }
           ]
         }
-      }
+      },
+      "track_order": [
+        "track-1",
+        "track-2"
+      ]
     },
     "longterm-test": {
       "label": "Longterm Test",
@@ -2746,7 +2754,107 @@
             }
           ]
         }
-      }
+      },
+      "track_order": [
+        "track-1",
+        "track-2"
+      ]
+    },
+    "track3-test": {
+      "label": "Track 3 · Test",
+      "tracks": {
+        "track-3": {
+          "entries": [
+            {
+              "mean_rank": 1.0,
+              "metric_ranks": {
+                "frame_accuracy": 1.0,
+                "frame_macro_f1": 1.0,
+                "segment_f1_50": 1.0,
+                "sequence_edit": 1.0
+              },
+              "metrics": {
+                "frame_accuracy": 0.3381108080482943,
+                "frame_macro_f1": 0.367480090649591,
+                "segment_f1_50": 0.12847459845127673,
+                "sequence_edit": 0.11472260108537333
+              },
+              "rank": 1.0,
+              "submission_timestamp": "2026-11-14T08:48:56+00:00",
+              "team_display_name": "ATM26 Organizer Baseline"
+            }
+          ],
+          "metrics": [
+            {
+              "higher_is_better": true,
+              "name": "frame_macro_f1"
+            },
+            {
+              "higher_is_better": true,
+              "name": "frame_accuracy"
+            },
+            {
+              "higher_is_better": true,
+              "name": "sequence_edit"
+            },
+            {
+              "higher_is_better": true,
+              "name": "segment_f1_50"
+            }
+          ]
+        }
+      },
+      "track_order": [
+        "track-3"
+      ]
+    },
+    "track3-validation": {
+      "label": "Track 3 · Validation",
+      "tracks": {
+        "track-3": {
+          "entries": [
+            {
+              "mean_rank": 1.0,
+              "metric_ranks": {
+                "frame_accuracy": 1.0,
+                "frame_macro_f1": 1.0,
+                "segment_f1_50": 1.0,
+                "sequence_edit": 1.0
+              },
+              "metrics": {
+                "frame_accuracy": 0.3554772151512377,
+                "frame_macro_f1": 0.4614391356991456,
+                "segment_f1_50": 0.15973326394263312,
+                "sequence_edit": 0.13380970882145346
+              },
+              "rank": 1.0,
+              "submission_timestamp": "2026-11-14T07:00:43+00:00",
+              "team_display_name": "ATM26 Organizer Baseline"
+            }
+          ],
+          "metrics": [
+            {
+              "higher_is_better": true,
+              "name": "frame_macro_f1"
+            },
+            {
+              "higher_is_better": true,
+              "name": "frame_accuracy"
+            },
+            {
+              "higher_is_better": true,
+              "name": "sequence_edit"
+            },
+            {
+              "higher_is_better": true,
+              "name": "segment_f1_50"
+            }
+          ]
+        }
+      },
+      "track_order": [
+        "track-3"
+      ]
     }
   }
 }

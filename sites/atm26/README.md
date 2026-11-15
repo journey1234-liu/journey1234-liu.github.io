@@ -120,41 +120,48 @@ consumes this versioned shape (extra forward-compatible fields are ignored):
 
 ```json
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "generated_at": "2026-08-27T00:00:00Z",
   "ranking_policy": {
     "submission_selection": "latest approved successful submission per team and track",
     "method": "mean rank across metrics; ties use average rank"
   },
   "phases": {
-    "validation": {
-      "label": "Validation Phase",
+    "miccai26-final-test": {
+      "label": "MICCAI 26 · Final Test",
+      "track_order": ["track-1", "track-2"],
       "tracks": {
         "track-1": { "metrics": [], "entries": [] },
         "track-2": { "metrics": [], "entries": [] }
       }
     },
-    "final-test": {
-      "label": "Final Test Phase",
+    "track3-test": {
+      "label": "Track 3 · Test",
+      "track_order": ["track-3"],
       "tracks": {
-        "track-1": { "metrics": [], "entries": [] },
-        "track-2": { "metrics": [], "entries": [] }
+        "track-3": { "metrics": [], "entries": [] }
       }
     }
   }
 }
 ```
 
-Each phase (`validation`, `final-test`, …) carries the two tracks, so the
-leaderboard renders a phase selector plus a Track 1 / Track 2 selector. The
-phase id maps to the URL sub-route `#/leaderboard/<phase>`.
+Schema 3 names the tracks **per phase**: `track_order` lists the phase's tracks
+in display order and must match the keys of `tracks`. The leaderboard renders a
+phase selector plus one tab per declared track, so a Track 3 phase has a single
+"Track 3" tab while the CT phases keep Track 1 / Track 2. Schema 2 documents
+(no `track_order`, always the two CT tracks) are still accepted. The phase id
+maps to the URL sub-route `#/leaderboard/<phase>`.
 
-The published snapshot carries three phases: `miccai26-final-test` and
-`miccai26-validation` (the frozen MICCAI 26 archives) and `longterm-test` (the
-Final Test ranking carried forward). `longterm-test` rows carry a
+The published snapshot carries five phases: `miccai26-final-test` and
+`miccai26-validation` (the frozen MICCAI 26 archives), `longterm-test` (the
+Final Test ranking carried forward), and `track3-test` / `track3-validation`
+(the live Track 3 boards, one track each, ranked by frame Macro-F1, frame
+accuracy, segmental edit and segmental F1@50). `longterm-test` rows carry a
 `submission_tag`: `miccai26` for a frozen challenge result, `post-miccai26` for
 an evaluation scored after the challenge closed. Older routes
-(`#/leaderboard/longterm-validation`) are aliased in `leaderboard.ts`.
+(`#/leaderboard/longterm-validation`, `#/leaderboard/track3`) are aliased in
+`leaderboard.ts`.
 
 Each entry exposes only public fields (`rank`, `team_display_name`, metric
 values, optional `metric_ranks`/`mean_rank`/`submission_timestamp`). The

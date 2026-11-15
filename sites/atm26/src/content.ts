@@ -121,6 +121,20 @@ export const TRACKS: TrackInfo[] = [
       { name: "mclDice", higherIsBetter: true, note: "Mean clDice (multi-class)" },
     ],
   },
+  {
+    slug: "track-3",
+    title: "Track 3 · Landmark Recognition for Endobronchial Intervention",
+    short:
+      "Classify each bronchoscopy frame into the airway landmark it shows.",
+    description:
+      "Track 3 moves from CT volumes to the endobronchial view. Each case is a set of rendered bronchoscopy sequences along the airway tree; every frame carries the anatomical landmark visible at that moment. Participants submit one inference container that reads PNG sequences and writes a per-frame label CSV, and are ranked by frame Macro-F1, frame accuracy, segmental edit score and segmental F1@50.",
+    metrics: [
+      { name: "frame_macro_f1", higherIsBetter: true, note: "Mean F1 over the fixed 32 landmark classes" },
+      { name: "frame_accuracy", higherIsBetter: true, note: "Correct frames over all frames" },
+      { name: "sequence_edit", higherIsBetter: true, note: "Segmental edit score: label order and extra/missing segments" },
+      { name: "segment_f1_50", higherIsBetter: true, note: "Segmental F1 at temporal IoU 0.5" },
+    ],
+  },
 ];
 
 export const RANKING_POLICY_DESCRIPTION =
@@ -138,6 +152,11 @@ const LOG_ARCHIVE_SPLIT: PhaseUpdateLogEntry = {
   note: "The MICCAI 26 rankings are frozen on this leaderboard, and the Longterm Test Leaderboard continues to grow: methods evaluated during the challenge are tagged “MICCAI 26 challenge submission”, anything submitted afterwards “Post-MICCAI 26 challenge submission”.",
 };
 
+const LOG_TRACK3: PhaseUpdateLogEntry = {
+  date: "2026-11-15",
+  note: "The Track 3 leaderboard is published: a single Track 3 board per phase, ranked by frame Macro-F1, frame accuracy, segmental edit and segmental F1@50.",
+};
+
 const LOG_LONGTERM_TEST: PhaseUpdateLogEntry = {
   date: "2026-11-13",
   note: "The Longterm Test board now continues the Final Test ranking (it continued the Validation one before): deeptree's new Final Test result is ranked together with the frozen MICCAI 26 Final Test results and leads Track 2.",
@@ -152,6 +171,8 @@ export const PHASE_UPDATE_LOGS: Record<string, PhaseUpdateLogEntry[]> = {
   "miccai26-final-test": [LOG_ARCHIVE_SPLIT],
   "miccai26-validation": [LOG_ARCHIVE_SPLIT, LOG_BETTI],
   "longterm-test": [LOG_LONGTERM_TEST, LOG_ARCHIVE_SPLIT, LOG_BETTI],
+  "track3-test": [LOG_TRACK3],
+  "track3-validation": [LOG_TRACK3],
 };
 
 // One-line framing above the board of a phase (the frozen cutoff notice is
@@ -161,6 +182,10 @@ export const PHASE_NOTICES: Record<string, string> = {
     "Final ranking of the MICCAI 26 challenge: the Final Test Phase results, including the organizer-seeded models of teams that did not submit their own container.",
   "miccai26-validation":
     "Validation Phase ranking as it stood when the MICCAI 26 challenge closed. Kept as the challenge archive; it is no longer updated.",
+  "track3-test":
+    "Track 3 test-phase ranking: frame-level landmark classification on the held-out test sequences, ranked by equal mean rank over the four Track 3 metrics.",
+  "track3-validation":
+    "Track 3 validation-phase ranking: the same metrics on the validation sequences.",
   "longterm-test":
     "Continuously maintained Final Test leaderboard — the frozen MICCAI 26 Final Test results are ranked together with results scored after the challenge closed. Rows tagged “MICCAI 26 challenge submission” were evaluated during the challenge; later rows are tagged “Post-MICCAI 26 challenge submission”.",
 };
@@ -190,7 +215,7 @@ export const TRACKS_INTRO =
 export const TRACK3_NOTICE = {
   kicker: "TRACK-3 STATUS",
   title: "Track 3: Landmark Recognition for Endobronchial Intervention",
-  emphasis: "COMING SOON",
+  emphasis: "LEADERBOARD LIVE",
   after: "!",
 };
 
@@ -198,6 +223,12 @@ export const TRACK3_NOTICE = {
 // retired from this list (sanity check announcement omitted — sanity check is
 // not part of the published phases).
 export const NEWS: NewsItem[] = [
+  {
+    date: "2026-11-15",
+    title: "Track 3 leaderboard opened",
+    detail:
+      "The Track 3 (Landmark Recognition for Endobronchial Intervention) leaderboard is now public, with a validation and a test board ranked by frame Macro-F1, frame accuracy, segmental edit score and segmental F1@50.",
+  },
   {
     date: "2026-11-13",
     title: "Longterm Test leaderboard opened — deeptree takes the Track 2 lead",

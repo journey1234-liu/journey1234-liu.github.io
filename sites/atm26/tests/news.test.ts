@@ -7,8 +7,9 @@ import { renderHome } from "../src/pages";
 const RETIRED_DATES = ["2026-09-18", "2026-07-31", "2026-06-15"];
 
 describe("home news list", () => {
-  it("lists the four current announcements, newest first", () => {
+  it("lists the current announcements, newest first", () => {
     expect(NEWS.map((n) => n.date)).toEqual([
+      "2026-11-15",
       "2026-11-13",
       "2026-10-08",
       "2026-10-01",
@@ -16,8 +17,15 @@ describe("home news list", () => {
     ]);
   });
 
-  it("announces the Longterm Test board and its first post-challenge result", () => {
+  it("announces the Track 3 leaderboard", () => {
     const latest = NEWS[0];
+    expect(latest.date).toBe("2026-11-15");
+    expect(latest.title).toBe("Track 3 leaderboard opened");
+    expect(latest.detail).toContain("frame Macro-F1");
+  });
+
+  it("announces the Longterm Test board and its first post-challenge result", () => {
+    const latest = NEWS[1];
     expect(latest.date).toBe("2026-11-13");
     expect(latest.title).toBe(
       "Longterm Test leaderboard opened — deeptree takes the Track 2 lead",
@@ -27,7 +35,7 @@ describe("home news list", () => {
   });
 
   it("announces the MICCAI 26 archive", () => {
-    const archive = NEWS[1];
+    const archive = NEWS[2];
     expect(archive.date).toBe("2026-10-08");
     expect(archive.title).toBe("MICCAI 26 results frozen and archived");
   });

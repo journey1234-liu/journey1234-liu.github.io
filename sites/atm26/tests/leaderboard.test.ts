@@ -37,13 +37,15 @@ describe("public/data/leaderboard.json", () => {
     expect(result.ok).toBe(true);
   });
 
-  it("carries the MICCAI 26 archive and the longterm board", () => {
+  it("carries the MICCAI 26 archive, the longterm board and Track 3", () => {
     const data = loadFixture();
     const phases = data.phases as Record<string, unknown>;
     expect(Object.keys(phases)).toEqual([
       "miccai26-final-test",
       "miccai26-validation",
       "longterm-test",
+      "track3-test",
+      "track3-validation",
     ]);
   });
 
@@ -108,12 +110,80 @@ describe("public/data/leaderboard.json", () => {
     expect(archive.find((entry) => entry.team_display_name === "deeptree")?.rank).toBe(2);
   });
 
-  it("provides both tracks for every phase", () => {
+  it("declares each phase's tracks, and only those, in track_order", () => {
     const data = loadFixture();
-    const phases = data.phases as Record<string, { tracks: Record<string, unknown> }>;
-    for (const phase of Object.values(phases)) {
-      expect(Object.keys(phase.tracks)).toEqual(["track-1", "track-2"]);
+    const phases = data.phases as Record<
+      string,
+      { tracks: Record<string, unknown>; track_order: string[] }
+    >;
+    for (const [phaseId, phase] of Object.entries(phases)) {
+      expect(phase.track_order, phaseId).toEqual(Object.keys(phase.tracks));
+      const expected =
+        phaseId.startsWith("track3")
+          ? ["track-3"]
+          : ["track-1", "track-2"];
+      expect(phase.track_order, phaseId).toEqual(expected);
     }
+  });
+});
+
+describe("schema 3 (per-phase tracks)", () => {
+  const phase = (order: string[] | undefined, tracks: Record<string, unknown>) => ({
+    schema_version: 3,
+    generated_at: "2026-11-15T00:00:00+00:00",
+    phases: {
+      "track3-test": {
+        label: "Track 3 · Test",
+        ...(order === undefined ? {} : { track_order: order }),
+        tracks,
+      },
+    },
+  });
+
+  it("accepts a phase with a single track", () => {
+    const result = validateLeaderboard(
+      phase(["track-3"], {
+        "track-3": { metrics: [{ name: "frame_accuracy", higher_is_better: true }], entries: [] },
+      }),
+    );
+    expect(result.errors).toEqual([]);
+    expect(result.snapshot?.phases["track3-test"].trackOrder).toEqual(["track-3"]);
+  });
+
+  it("rejects a schema-3 phase without track_order", () => {
+    const result = validateLeaderboard(
+      phase(undefined, { "track-3": { metrics: [], entries: [] } }),
+    );
+    expect(result.ok).toBe(false);
+    expect(result.errors.join(" ")).toContain("track_order");
+  });
+
+  it("rejects a track_order that names an undeclared track", () => {
+    const result = validateLeaderboard(
+      phase(["track-3", "track-2"], { "track-3": { metrics: [], entries: [] } }),
+    );
+    expect(result.ok).toBe(false);
+  });
+
+  it("still accepts a schema-2 document with the two CT tracks", () => {
+    const legacy = {
+      schema_version: 2,
+      generated_at: "2026-11-13T00:00:00+00:00",
+      phases: {
+        "miccai26-validation": {
+          tracks: {
+            "track-1": { metrics: [], entries: [] },
+            "track-2": { metrics: [], entries: [] },
+          },
+        },
+      },
+    };
+    const result = validateLeaderboard(legacy);
+    expect(result.ok).toBe(true);
+    expect(result.snapshot?.phases["miccai26-validation"].trackOrder).toEqual([
+      "track-1",
+      "track-2",
+    ]);
   });
 });
 
@@ -168,6 +238,17 @@ describe("validateLeaderboard", () => {
     const result = validateLeaderboard(data);
     expect(result.ok).toBe(true);
     expect(result.errors).toEqual([]);
+  });
+});
+
+describe("Track 3 phase rendering", () => {
+  it("renders one Track 3 tab and no Track 2 tab", () => {
+    const html = renderShellHtml("track3-test");
+    expect(html).toContain('data-track="track-3"');
+    expect(html).not.toContain('data-track="track-2"');
+    expect(html).not.toContain('data-track="track-1"');
+    expect(html).toContain("Track 3");
+    expect(html).toContain("frame-level landmark classification");
   });
 });
 

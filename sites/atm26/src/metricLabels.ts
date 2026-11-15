@@ -10,6 +10,11 @@
 
 const METRIC_LABELS: Record<string, string> = {
   Betti0Error: "&beta;<sub>0</sub> error",
+  // Track 3 (frame landmark recognition)
+  frame_macro_f1: "Macro-F1",
+  frame_accuracy: "Accuracy",
+  sequence_edit: "Edit",
+  segment_f1_50: "F1&#64;50",
 };
 
 function escapeHtml(value: unknown): string {

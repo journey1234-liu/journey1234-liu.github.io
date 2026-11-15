@@ -40,6 +40,8 @@ describe("published-results copy", () => {
       "miccai26-final-test",
       "miccai26-validation",
       "longterm-test",
+      "track3-test",
+      "track3-validation",
     ]);
 
     const finalTestPortal = content.SUBMISSION_PORTALS.find((portal) =>

@@ -47,6 +47,11 @@ export interface TrackLeaderboard {
 
 export interface PhaseLeaderboard {
   label?: string;
+  /**
+   * Display order of the phase's tracks. Schema 3 carries it in the data
+   * (`track_order`); schema 2 implicitly means the two CT tracks.
+   */
+  trackOrder: string[];
   tracks: Record<string, TrackLeaderboard>;
   /**
    * ISO timestamp of the results cutoff. When present the phase is a frozen
@@ -187,7 +192,7 @@ export function validateLeaderboard(data: unknown): ValidationResult {
     return { ok: false, errors: ["leaderboard document must be an object"], warnings };
   }
 
-  if (data.schema_version !== 2) {
+  if (data.schema_version !== 2 && data.schema_version !== 3) {
     errors.push(`unsupported schema_version: ${String(data.schema_version)}`);
   }
   if (typeof data.generated_at !== "string" || data.generated_at.length === 0) {
@@ -208,8 +213,28 @@ export function validateLeaderboard(data: unknown): ValidationResult {
       errors.push(`phases.${phaseId}.tracks must be an object`);
       continue;
     }
+    // Schema 3 names the tracks per phase (a Track 3 phase has one track);
+    // schema 2 always meant the two CT tracks.
+    let trackOrder: string[];
+    if (data.schema_version === 3) {
+      const rawOrder = rawPhase.track_order;
+      if (
+        !Array.isArray(rawOrder) ||
+        rawOrder.length === 0 ||
+        rawOrder.some((id) => typeof id !== "string" || id.length === 0) ||
+        new Set(rawOrder).size !== rawOrder.length
+      ) {
+        errors.push(
+          `phases.${phaseId}.track_order must be a non-empty list of unique track ids`,
+        );
+        continue;
+      }
+      trackOrder = rawOrder as string[];
+    } else {
+      trackOrder = [...TRACK_IDS];
+    }
     const tracks: Record<string, TrackLeaderboard> = {};
-    for (const trackId of TRACK_IDS) {
+    for (const trackId of trackOrder) {
       const track = parseTrack(rawPhase.tracks[trackId]);
       if (track === null) {
         errors.push(`phases.${phaseId}.tracks.${trackId} is invalid`);
@@ -217,7 +242,7 @@ export function validateLeaderboard(data: unknown): ValidationResult {
         tracks[trackId] = track;
       }
     }
-    const phase: PhaseLeaderboard = { tracks };
+    const phase: PhaseLeaderboard = { tracks, trackOrder };
     if (typeof rawPhase.label === "string") phase.label = rawPhase.label;
     if (typeof rawPhase.results_cutoff === "string" && rawPhase.results_cutoff.length > 0) {
       phase.results_cutoff = rawPhase.results_cutoff;
@@ -227,7 +252,7 @@ export function validateLeaderboard(data: unknown): ValidationResult {
   }
 
   const snapshot: LeaderboardSnapshot = {
-    schema_version: 2,
+    schema_version: data.schema_version as number,
     generated_at: data.generated_at as string,
     phases,
   };

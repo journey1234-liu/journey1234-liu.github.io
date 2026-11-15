@@ -22,7 +22,6 @@ import {
   type TrackLeaderboard,
   type LeaderboardEntry,
   parseLeaderboard,
-  TRACK_IDS,
 } from "./leaderboardSchema";
 
 interface SortState {
@@ -132,8 +131,14 @@ function tagBadge(entry: LeaderboardEntry): string {
   return ` <span class="lb-tag lb-tag-${escapeHtml(tag)}" title="${escapeHtml(label)}">${escapeHtml(label)}</span>`;
 }
 
+const TRACK_LABELS: Record<string, string> = {
+  "track-1": "Track 1",
+  "track-2": "Track 2",
+  "track-3": "Track 3",
+};
+
 function trackLabel(trackId: string): string {
-  return trackId === "track-1" ? "Track 1" : "Track 2";
+  return TRACK_LABELS[trackId] ?? trackId;
 }
 
 function emptyState(phaseLabel: string, trackId: string): string {
@@ -169,6 +174,8 @@ const PHASE_DISPLAY_ORDER = [
   "miccai26-final-test",
   "miccai26-validation",
   "longterm-test",
+  "track3-test",
+  "track3-validation",
 ];
 
 /**
@@ -182,6 +189,8 @@ const PHASE_ALIASES: Record<string, string> = {
   "longterm-validation": "longterm-test",
   validation: "miccai26-validation",
   "final-test": "miccai26-final-test",
+  track3: "track3-test",
+  "track-3": "track3-test",
 };
 
 function orderPhases(
@@ -203,7 +212,7 @@ function resolvePhase(
 ): { id: string; phase: PhaseLeaderboard } {
   const entries = orderPhases(snapshot.phases);
   if (entries.length === 0) {
-    return { id: "", phase: { tracks: {} } };
+    return { id: "", phase: { tracks: {}, trackOrder: [] } };
   }
   const requested = activePhaseId ? PHASE_ALIASES[activePhaseId] ?? activePhaseId : null;
   const [id, phase] = entries.find(([phaseId]) => phaseId === requested) ?? entries[0];
@@ -245,12 +254,14 @@ function buildShell(snapshot: LeaderboardSnapshot, activePhaseId: string | null)
     })
     .join("");
 
-  const trackTabs = TRACK_IDS.map((trackId, index) => {
-    const isActive = index === 0;
-    return `<button class="lb-tab${isActive ? " is-active" : ""}" data-track="${trackId}" aria-pressed="${isActive}">${trackLabel(
-      trackId,
-    )}</button>`;
-  }).join("");
+  const trackTabs = activePhase.trackOrder
+    .map((trackId, index) => {
+      const isActive = index === 0;
+      return `<button class="lb-tab${isActive ? " is-active" : ""}" data-track="${trackId}" aria-pressed="${isActive}">${trackLabel(
+        trackId,
+      )}</button>`;
+    })
+    .join("");
 
   return `
     <section class="panel">
@@ -326,10 +337,10 @@ function bindControls(
     bindBoard(boardsEl, track, sortState, pageState, renderActive);
   };
 
-  let activeTrack: string = TRACK_IDS[0];
+  let activeTrack: string = phase.trackOrder[0] ?? "";
   for (const tab of trackTabs) {
     tab.addEventListener("click", () => {
-      activeTrack = tab.dataset.track ?? TRACK_IDS[0];
+      activeTrack = tab.dataset.track ?? phase.trackOrder[0] ?? "";
       for (const other of trackTabs) {
         const selected = other === tab;
         other.classList.toggle("is-active", selected);
@@ -486,7 +497,7 @@ function bindBoard(
   // back from the DOM instead of being captured.
   const currentTrack = (): string =>
     board.closest(".panel")?.querySelector<HTMLButtonElement>(".lb-tab[data-track].is-active")
-      ?.dataset.track ?? TRACK_IDS[0];
+      ?.dataset.track ?? "";
   const currentQuery = (): string =>
     board.closest(".panel")?.querySelector<HTMLInputElement>("#lb-search")?.value ?? "";
 
