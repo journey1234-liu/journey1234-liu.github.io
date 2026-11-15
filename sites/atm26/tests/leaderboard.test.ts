@@ -252,6 +252,20 @@ describe("Track 3 phase rendering", () => {
   });
 });
 
+describe("empty Track 3 board", () => {
+  it("does not repeat the track label in the empty message", () => {
+    const html = renderBoard(
+      { id: "track3-test", label: "Track 3 · Test" },
+      "track-3",
+      { metrics: [], entries: [] },
+      "",
+      { key: "rank", dir: "asc" },
+    );
+    expect(html).toContain("No public results for Track 3 · Test yet.");
+    expect(html).not.toContain("Track 3 · Test · Track 3");
+  });
+});
+
 describe("phase selector", () => {
   it("lists the MICCAI 26 archive before the longterm board", () => {
     const html = renderShellHtml();

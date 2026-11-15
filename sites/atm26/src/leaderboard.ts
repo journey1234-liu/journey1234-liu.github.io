@@ -142,7 +142,11 @@ function trackLabel(trackId: string): string {
 }
 
 function emptyState(phaseLabel: string, trackId: string): string {
-  return `<p class="lb-empty">No public results for ${escapeHtml(phaseLabel)} · ${escapeHtml(trackLabel(trackId))} yet.</p>`;
+  // A single-track phase already names its track in the label ("Track 3 ·
+  // Test"), so appending it again would read "Track 3 · Test · Track 3".
+  const label = trackLabel(trackId);
+  const scope = phaseLabel.includes(label) ? phaseLabel : `${phaseLabel} · ${label}`;
+  return `<p class="lb-empty">No public results for ${escapeHtml(scope)} yet.</p>`;
 }
 
 function errorState(): string {
