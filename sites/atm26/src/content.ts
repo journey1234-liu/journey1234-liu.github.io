@@ -85,6 +85,9 @@ export const LINKS = {
   officialSite: "https://atm26.grand-challenge.org/",
   submissionGuidelines: "https://atm26.grand-challenge.org/submission-guidelines/",
   contactEmail: "IMR-ATM22@outlook.com",
+  huggingFace:
+    "https://huggingface.co/Endoluminal-Surg-Vision-IMR/Airway-Tree-Modeling-26-baselines",
+  github: "https://github.com/EndoluminalSurgicalVision-IMR/Airway-Tree-Modeling-26",
 };
 
 export const TRACKS: TrackInfo[] = [

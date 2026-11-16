@@ -23,6 +23,7 @@ import {
   TRACK3_PROXIMAL_LABELS,
   TRACK3_SEGMENTAL_LABELS,
   TRACK3_LABEL_NOTES,
+  LINKS,
 } from "./content";
 import type { WorkshopAgendaItem, WorkshopPhoto, Track3Label } from "./content";
 import { resolveAsset } from "./basePath";
@@ -267,6 +268,12 @@ function renderTrack3Labels(): string {
       </div>
       <h3>Notes</h3>
       <ul class="tips-list">${notes}</ul>
+      <p class="muted">
+        Official Track 3 resources:
+        <a href="${escapeHtml(LINKS.huggingFace)}" rel="noopener noreferrer" target="_blank">baseline checkpoints on Hugging Face</a>
+        and
+        <a href="${escapeHtml(LINKS.github)}" rel="noopener noreferrer" target="_blank">source code and container contract on GitHub</a>.
+      </p>
     </section>`;
 }
 
