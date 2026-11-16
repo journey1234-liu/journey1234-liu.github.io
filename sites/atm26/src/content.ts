@@ -679,7 +679,7 @@ export const SUBMISSION_TIPS: SubmissionTip[] = [
   },
   {
     title: "Submission frequency limit",
-    note: "Both the Final Test Phase (post-MICCAI long-term) and the Validation Phase allow one submission per day (limited computation resources), for Track-1, Track-2 and Track-3. The limit counts evaluated submissions only — a run that fails does not use up your slot.",
+    note: "Both the Final Test Phase (post-MICCAI long-term) and the Validation Phase allow one submission every 24 hours (limited computation resources), for Track-1, Track-2 and Track-3. The limit counts evaluated submissions only — a run that fails does not use up your slot.",
   },
   {
     title: "A failed run does not use up your submission limit",

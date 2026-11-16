@@ -83,7 +83,7 @@ describe("submission portals and tips", () => {
 
   it("describes the current limits for all three tracks", () => {
     const limit = SUBMISSION_TIPS.find((tip) => tip.title === "Submission frequency limit");
-    expect(limit?.note).toContain("one submission per day");
+    expect(limit?.note).toContain("one submission every 24 hours");
     expect(limit?.note).toContain("Track-3");
     expect(limit?.note).not.toContain("only one successful submission");
 
