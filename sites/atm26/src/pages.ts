@@ -310,6 +310,7 @@ export function renderRules(): string {
     (portal) => `
       <div class="portal-card">
         <h3>${escapeHtml(portal.title)}</h3>
+        <p class="portal-status">${escapeHtml(portal.status)}</p>
         <ul class="portal-facts">
           ${portal.facts.map((fact) => `<li>${renderInlineLinks(fact)}</li>`).join("")}
         </ul>

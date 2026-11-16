@@ -53,6 +53,46 @@ describe("submission portals and tips", () => {
     expect(cards[1]).not.toContain(BACKUP_FORM);
   });
 
+  it("states the current intake state and routes Track-3 through the same forms", () => {
+    const finalTest = SUBMISSION_PORTALS.find(
+      (portal) => portal.title === "Final Test Phase Submission",
+    );
+    const validation = SUBMISSION_PORTALS.find(
+      (portal) => portal.title === "Validation Phase Submission",
+    );
+    expect(finalTest?.status).toContain("Open again");
+    expect(validation?.status).toContain("Track-3");
+
+    const html = renderRules();
+    const cards = [...html.matchAll(/<div class="portal-card">([\s\S]*?)<\/div>/g)].map(
+      (match) => match[1],
+    );
+    expect(cards.length).toBe(2);
+
+    // Final Test: the long-term intake is open again, Track-3 Final Test is not
+    expect(cards[0]).toContain('class="portal-status"');
+    expect(cards[0]).toContain("The Final Test Phase intake continues");
+    expect(cards[0]).toContain("Track-3 Final Test is not open yet");
+    expect(cards[0]).toContain("this same form");
+
+    // Validation: Track-3 validation submits through this very form
+    expect(cards[1]).toContain("Track-3 validation submissions are open now");
+    expect(cards[1]).toContain("this same form");
+    expect(cards[1]).toContain("once per day");
+  });
+
+  it("describes the current limits for all three tracks", () => {
+    const limit = SUBMISSION_TIPS.find((tip) => tip.title === "Submission frequency limit");
+    expect(limit?.note).toContain("one submission per day");
+    expect(limit?.note).toContain("Track-3");
+    expect(limit?.note).not.toContain("only one successful submission");
+
+    const html = renderRules();
+    // the challenge cutoff is history; the page must not advertise it as current
+    expect(html).not.toContain("Sep 22, 11:59 PM");
+    expect(html).not.toContain("Final Test submissions closed");
+  });
+
   it("tips carry no anatomy names; rendered page expands every inline placeholder", () => {
     const joined = SUBMISSION_TIPS.flatMap((tip) => [tip.title, tip.note]).join(" ");
     // no anatomy names / class references in this block

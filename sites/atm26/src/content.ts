@@ -613,6 +613,8 @@ export interface PortalBackupForm {
 
 export interface SubmissionPortal {
   title: string;
+  /** One-line state of this intake, rendered as a badge under the card title. */
+  status: string;
   formUrl: string;
   facts: string[];
   /** Optional secondary upload route, shown under the primary form link. */
@@ -624,15 +626,19 @@ export interface SubmissionPortal {
 // specs/site-rules-submission-portals-tips.md). Inline link placeholders
 // ({leaderboard}, {guidelines}, {batch contract section}) are expanded by the
 // Rules renderer; everything else is plain text.
+//
+// Both portals serve all three tracks: Track-3 has no form of its own, it
+// submits through the Final Test / Validation form of Track-1 and Track-2.
 export const SUBMISSION_PORTALS: SubmissionPortal[] = [
   {
     title: "Final Test Phase Submission",
+    status: "Open again — post-MICCAI long-term Test submissions",
     formUrl:
       "https://docs.google.com/forms/d/e/1FAIpQLSfPv_OVm_PkOmF4YgsNW-zren6tDdrUzzZCV_J3oMSDMks13A/viewform?usp=sharing&ouid=117378226219491671209",
     facts: [
-      "Submissions are evaluated on the organizers' own machines (off-GC platform); we stop receiving Final Test Phase submissions on Sep 22, 11:59 PM Pacific Time.",
-      "Only one successful submission counts per participant. Results were not displayed during the phase — you were only notified whether your submission succeeded; the scores are now published on the Final Test Phase leaderboard.",
-      "Final Test Phase leaderboard results were released with the ATM26 Workshop on Oct 1st and are updated manually.",
+      "The Final Test Phase intake continues on the organizers' own machines (off-GC platform), with the same container contract as during the challenge.",
+      "Results arrive by email, and the scores are ranked on the {leaderboard} together with the frozen MICCAI 26 results.",
+      "Track-3 Final Test is not open yet — when it opens, Track-3 submits through this same form.",
     ],
     backupForm: {
       label: "Google Drive Upload Backup Form",
@@ -641,12 +647,14 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
   },
   {
     title: "Validation Phase Submission",
+    status: "Open — Track-1, Track-2 and Track-3 validation",
     formUrl:
       "https://docs.google.com/forms/d/e/1FAIpQLSdwPtoBXp3iyy-s0S2lp629Vpq75OogvS8Xcr-B_bciSQGIPg/viewform?usp=sharing&ouid=117378226219491671209",
     facts: [
       "The organizers built their own evaluation platform, with the {leaderboard} migrated from Grand-Challenge; the Longterm Test Leaderboard is dynamically updated, while the MICCAI 26 results stay frozen.",
       "Validation Phase submissions are limited to once per day.",
       "For the validation phase submission you only need to provide your email address and team name used during registration.",
+      "Track-3 validation submissions are open now and use this same form; Track-3 Final Test opens later.",
     ],
   },
 ];
@@ -671,18 +679,18 @@ export const SUBMISSION_TIPS: SubmissionTip[] = [
   },
   {
     title: "Submission frequency limit",
-    note: "The Final Test Phase counts only one successful submission per participant for Track-1 and Track-2. The Validation Phase allows one submission per day (limited computation resources). The limit counts evaluated submissions only — a run that fails does not use up your slot.",
+    note: "Both the Final Test Phase (post-MICCAI long-term) and the Validation Phase allow one submission per day (limited computation resources), for Track-1, Track-2 and Track-3. The limit counts evaluated submissions only — a run that fails does not use up your slot.",
   },
   {
     title: "A failed run does not use up your submission limit",
-    note: "If your container is rejected at intake or fails during evaluation, it does not count against the frequency limit: our platform removes that submission's records, so your next slot is free right away. Fix the problem and submit again immediately — do not wait for the daily or one-time window to pass. If the form still reports that you are rate-limited, contact the organizers.",
+    note: "If your container is rejected at intake or fails during evaluation, it does not count against the frequency limit: our platform removes that submission's records, so your next slot is free right away. Fix the problem and submit again immediately — do not wait for the daily window to pass. If the form still reports that you are rate-limited, contact the organizers.",
   },
   {
     title: "Evaluation takes hours and results arrive by email",
-    note: "Our system may take hours to finish evaluating your submission, then sends you an email. For the Final Test Phase the email only confirms whether your submission succeeded; the scores themselves appear on the Final Test Phase leaderboard, which is updated manually by the organizers.",
+    note: "Our system may take hours to finish evaluating your submission, then sends you an email. For the Final Test Phase the email only confirms whether your submission succeeded; the scores themselves appear on the Longterm Test leaderboard, which is updated manually by the organizers.",
   },
   {
     title: "Deadlines and release",
-    note: "Final Test submissions closed Sep 22, 11:59 PM PT; the Final Test Phase leaderboard is public and updated manually; the Validation Phase leaderboard is dynamically updated.",
+    note: "Post-MICCAI long-term Final Test submissions and Validation Phase submissions are open; scores appear on the {leaderboard} and on the validation board, which is updated dynamically.",
   },
 ];

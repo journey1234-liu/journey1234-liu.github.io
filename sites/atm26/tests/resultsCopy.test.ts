@@ -26,7 +26,7 @@ describe("published-results copy", () => {
     const tip = content.SUBMISSION_TIPS.find((item) =>
       item.title.startsWith("Evaluation takes hours"),
     );
-    expect(tip?.note).toContain("Final Test Phase leaderboard");
+    expect(tip?.note).toContain("Longterm Test leaderboard");
 
     // The era tags are explained wherever a reader can meet them.
     expect(content.SUBMISSION_TAG_LABELS.miccai26).toBe("MICCAI 26 challenge submission");
@@ -48,7 +48,7 @@ describe("published-results copy", () => {
       portal.title.startsWith("Final Test Phase"),
     );
     expect(finalTestPortal?.facts.join(" ")).toContain(
-      "released with the ATM26 Workshop on Oct 1st",
+      "The Final Test Phase intake continues",
     );
   });
 });
