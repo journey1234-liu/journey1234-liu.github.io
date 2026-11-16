@@ -45,9 +45,9 @@ export const SITE = {
   title: "ATM26 Challenge",
   fullTitle: "ATM26 — Airway Tree Modeling 2026",
   tagline:
-    "A public benchmark challenge for automatic airway-tree modeling from chest CT.",
+    "A public benchmark challenge for airway-tree modeling from chest CT and bronchoscopy frames.",
   intro:
-    "ATM26 invites teams to develop and submit algorithms for automatic airway segmentation and anatomical labeling from computed tomography (CT) images. Submissions are evaluated by the organizers on a held-out test set, and the results are published on a public leaderboard.",
+    "ATM26 invites teams to develop and submit algorithms for automatic airway segmentation and anatomical labeling from computed tomography (CT) images, and frame-level landmark recognition from bronchoscopy sequences. Submissions are evaluated by the organizers on a held-out test set, and the results are published on a public leaderboard.",
   organizer: "Institute of Medical Robotics, Shanghai Jiao Tong University",
 };
 
@@ -109,7 +109,7 @@ export const TRACKS: TrackInfo[] = [
   {
     slug: "track-2",
     title: "Track 2 · Branch-wise Anatomical Labeling",
-    short: "Label airway branches into the 20 scored airway classes (labels 0–20; class 20 is a real scored branch).",
+    short: "Label airway branches into the 20 scored foreground classes (labels 1–20; 0 is background; class 20 is a real scored branch).",
     description:
       "Track 2 moves beyond binary segmentation toward structured airway understanding. Participants are required to assign anatomical labels to airway branches and generate an anatomically consistent airway representation. Target labels include the segmental airway branches. This task is designed to support automated route planning, lesion-to-airway association, and standardized anatomical reporting for endobronchial intervention.",
     metrics: [
@@ -128,7 +128,7 @@ export const TRACKS: TrackInfo[] = [
     short:
       "Classify each bronchoscopy frame into the airway landmark it shows.",
     description:
-      "Track 3 moves from CT volumes to the endobronchial view. Each case is a set of rendered bronchoscopy sequences along the airway tree; every frame carries the anatomical landmark visible at that moment. Participants submit one inference container that reads PNG sequences and writes a per-frame label CSV, and are ranked by frame Macro-F1, frame accuracy, segmental edit score and segmental F1@50.",
+      "Track 3 moves from CT volumes to the endobronchial view. Each case is a set of rendered bronchoscopy sequences along the airway tree; every frame carries the anatomical landmark visible at that moment. Participants submit one inference container that reads PNG sequences and writes a per-frame label CSV, and are ranked by frame Macro-F1, frame accuracy, segmental edit score and segmental F1@50. The Track 3 training data is being uploaded; a download link will be published when it is ready.",
     metrics: [
       { name: "frame_macro_f1", higherIsBetter: true, note: "Mean F1 over the fixed 32 landmark classes" },
       { name: "frame_accuracy", higherIsBetter: true, note: "Correct frames over all frames" },
@@ -236,7 +236,7 @@ export const PHASE_NOTICES: Record<string, string> = {
   "miccai26-final-test":
     "Final ranking of the MICCAI 26 challenge: the Final Test Phase results, including the organizer-seeded models of teams that did not submit their own container.",
   "miccai26-validation":
-    "Validation Phase ranking as it stood when the MICCAI 26 challenge closed. Kept as the challenge archive; it is no longer updated.",
+    "Frozen MICCAI 26 Validation archive: the official Grand Challenge validation ranking, re-ranked with β₀ error and the platform evaluations recorded at the freeze. It is no longer updated.",
   "track3-test":
     "Track 3 test-phase ranking: frame-level landmark classification on the held-out test sequences, ranked by equal mean rank over the four Track 3 metrics.",
   "track3-validation":
@@ -253,20 +253,21 @@ export const SUBMISSION_TAG_LABELS: Record<string, string> = {
 
 // Introduction paragraphs (mirrors the official challenge description).
 export const INTRODUCTION: string[] = [
-  "ATM26 is part of the SENSAR (Sino-European Surgical Autonomy in Robotics) Network challenges. The SENSAR Network is focused on innovative, reproducible solutions for surgical autonomy and robot assisted interventions. ATM26 is organized in conjunction with MICCAI 2026, which is to be held in Strasbourg, September 27 - October 1, 2026.",
+  "ATM26 is part of the SENSAR (Sino-European Surgical Autonomy in Robotics) Network challenges. The SENSAR Network is focused on innovative, reproducible solutions for surgical autonomy and robot assisted interventions. ATM26 is organized in conjunction with MICCAI 2026, which was held in Strasbourg, September 27 - October 1, 2026.",
   "Accurate airway tree modeling is clinically important for respiratory disease assessment and endobronchial intervention. Patient-specific airway models can support pre-operative planning, bronchoscopic navigation, and peripheral pulmonary nodule biopsy by helping identify optimal branch-level access routes and reduce procedural uncertainty and operation risks. A complete and topologically reliable airway tree provides the geometric foundation for intervention planning, while anatomical branch labels connect imaging findings with standardized airway nomenclature and clinically interpretable procedure plans.",
-  "Building on ATM22 (Airway Tree Modeling): Multi-site, Multi-domain Airway Tree Modeling, which focused on binary airway segmentation, ATM26 extends airway tree modeling from binary segmentation to structured airway understanding, supporting clinically meaningful airway segmentation and branch-wise anatomical labeling.",
+  "Building on ATM22 (Airway Tree Modeling): Multi-site, Multi-domain Airway Tree Modeling, which focused on binary airway segmentation, ATM26 extends airway tree modeling from binary segmentation to structured airway understanding, supporting clinically meaningful airway segmentation, branch-wise anatomical labeling, and frame-level landmark recognition from the endobronchial view.",
 ];
 
 // Header paragraph for the Tracks section.
 export const TRACKS_INTRO =
-  "ATM26 is designed to promote robust, topology-aware, and clinically applicable airway modeling under realistic CT acquisition conditions, including variations in image spacing, image quality, and airway anatomy. The challenge includes two tracks, which participants may enter individually or together.";
+  "ATM26 is designed to promote robust, topology-aware, and clinically applicable airway modeling under realistic CT acquisition conditions, including variations in image spacing, image quality, and airway anatomy. The challenge includes three tracks — CT airway segmentation, CT branch-wise anatomical labeling, and bronchoscopy frame-level landmark recognition — which participants may enter individually or together.";
 
 // Prominent Track-3 status banner on the home page, directly below the hero
 // CTA row and above the News list. It replaces the former submission-status
-// notice: Track 3 is announced but not open yet. `title` is rendered bold and
-// italic in title case; the emphasised fragment ("COMING SOON") is rendered
-// bold, larger, and in an amber accent colour.
+// notice: Track 3 is live (leaderboard, label guide, baseline); its training
+// data is still being uploaded. `title` is rendered bold and italic in title
+// case; the emphasised fragment is rendered bold, larger, and in an amber
+// accent colour.
 export const TRACK3_NOTICE = {
   kicker: "TRACK-3 STATUS",
   title: "Track 3: Landmark Recognition for Endobronchial Intervention",
@@ -278,6 +279,12 @@ export const TRACK3_NOTICE = {
 // retired from this list (sanity check announcement omitted — sanity check is
 // not part of the published phases).
 export const NEWS: NewsItem[] = [
+  {
+    date: "2026-11-16",
+    title: "Track 3 label guide, container contract and baseline released",
+    detail:
+      "The 32-class label guide is on the Tracks page, the container contract on the Rules page, and the official Track 1, Track 2 and Track 3 baseline checkpoints are on Hugging Face. The Track 3 training data is being uploaded; a download link will be published when it is ready.",
+  },
   {
     date: "2026-11-15",
     title: "Track 3 leaderboard opened",
@@ -300,7 +307,7 @@ export const NEWS: NewsItem[] = [
     date: "2026-10-01",
     title: "Track-1 & Track-2 submission re-opened!",
     detail:
-      "Both Validation Phase submissions and Final Test Phase submissions are now limited to once per day. Final Test Phase leaderboard is now public and updated manually.",
+      "Both Validation Phase submissions and Final Test Phase submissions are now limited to once every 24 hours. The Final Test ranking is published on the Longterm Test board, which is updated manually by the organizers.",
   },
   {
     date: "2026-08-20",
@@ -432,7 +439,7 @@ export const WORKSHOP = {
 // Shown above the leaderboard. The challenge is over: its results are archived
 // and a longterm board keeps running.
 export const LEADERBOARD_NOTICE =
-  "The MICCAI 26 challenge results are frozen (Final Test and Validation archives). The Longterm Test Leaderboard stays open and is updated as new Final Test results arrive.";
+  "The MICCAI 26 challenge results are frozen (Final Test and Validation archives). The Longterm Test Leaderboard stays open and is updated as new Final Test results arrive. The Track 3 validation board is live; the Track 3 test board opens with the Track 3 Final Test phase.";
 
 export const TIMELINE: TimelineItem[] = [
   {
@@ -456,9 +463,24 @@ export const TIMELINE: TimelineItem[] = [
     detail: "11:59 PM PT (Pacific Time) on 22 September 2026 — final test phase submissions close.",
   },
   {
+    date: "2026-10-01",
+    title: "Post-MICCAI long-term submissions re-opened",
+    detail: "Final Test and Validation submissions re-opened on the organizers' platform, limited to one submission every 24 hours.",
+  },
+  {
+    date: "2026-11-13",
+    title: "Longterm Test leaderboard opened",
+    detail: "The Longterm Test board continues the Final Test ranking and is updated as post-challenge Final Test results arrive.",
+  },
+  {
     date: "2026-11-15",
     title: "Track 3 leaderboard opened",
-    detail: "The Track 3 validation and test leaderboards are public, together with the 32-class label guide and the baseline release.",
+    detail: "The Track 3 validation and test leaderboards are public.",
+  },
+  {
+    date: "2026-11-16",
+    title: "Track 3 label guide, container contract and baseline released",
+    detail: "The 32-class label guide, the container contract and the Track 3 baseline checkpoint are available. The Track 3 training data is being uploaded.",
   },
 ];
 
@@ -544,7 +566,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "Is the leaderboard final?",
     answer:
-      "Both leaderboards are public. The Validation Phase board mirrors the official Grand Challenge leaderboard, and the Final Test Phase board is updated manually by the organizers.",
+      "The MICCAI 26 Final Test board is a frozen archive, and the MICCAI 26 Validation board is a frozen archive that was re-ranked with β₀ error before it was frozen. The Longterm Test board is live and is updated manually by the organizers as post-challenge Final Test results arrive. The Track 3 validation board is live; the Track 3 test board opens with the Track 3 Final Test phase. Track-1 and Track-2 validation results submitted after the challenge are returned by email and are not added to the frozen archive; Track-3 validation results update the Track 3 validation board.",
   },
 ];
 
@@ -637,8 +659,8 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
       "https://docs.google.com/forms/d/e/1FAIpQLSfPv_OVm_PkOmF4YgsNW-zren6tDdrUzzZCV_J3oMSDMks13A/viewform?usp=sharing&ouid=117378226219491671209",
     facts: [
       "The Final Test Phase intake continues on the organizers' own machines (off-GC platform), with the same container contract as during the challenge.",
-      "Results arrive by email, and the scores are ranked on the {leaderboard} together with the frozen MICCAI 26 results.",
-      "Track-3 Final Test is not open yet — when it opens, Track-3 submits through this same form.",
+      "For Track-1 and Track-2, the result email confirms whether the submission succeeded; the scores are ranked on the Longterm Test board together with the frozen MICCAI 26 results.",
+      "Track-3 Final Test is not open yet — when it opens, Track-3 submits through this same form and its results appear on the Track 3 test board.",
     ],
     backupForm: {
       label: "Google Drive Upload Backup Form",
@@ -651,10 +673,11 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
     formUrl:
       "https://docs.google.com/forms/d/e/1FAIpQLSdwPtoBXp3iyy-s0S2lp629Vpq75OogvS8Xcr-B_bciSQGIPg/viewform?usp=sharing&ouid=117378226219491671209",
     facts: [
-      "The organizers built their own evaluation platform, with the {leaderboard} migrated from Grand-Challenge; the Longterm Test Leaderboard is dynamically updated, while the MICCAI 26 results stay frozen.",
-      "Validation Phase submissions are limited to once per day.",
+      "The organizers built their own evaluation platform, with the {leaderboard} migrated from Grand-Challenge; the Longterm Test Leaderboard is dynamically updated, while the MICCAI 26 boards stay frozen.",
+      "Validation Phase submissions are limited to one submission every 24 hours.",
+      "Track-1 and Track-2 validation results are returned by email and are not added to the frozen MICCAI 26 Validation archive.",
       "For the validation phase submission you only need to provide your email address and team name used during registration.",
-      "Track-3 validation submissions are open now and use this same form; Track-3 Final Test opens later.",
+      "Track-3 validation submissions are open now and use this same form; Track-3 validation results appear on the Track 3 validation board, and Track-3 Final Test opens later.",
     ],
   },
 ];
@@ -687,10 +710,10 @@ export const SUBMISSION_TIPS: SubmissionTip[] = [
   },
   {
     title: "Evaluation takes hours and results arrive by email",
-    note: "Our system may take hours to finish evaluating your submission, then sends you an email. For the Final Test Phase the email only confirms whether your submission succeeded; the scores themselves appear on the Longterm Test leaderboard, which is updated manually by the organizers.",
+    note: "Our system may take hours to finish evaluating your submission, then sends you an email. For the Final Test Phase the email only confirms whether your submission succeeded; the scores themselves appear on the Longterm Test leaderboard, which is updated manually by the organizers. For Track-1 and Track-2 Validation the email includes the evaluated metrics and the MICCAI 26 Validation board stays a frozen archive; Track-3 validation results appear on the Track 3 validation board.",
   },
   {
     title: "Deadlines and release",
-    note: "Post-MICCAI long-term Final Test submissions and Validation Phase submissions are open; scores appear on the {leaderboard} and on the validation board, which is updated dynamically.",
+    note: "Post-MICCAI long-term Final Test submissions and Validation Phase submissions are open. Track-1 and Track-2 Final Test scores appear on the {leaderboard}; Track-1 and Track-2 Validation scores are returned by email while the MICCAI 26 Validation board remains a frozen archive. Track-3 validation scores appear on the Track 3 validation board.",
   },
 ];

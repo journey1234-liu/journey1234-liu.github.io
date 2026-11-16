@@ -20,8 +20,9 @@ describe("published-results copy", () => {
     expect(content.LEADERBOARD_NOTICE).toContain("MICCAI 26 challenge results are frozen");
     expect(content.LEADERBOARD_NOTICE).toContain("Longterm Test Leaderboard");
     const faq = content.FAQ.find((item) => item.question === "Is the leaderboard final?");
-    expect(faq?.answer).toContain("Both leaderboards are public");
+    expect(faq?.answer).toContain("frozen archive");
     expect(faq?.answer).toContain("updated manually by the organizers");
+    expect(faq?.answer).toContain("Track 3 validation board");
 
     const tip = content.SUBMISSION_TIPS.find((item) =>
       item.title.startsWith("Evaluation takes hours"),
@@ -49,6 +50,9 @@ describe("published-results copy", () => {
     );
     expect(finalTestPortal?.facts.join(" ")).toContain(
       "The Final Test Phase intake continues",
+    );
+    expect(content.PHASE_NOTICES["miccai26-validation"]).toContain(
+      "Frozen MICCAI 26 Validation archive",
     );
   });
 });

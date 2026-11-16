@@ -23,7 +23,8 @@ describe("Rules page common pitfalls", () => {
   it("renders the Common pitfalls heading, intro and one list item per entry", () => {
     const html = renderRules();
     expect(html).toContain("<h2>Common pitfalls</h2>");
-    expect(html).toContain("labels are 0&ndash;20 (class 20 is a real scored branch)");
+    expect(html).toContain("Track-2 labels are 0&ndash;20: 0 is background");
+    expect(html).toContain("class 20 is a real scored branch");
     const pitfallList = /<ul class="pitfall-list">([\s\S]*?)<\/ul>/.exec(html)?.[1] ?? "";
     expect(pitfallList).not.toBe("");
     expect((pitfallList.match(/<li><strong>/g) ?? []).length).toBe(COMMON_PITFALLS.length);

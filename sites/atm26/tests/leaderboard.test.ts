@@ -313,7 +313,7 @@ describe("phase selector", () => {
 
   it("frames each board in one line", () => {
     expect(renderShellHtml("longterm-test")).toContain("Continuously maintained Final Test leaderboard");
-    expect(renderShellHtml("miccai26-validation")).toContain("as it stood when the MICCAI 26 challenge closed");
+    expect(renderShellHtml("miccai26-validation")).toContain("Frozen MICCAI 26 Validation archive");
     expect(renderShellHtml("miccai26-final-test")).toContain("Final ranking of the MICCAI 26 challenge");
   });
 });

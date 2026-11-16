@@ -377,8 +377,9 @@ export function renderRules(): string {
       </p>
       <h2>Common pitfalls</h2>
       <p>
-        Track-2 labels are 0&ndash;20 (class 20 is a real scored branch). Avoid
-        these common submission mistakes:
+        Track-2 labels are 0&ndash;20: 0 is background and 1&ndash;20 are the
+        foreground classes; class 20 is a real scored branch. Avoid these
+        common submission mistakes:
       </p>
       <ul class="pitfall-list">
         ${COMMON_PITFALLS.map(

@@ -9,6 +9,7 @@ const RETIRED_DATES = ["2026-09-18", "2026-07-31", "2026-06-15"];
 describe("home news list", () => {
   it("lists the current announcements, newest first", () => {
     expect(NEWS.map((n) => n.date)).toEqual([
+      "2026-11-16",
       "2026-11-15",
       "2026-11-13",
       "2026-10-08",
@@ -17,15 +18,22 @@ describe("home news list", () => {
     ]);
   });
 
-  it("announces the Track 3 leaderboard", () => {
-    const latest = NEWS[0];
-    expect(latest.date).toBe("2026-11-15");
+  it("announces the Track 3 leaderboard and the release of its label guide and baseline", () => {
+    const release = NEWS[0];
+    expect(release.date).toBe("2026-11-16");
+    expect(release.title).toBe(
+      "Track 3 label guide, container contract and baseline released",
+    );
+    expect(release.detail).toContain("Hugging Face");
+    expect(release.detail).toContain("training data is being uploaded");
+
+    const latest = NEWS.find((n) => n.date === "2026-11-15")!;
     expect(latest.title).toBe("Track 3 leaderboard opened");
     expect(latest.detail).toContain("frame Macro-F1");
   });
 
   it("announces the Longterm Test board and its first post-challenge result", () => {
-    const latest = NEWS[1];
+    const latest = NEWS.find((n) => n.date === "2026-11-13")!;
     expect(latest.date).toBe("2026-11-13");
     expect(latest.title).toBe(
       "Longterm Test leaderboard opened — deeptree takes the Track 2 lead",
@@ -35,7 +43,7 @@ describe("home news list", () => {
   });
 
   it("announces the MICCAI 26 archive", () => {
-    const archive = NEWS[2];
+    const archive = NEWS.find((n) => n.date === "2026-10-08")!;
     expect(archive.date).toBe("2026-10-08");
     expect(archive.title).toBe("MICCAI 26 results frozen and archived");
   });
@@ -44,7 +52,7 @@ describe("home news list", () => {
     const reopening = NEWS.find((n) => n.date === "2026-10-01")!;
     expect(reopening.title).toBe("Track-1 & Track-2 submission re-opened!");
     expect(reopening.detail).toBe(
-      "Both Validation Phase submissions and Final Test Phase submissions are now limited to once per day. Final Test Phase leaderboard is now public and updated manually.",
+      "Both Validation Phase submissions and Final Test Phase submissions are now limited to once every 24 hours. The Final Test ranking is published on the Longterm Test board, which is updated manually by the organizers.",
     );
   });
 
@@ -54,9 +62,11 @@ describe("home news list", () => {
       "<strong>2026-10-01</strong> — Track-1 &amp; Track-2 submission re-opened!",
     );
     expect(html).toContain(
-      "Both Validation Phase submissions and Final Test Phase submissions are now limited to once per day.",
+      "Both Validation Phase submissions and Final Test Phase submissions are now limited to once every 24 hours.",
     );
-    expect(html).toContain("Final Test Phase leaderboard is now public and updated manually.");
+    expect(html).toContain(
+      "The Final Test ranking is published on the Longterm Test board, which is updated manually by the organizers.",
+    );
   });
 
   it("keeps every retired announcement out of content and markup", () => {

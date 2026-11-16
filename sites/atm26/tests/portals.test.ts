@@ -78,7 +78,8 @@ describe("submission portals and tips", () => {
     // Validation: Track-3 validation submits through this very form
     expect(cards[1]).toContain("Track-3 validation submissions are open now");
     expect(cards[1]).toContain("this same form");
-    expect(cards[1]).toContain("once per day");
+    expect(cards[1]).toContain("one submission every 24 hours");
+    expect(cards[1]).toContain("not added to the frozen MICCAI 26 Validation archive");
   });
 
   it("describes the current limits for all three tracks", () => {
