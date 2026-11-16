@@ -19,8 +19,12 @@ import {
   COMMON_PITFALLS,
   SUBMISSION_PORTALS,
   SUBMISSION_TIPS,
+  TRACK3_LABEL_INTRO,
+  TRACK3_PROXIMAL_LABELS,
+  TRACK3_SEGMENTAL_LABELS,
+  TRACK3_LABEL_NOTES,
 } from "./content";
-import type { WorkshopAgendaItem, WorkshopPhoto } from "./content";
+import type { WorkshopAgendaItem, WorkshopPhoto, Track3Label } from "./content";
 import { resolveAsset } from "./basePath";
 import { metricLabel } from "./metricLabels";
 
@@ -218,6 +222,54 @@ export function renderHome(): string {
     </section>`;
 }
 
+function renderTrack3Labels(): string {
+  const rows = (labels: Track3Label[]): string =>
+    labels
+      .map(
+        (label) => `
+          <tr>
+            <td>${label.id}</td>
+            <td>${escapeHtml(label.name)}</td>
+            <td>${escapeHtml(label.meaning)}</td>
+          </tr>`,
+      )
+      .join("");
+  const notes = TRACK3_LABEL_NOTES.map((note) => `<li>${escapeHtml(note)}</li>`).join("");
+  return `
+    <section class="panel" id="track3-labels">
+      <h2>Track 3 label guide</h2>
+      <p>${escapeHtml(TRACK3_LABEL_INTRO)}</p>
+      <figure class="label-figure">
+        <img
+          src="${escapeHtml(resolveAsset(IMAGES.track3Labels))}"
+          alt="All 32 airway labels: the complete airway tree with the 19 segmental labels, and a close-up of the 13 proximal labels"
+          loading="lazy"
+        />
+        <figcaption>
+          Left: the complete airway tree with the 19 segmental classes (R = right,
+          L = left). Right: close-up of the 13 proximal classes, including the
+          trachea and the main, lobar and basal-trunk bronchi.
+        </figcaption>
+      </figure>
+      <h3>Proximal airways (13 classes)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Label</th><th>Meaning</th></tr></thead>
+          <tbody>${rows(TRACK3_PROXIMAL_LABELS)}</tbody>
+        </table>
+      </div>
+      <h3>Segmental bronchi (19 classes)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Label</th><th>Meaning</th></tr></thead>
+          <tbody>${rows(TRACK3_SEGMENTAL_LABELS)}</tbody>
+        </table>
+      </div>
+      <h3>Notes</h3>
+      <ul class="tips-list">${notes}</ul>
+    </section>`;
+}
+
 export function renderTracks(): string {
   const sections = TRACKS.map((track) => {
     const metricRows = track.metrics
@@ -249,7 +301,8 @@ export function renderTracks(): string {
       <h1>Tracks</h1>
       <p>${escapeHtml(TRACKS_INTRO)}</p>
     </section>
-    ${sections}`;
+    ${sections}
+    ${renderTrack3Labels()}`;
 }
 
 export function renderRules(): string {
@@ -303,10 +356,23 @@ export function renderRules(): string {
       <ul class="tips-list">${tipsHtml}</ul>
       <h2>Container contract</h2>
       <p>
-        Submitted containers read the input CT image from <code>/input</code> and
-        write the segmentation to <code>/output</code>. The exact interface is
-        described in the challenge documentation distributed to registered
-        participants.
+        <strong>Track 1 / Track 2.</strong> Submitted containers read the input CT
+        image from <code>/input</code> and write the segmentation to
+        <code>/output</code>. The exact interface is described in the challenge
+        documentation distributed to registered participants.
+      </p>
+      <p>
+        <strong>Track 3.</strong> The container reads every PNG sequence under
+        <code>/input/sequences/&lt;sequence-id&gt;/</code> (201 frames per
+        sequence) and writes one CSV per sequence to
+        <code>/output/predictions/&lt;sequence-id&gt;.csv</code> with the header
+        <code>filename,label</code> — one row per input frame, in numeric order,
+        using the 32-class
+        <a href="#/tracks">label schema</a>. It receives the whole split in one
+        run (load the model once, then loop), must run as a non-root user, and
+        must not use the network or command-line arguments. Images must declare
+        <code>org.atm26.batch="1"</code> and
+        <code>org.grand-challenge.api-method="exec"</code>.
       </p>
       <h2>Common pitfalls</h2>
       <p>

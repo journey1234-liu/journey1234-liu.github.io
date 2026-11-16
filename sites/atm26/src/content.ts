@@ -55,6 +55,7 @@ export const SITE = {
 // Renderers resolve them against the site base path.
 export const IMAGES = {
   banner: "img/banner.webp",
+  track3Labels: "img/track3-labels.webp",
   keylab: "img/keylab.webp",
   tongren: "img/tongren.webp",
 };
@@ -135,6 +136,60 @@ export const TRACKS: TrackInfo[] = [
       { name: "segment_f1_50", higherIsBetter: true, note: "Segmental F1 at temporal IoU 0.5" },
     ],
   },
+];
+
+/** Track 3 label schema: 13 proximal airway classes + 19 segmental classes. */
+export interface Track3Label {
+  id: number;
+  name: string;
+  meaning: string;
+}
+
+export const TRACK3_LABEL_INTRO =
+  "Track 3 predicts one of 32 anatomical landmarks per frame: 13 proximal airway classes and 19 segmental classes. L/R refer to the patient's left and right side, and the ID is the value written in the prediction CSV.";
+
+export const TRACK3_PROXIMAL_LABELS: Track3Label[] = [
+  { id: 100, name: "trachea", meaning: "Trachea" },
+  { id: 101, name: "Left main", meaning: "Left main bronchus" },
+  { id: 102, name: "Right main", meaning: "Right main bronchus" },
+  { id: 107, name: "Left Upper", meaning: "Left upper lobar bronchus" },
+  { id: 108, name: "Left Lower", meaning: "Left lower lobar bronchus" },
+  { id: 109, name: "Right Upper", meaning: "Right upper lobar bronchus" },
+  { id: 110, name: "Right Middle", meaning: "Right middle lobar bronchus" },
+  { id: 111, name: "Right Lower", meaning: "Right lower lobar bronchus" },
+  { id: 112, name: "Bronchus intermedius", meaning: "Right intermediate bronchus" },
+  { id: 113, name: "Left upper division", meaning: "Left upper division bronchus" },
+  { id: 114, name: "Lingular", meaning: "Lingular bronchus" },
+  { id: 115, name: "Right basal trunk", meaning: "Right basal trunk" },
+  { id: 116, name: "Left basal trunk", meaning: "Left basal trunk" },
+];
+
+export const TRACK3_SEGMENTAL_LABELS: Track3Label[] = [
+  { id: 0, name: "LB1+2", meaning: "Left apicoposterior segment" },
+  { id: 1, name: "LB3", meaning: "Left anterior segment" },
+  { id: 2, name: "LB4", meaning: "Left superior lingular segment" },
+  { id: 3, name: "LB5", meaning: "Left inferior lingular segment" },
+  { id: 4, name: "LB6", meaning: "Left superior segment (lower lobe)" },
+  { id: 5, name: "LB8", meaning: "Left anterior basal segment" },
+  { id: 6, name: "LB9", meaning: "Left lateral basal segment" },
+  { id: 7, name: "LB10", meaning: "Left posterior basal segment" },
+  { id: 8, name: "RB1", meaning: "Right apical segment" },
+  { id: 9, name: "RB2", meaning: "Right posterior segment" },
+  { id: 10, name: "RB3", meaning: "Right anterior segment" },
+  { id: 11, name: "RB4", meaning: "Right lateral segment (middle lobe)" },
+  { id: 12, name: "RB5", meaning: "Right medial segment (middle lobe)" },
+  { id: 13, name: "RB6", meaning: "Right superior segment (lower lobe)" },
+  { id: 14, name: "RB7", meaning: "Right medial basal segment" },
+  { id: 15, name: "RB8", meaning: "Right anterior basal segment" },
+  { id: 16, name: "RB9", meaning: "Right lateral basal segment" },
+  { id: 17, name: "RB10", meaning: "Right posterior basal segment" },
+  { id: 19, name: "LB7", meaning: "Left medial basal segment" },
+];
+
+export const TRACK3_LABEL_NOTES: string[] = [
+  "A segment label is the union of all annotated branches belonging to that segment, not a single centerline.",
+  "ID 0 (LB1+2) is a valid class, not background; ID 18 is unused.",
+  "Anatomical variation may leave a class absent in an individual case, but never introduces a new class; daughter branches within a segment keep its label.",
 ];
 
 export const RANKING_POLICY_DESCRIPTION =
@@ -400,6 +455,11 @@ export const TIMELINE: TimelineItem[] = [
     title: "Deadline for final test phase submission",
     detail: "11:59 PM PT (Pacific Time) on 22 September 2026 — final test phase submissions close.",
   },
+  {
+    date: "2026-11-15",
+    title: "Track 3 leaderboard opened",
+    detail: "The Track 3 validation and test leaderboards are public, together with the 32-class label guide and the baseline release.",
+  },
 ];
 
 export const ORGANIZERS: OrganizerInstitution[] = [
@@ -479,7 +539,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "Which metrics are used for ranking?",
     answer:
-      "Track 1 uses DSC, clDice, TLD, BD and β₀ error. Track 2 uses ACC, F1, SC, TD, TAcc, mDice and mclDice. See the Tracks page for details.",
+      "Track 1 uses DSC, clDice, TLD, BD and β₀ error. Track 2 uses ACC, F1, SC, TD, TAcc, mDice and mclDice. Track 3 uses frame Macro-F1 over the fixed 32-class schema, frame accuracy, segmental edit score and segmental F1@50. See the Tracks page for details.",
   },
   {
     question: "Is the leaderboard final?",

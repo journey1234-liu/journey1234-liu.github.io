@@ -965,6 +965,29 @@ summary {
 }
 
 /* Without animation the strip becomes an ordinary horizontal scroller. */
+.label-figure {
+  margin: 20px 0;
+  padding: 12px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.label-figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.label-figure figcaption {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+#track3-labels h3 {
+  margin-top: 28px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .photo-marquee {
     overflow-x: auto;
