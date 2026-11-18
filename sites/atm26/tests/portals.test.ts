@@ -8,6 +8,7 @@ import {
   SUBMISSION_TIPS,
 } from "../src/content";
 import { renderRules, renderHome } from "../src/pages";
+import { TRACK_ICONS } from "../src/icons";
 
 const FINAL_TEST_FORM =
   "https://docs.google.com/forms/d/e/1FAIpQLSfPv_OVm_PkOmF4YgsNW-zren6tDdrUzzZCV_J3oMSDMks13A/viewform?usp=sharing&ouid=117378226219491671209";
@@ -59,7 +60,7 @@ describe("submission portals and tips", () => {
 
   it("shows the state of every intake and leaves the closed phase form-free", () => {
     const html = renderRules();
-    const cards = [...html.matchAll(/<div class="portal-card">([\s\S]*?)<\/div>/g)].map(
+    const cards = [...html.matchAll(/<div class="portal-card[^"]*">([\s\S]*?)<\/div>/g)].map(
       (match) => match[1],
     );
     expect(cards.length).toBe(6);
@@ -90,6 +91,27 @@ describe("submission portals and tips", () => {
     // the shared note carries the frequency and venue once, outside the cards
     const note = /<p class="portal-note">([\s\S]*?)<\/p>/.exec(html)?.[1] ?? "";
     expect(note.replace(/\s+/g, " ")).toContain("One submission per 24 hours per team and track");
+  });
+
+  it("gives every card its track glyph and mutes the closed one", () => {
+    const html = renderRules();
+    expect((html.match(/class="portal-icon"/g) ?? []).length).toBe(6);
+    expect((html.match(/aria-hidden="true"/g) ?? []).length).toBeGreaterThanOrEqual(6);
+
+    // Track-1 is one colour (binary), Track-2 many (multi-class labels)
+    const t1Colours = new Set(TRACK_ICONS.t1.match(/#[0-9a-f]{6}/g) ?? []);
+    const t2Colours = new Set(TRACK_ICONS.t2.match(/#[0-9a-f]{6}/g) ?? []);
+    expect(t1Colours.size).toBe(1);
+    expect(t1Colours.has("#d13b3b")).toBe(true);
+    expect(t2Colours.size).toBeGreaterThanOrEqual(5);
+    expect(t2Colours.has("#d13b3b")).toBe(false);
+    expect(TRACK_ICONS.t3).toContain("#0e7490");
+
+    // each card carries its track class; only the unopened phase is closed
+    expect((html.match(/portal-card track-t1/g) ?? []).length).toBe(2);
+    expect((html.match(/portal-card track-t2/g) ?? []).length).toBe(2);
+    expect((html.match(/portal-card track-t3/g) ?? []).length).toBe(2);
+    expect((html.match(/is-closed/g) ?? []).length).toBe(1);
   });
 
   it("describes the current limits for all three tracks", () => {

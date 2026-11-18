@@ -636,9 +636,14 @@ export interface PortalBackupForm {
   url: string;
 }
 
+/** Which track a portal belongs to; drives the card glyph. */
+export type TrackKey = "t1" | "t2" | "t3";
+
 export interface SubmissionPortal {
   /** Track and phase, e.g. "Track-1 · Validation". */
   title: string;
+  /** Track of this card, selecting its glyph. */
+  track: TrackKey;
   /** One-line state of this intake, rendered as a badge under the card title. */
   status: string;
   /** Submission form; absent while the phase is still closed. */
@@ -662,6 +667,7 @@ const VALIDATION_FORM_URL =
 export const SUBMISSION_PORTALS: SubmissionPortal[] = [
   {
     title: "Track-1 · Validation",
+    track: "t1",
     status: "Open",
     formUrl: VALIDATION_FORM_URL,
     facts: [
@@ -672,6 +678,7 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
   },
   {
     title: "Track-2 · Validation",
+    track: "t2",
     status: "Open",
     formUrl: VALIDATION_FORM_URL,
     facts: [
@@ -682,6 +689,7 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
   },
   {
     title: "Track-3 · Validation",
+    track: "t3",
     status: "Open",
     formUrl: VALIDATION_FORM_URL,
     facts: [
@@ -692,6 +700,7 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
   },
   {
     title: "Track-1 · Longterm Test",
+    track: "t1",
     status: "Open again — long-term",
     formUrl: FINAL_TEST_FORM_URL,
     facts: [
@@ -705,6 +714,7 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
   },
   {
     title: "Track-2 · Longterm Test",
+    track: "t2",
     status: "Open again — long-term",
     formUrl: FINAL_TEST_FORM_URL,
     facts: [
@@ -718,6 +728,7 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
   },
   {
     title: "Track-3 · Test",
+    track: "t3",
     status: "Opens later",
     facts: [
       "The Track-3 Test Phase is not open yet; no submissions are accepted.",

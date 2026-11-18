@@ -813,6 +813,7 @@ summary {
 }
 
 .portal-card {
+  position: relative;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1rem 1.25rem;
@@ -820,6 +821,44 @@ summary {
 
 .portal-card h3 {
   margin-top: 0;
+  /* keep the title clear of the corner glyph */
+  padding-right: 3.2rem;
+}
+
+.portal-card.track-t1 {
+  --glyph-tint: #fdf0f1;
+}
+
+.portal-card.track-t2 {
+  --glyph-tint: #f5f3ff;
+}
+
+.portal-card.track-t3 {
+  --glyph-tint: #ecf8fb;
+}
+
+.portal-icon {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.8rem;
+  width: 46px;
+  height: 46px;
+  padding: 6px;
+  border-radius: 13px;
+  background: var(--glyph-tint, transparent);
+  pointer-events: none;
+}
+
+.portal-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* A phase that has not opened yet keeps its glyph, muted. */
+.portal-card.is-closed .portal-icon {
+  opacity: 0.4;
+  filter: grayscale(1);
 }
 
 /* State of the intake (open / open again / not yet open), as a soft badge. */

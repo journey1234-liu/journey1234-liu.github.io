@@ -26,6 +26,7 @@ import {
   LINKS,
 } from "./content";
 import type { WorkshopAgendaItem, WorkshopPhoto, Track3Label } from "./content";
+import { TRACK_ICONS } from "./icons";
 import { resolveAsset } from "./basePath";
 import { metricLabel } from "./metricLabels";
 
@@ -315,7 +316,8 @@ export function renderTracks(): string {
 export function renderRules(): string {
   const portalCards = SUBMISSION_PORTALS.map(
     (portal) => `
-      <div class="portal-card">
+      <div class="portal-card track-${portal.track}${portal.formUrl ? "" : " is-closed"}">
+        <span class="portal-icon" aria-hidden="true">${TRACK_ICONS[portal.track]}</span>
         <h3>${escapeHtml(portal.title)}</h3>
         <p class="portal-status">${escapeHtml(portal.status)}</p>
         <ul class="portal-facts">
