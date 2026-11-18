@@ -215,6 +215,11 @@ const LOG_TRACK3: PhaseUpdateLogEntry = {
   note: "The Track 3 leaderboard is published: a single Track 3 board per phase, ranked by frame Macro-F1, frame accuracy, segmental edit and segmental F1@50.",
 };
 
+const LOG_LONGTERM_VALIDATION: PhaseUpdateLogEntry = {
+  date: "2026-11-18",
+  note: "The Longterm Validation board opens: the MICCAI 26 validation archive stays frozen, and validation results scored afterwards are ranked alongside it and tagged \u201cPost-MICCAI 26 challenge submission\u201d.",
+};
+
 const LOG_LONGTERM_TEST: PhaseUpdateLogEntry = {
   date: "2026-11-13",
   note: "The Longterm Test board now continues the Final Test ranking (it continued the Validation one before): deeptree's new Final Test result is ranked together with the frozen MICCAI 26 Final Test results and leads Track 2.",
@@ -229,6 +234,7 @@ export const PHASE_UPDATE_LOGS: Record<string, PhaseUpdateLogEntry[]> = {
   "miccai26-final-test": [LOG_ARCHIVE_SPLIT],
   "miccai26-validation": [LOG_ARCHIVE_SPLIT, LOG_BETTI],
   "longterm-test": [LOG_LONGTERM_TEST, LOG_ARCHIVE_SPLIT, LOG_BETTI],
+  "longterm-validation": [LOG_LONGTERM_VALIDATION, LOG_ARCHIVE_SPLIT, LOG_BETTI],
   "track3-test": [LOG_TRACK3],
   "track3-validation": [LOG_TRACK3],
 };
@@ -244,6 +250,8 @@ export const PHASE_NOTICES: Record<string, string> = {
     "Track 3 test-phase ranking: frame-level landmark classification on the held-out test sequences, ranked by equal mean rank over the four Track 3 metrics.",
   "track3-validation":
     "Track 3 validation-phase ranking: the same metrics on the validation sequences.",
+  "longterm-validation":
+    "Continuously maintained Validation leaderboard — the frozen MICCAI 26 Validation archive is ranked together with results scored after the challenge closed. Rows tagged \u201cMICCAI 26 challenge submission\u201d are archived results; later rows are tagged \u201cPost-MICCAI 26 challenge submission\u201d.",
   "longterm-test":
     "Continuously maintained Final Test leaderboard — the frozen MICCAI 26 Final Test results are ranked together with results scored after the challenge closed. Rows tagged “MICCAI 26 challenge submission” were evaluated during the challenge; later rows are tagged “Post-MICCAI 26 challenge submission”.",
 };
@@ -442,7 +450,7 @@ export const WORKSHOP = {
 // Shown above the leaderboard. The challenge is over: its results are archived
 // and a longterm board keeps running.
 export const LEADERBOARD_NOTICE =
-  "The MICCAI 26 challenge results are frozen (Final Test and Validation archives). The Longterm Test Leaderboard stays open and is updated as new Final Test results arrive. The Track 3 validation board is live; the Track 3 test board opens with the Track 3 Final Test phase.";
+  "The MICCAI 26 challenge results are frozen (Final Test and Validation archives). The Longterm Test Leaderboard stays open and is updated as new Final Test results arrive, and the Longterm Validation board does the same for Validation results. The Track 3 validation board is live; the Track 3 test board opens with the Track 3 Final Test phase.";
 
 export const TIMELINE: TimelineItem[] = [
   {

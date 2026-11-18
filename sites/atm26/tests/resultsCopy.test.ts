@@ -41,6 +41,7 @@ describe("published-results copy", () => {
       "miccai26-final-test",
       "miccai26-validation",
       "longterm-test",
+      "longterm-validation",
       "track3-test",
       "track3-validation",
     ]);

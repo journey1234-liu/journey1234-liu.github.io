@@ -177,6 +177,7 @@ export function renderLeaderboard(
 const PHASE_DISPLAY_ORDER = [
   "miccai26-final-test",
   "longterm-test",
+  "longterm-validation",
   "validation",
   "miccai26-validation",
   "track3-validation",
@@ -191,7 +192,6 @@ const PHASE_DISPLAY_ORDER = [
  * now lands on the MICCAI 26 Validation archive it is named after.
  */
 const PHASE_ALIASES: Record<string, string> = {
-  "longterm-validation": "longterm-test",
   validation: "miccai26-validation",
   "final-test": "miccai26-final-test",
   track3: "track3-test",
@@ -211,6 +211,7 @@ const PHASE_TAB_LABELS: Record<string, string> = {
   "miccai26-final-test": "MICCAI 26 Final Test",
   "miccai26-validation": "MICCAI 26 Validation",
   "longterm-test": "Longterm Test",
+  "longterm-validation": "Longterm Validation",
   validation: "Validation",
   "track3-test": "Final Test",
   "track3-validation": "Validation",

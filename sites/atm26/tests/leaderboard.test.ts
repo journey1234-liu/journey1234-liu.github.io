@@ -37,13 +37,14 @@ describe("public/data/leaderboard.json", () => {
     expect(result.ok).toBe(true);
   });
 
-  it("carries the MICCAI 26 archive, the longterm board and Track 3", () => {
+  it("carries the MICCAI 26 archives, both longterm boards and Track 3", () => {
     const data = loadFixture();
     const phases = data.phases as Record<string, unknown>;
     expect(Object.keys(phases)).toEqual([
       "miccai26-final-test",
       "miccai26-validation",
       "longterm-test",
+      "longterm-validation",
       "track3-test",
       "track3-validation",
     ]);
@@ -58,9 +59,35 @@ describe("public/data/leaderboard.json", () => {
       expect(phases[phaseId].frozen, phaseId).toBe(true);
       expect(typeof phases[phaseId].results_cutoff, phaseId).toBe("string");
     }
-    expect(phases["longterm-test"].frozen).toBeUndefined();
-    expect(phases["longterm-test"].results_cutoff).toBeUndefined();
+    for (const phaseId of ["longterm-test", "longterm-validation"]) {
+      expect(phases[phaseId].frozen, phaseId).toBeUndefined();
+      expect(phases[phaseId].results_cutoff, phaseId).toBeUndefined();
+    }
     expect(phases["longterm-test"].label).toBe("Longterm Test");
+    expect(phases["longterm-validation"].label).toBe("Longterm Validation");
+  });
+
+  it("opens the Longterm Validation board from the archive, tagged", () => {
+    const phases = loadFixture().phases as Record<
+      string,
+      { tracks: Record<string, { entries: Array<{ team_display_name: string; submission_tag?: string }> }> }
+    >;
+    const archive = phases["miccai26-validation"].tracks;
+    const longterm = phases["longterm-validation"].tracks;
+    for (const trackId of ["track-1", "track-2"]) {
+      expect(longterm[trackId].entries.length).toBeGreaterThanOrEqual(
+        archive[trackId].entries.length,
+      );
+      // every archived team is on the longterm board, tagged as a challenge row
+      const archivedNames = archive[trackId].entries.map((entry) => entry.team_display_name);
+      const longtermNames = new Set(
+        longterm[trackId].entries.map((entry) => entry.team_display_name),
+      );
+      for (const name of archivedNames) expect(longtermNames.has(name), name).toBe(true);
+      for (const entry of longterm[trackId].entries) {
+        expect(["miccai26", "post-miccai26"]).toContain(entry.submission_tag);
+      }
+    }
   });
 
   it("tags every longterm row as a challenge or post-challenge submission", () => {
@@ -314,7 +341,6 @@ describe("track-first navigation", () => {
   it("keeps the pre-split routes working through aliases", () => {
     // The old routes named a board only; they now resolve to Track-1 + board.
     for (const [legacy, target] of [
-      ["longterm-validation", "longterm-test"],
       ["validation", "miccai26-validation"],
       ["final-test", "miccai26-final-test"],
     ]) {
