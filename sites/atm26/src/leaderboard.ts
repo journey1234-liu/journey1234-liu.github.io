@@ -176,7 +176,6 @@ export function renderLeaderboard(
  */
 const PHASE_DISPLAY_ORDER = [
   "miccai26-final-test",
-  "miccai26-validation",
   "longterm-test",
   "longterm-validation",
   "validation",
@@ -192,7 +191,8 @@ const PHASE_DISPLAY_ORDER = [
  * now lands on the MICCAI 26 Validation archive it is named after.
  */
 const PHASE_ALIASES: Record<string, string> = {
-  validation: "miccai26-validation",
+  validation: "longterm-validation",
+  "miccai26-validation": "longterm-validation",
   "final-test": "miccai26-final-test",
   track3: "track3-test",
   "track-3": "track3-test",
@@ -472,7 +472,7 @@ function rangeLabel(start: number, shown: number, total: number): string {
  * Longterm Test boards rank our own team registrations and show the team alone.
  */
 const TEAM_COLUMN_HEADERS: Record<string, string> = {
-  "miccai26-validation": "Username (Team)",
+  "longterm-validation": "Username (Team)",
 };
 const DEFAULT_TEAM_HEADER = "Team";
 

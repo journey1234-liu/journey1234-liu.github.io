@@ -17,8 +17,9 @@ describe("published-results copy", () => {
   });
 
   it("states that the MICCAI 26 results are frozen and the longterm board is open", () => {
-    expect(content.LEADERBOARD_NOTICE).toContain("MICCAI 26 challenge results are frozen");
-    expect(content.LEADERBOARD_NOTICE).toContain("Longterm Test Leaderboard");
+    expect(content.LEADERBOARD_NOTICE).toContain("MICCAI 26 Final Test board is a frozen archive");
+    expect(content.LEADERBOARD_NOTICE).toContain("Longterm Test board");
+    expect(content.LEADERBOARD_NOTICE).toContain("Longterm Validation board");
     const faq = content.FAQ.find((item) => item.question === "Is the leaderboard final?");
     expect(faq?.answer).toContain("frozen archive");
     expect(faq?.answer).toContain("updated manually by the organizers");
@@ -39,7 +40,6 @@ describe("published-results copy", () => {
     );
     expect(Object.keys(content.PHASE_UPDATE_LOGS)).toEqual([
       "miccai26-final-test",
-      "miccai26-validation",
       "longterm-test",
       "longterm-validation",
       "track3-test",
@@ -52,8 +52,8 @@ describe("published-results copy", () => {
     expect(longtermPortal?.facts.join(" ")).toContain(
       "Post-MICCAI long-term Final Test intake",
     );
-    expect(content.PHASE_NOTICES["miccai26-validation"]).toContain(
-      "Frozen MICCAI 26 Validation archive",
+    expect(content.PHASE_NOTICES["longterm-validation"]).toContain(
+      "Continuously maintained Validation leaderboard",
     );
   });
 });

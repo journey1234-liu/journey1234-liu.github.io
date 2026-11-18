@@ -232,7 +232,6 @@ const LOG_BETTI: PhaseUpdateLogEntry = {
 
 export const PHASE_UPDATE_LOGS: Record<string, PhaseUpdateLogEntry[]> = {
   "miccai26-final-test": [LOG_ARCHIVE_SPLIT],
-  "miccai26-validation": [LOG_ARCHIVE_SPLIT, LOG_BETTI],
   "longterm-test": [LOG_LONGTERM_TEST, LOG_ARCHIVE_SPLIT, LOG_BETTI],
   "longterm-validation": [LOG_LONGTERM_VALIDATION, LOG_ARCHIVE_SPLIT, LOG_BETTI],
   "track3-test": [LOG_TRACK3],
@@ -244,14 +243,12 @@ export const PHASE_UPDATE_LOGS: Record<string, PhaseUpdateLogEntry[]> = {
 export const PHASE_NOTICES: Record<string, string> = {
   "miccai26-final-test":
     "Final ranking of the MICCAI 26 challenge: the Final Test Phase results, including the organizer-seeded models of teams that did not submit their own container.",
-  "miccai26-validation":
-    "Frozen MICCAI 26 Validation archive: the official Grand Challenge validation ranking, re-ranked with β₀ error and the platform evaluations recorded at the freeze. It is no longer updated.",
   "track3-test":
     "Track 3 test-phase ranking: frame-level landmark classification on the held-out test sequences, ranked by equal mean rank over the four Track 3 metrics.",
   "track3-validation":
     "Track 3 validation-phase ranking: the same metrics on the validation sequences.",
   "longterm-validation":
-    "Continuously maintained Validation leaderboard — the frozen MICCAI 26 Validation archive is ranked together with results scored after the challenge closed. Rows tagged \u201cMICCAI 26 challenge submission\u201d are archived results; later rows are tagged \u201cPost-MICCAI 26 challenge submission\u201d.",
+    "Continuously maintained Validation leaderboard — the frozen MICCAI 26 validation ranking is the baseline, and results scored after the challenge closed are ranked alongside it. Rows tagged \u201cMICCAI 26 challenge submission\u201d are archived results; later rows are tagged \u201cPost-MICCAI 26 challenge submission\u201d.",
   "longterm-test":
     "Continuously maintained Final Test leaderboard — the frozen MICCAI 26 Final Test results are ranked together with results scored after the challenge closed. Rows tagged “MICCAI 26 challenge submission” were evaluated during the challenge; later rows are tagged “Post-MICCAI 26 challenge submission”.",
 };
@@ -450,7 +447,7 @@ export const WORKSHOP = {
 // Shown above the leaderboard. The challenge is over: its results are archived
 // and a longterm board keeps running.
 export const LEADERBOARD_NOTICE =
-  "The MICCAI 26 challenge results are frozen (Final Test and Validation archives). The Longterm Test Leaderboard stays open and is updated as new Final Test results arrive, and the Longterm Validation board does the same for Validation results. The Track 3 validation board is live; the Track 3 test board opens with the Track 3 Final Test phase.";
+  "The MICCAI 26 Final Test board is a frozen archive. The Longterm Test board is live and is updated as post-challenge Final Test results arrive, and the Longterm Validation board is live the same way for Track-1 and Track-2 validation results. The Track 3 validation board is live; the Track 3 test board opens with the Track 3 Final Test phase.";
 
 export const TIMELINE: TimelineItem[] = [
   {
@@ -577,7 +574,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "Is the leaderboard final?",
     answer:
-      "The MICCAI 26 Final Test board is a frozen archive, and the MICCAI 26 Validation board is a frozen archive that was re-ranked with β₀ error before it was frozen. The Longterm Test board is live and is updated manually by the organizers as post-challenge Final Test results arrive. The Track 3 validation board is live; the Track 3 test board opens with the Track 3 Final Test phase. Track-1 and Track-2 validation results submitted after the challenge are returned by email and are not added to the frozen archive; Track-3 validation results update the Track 3 validation board.",
+      "The MICCAI 26 Final Test board is a frozen archive. The Longterm Test board is live and is updated manually by the organizers as post-challenge Final Test results arrive, and the Longterm Validation board is live the same way for Track-1 and Track-2 validation results. The Track 3 validation board is live; the Track 3 test board opens with the Track 3 Final Test phase.",
   },
 ];
 
@@ -680,7 +677,7 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
     formUrl: VALIDATION_FORM_URL,
     facts: [
       "CT airway segmentation on the full validation set.",
-      "Results are returned by email and are not added to the frozen MICCAI 26 Validation archive.",
+      "Results are returned by email and ranked on the Longterm Validation board.",
       "You only need your registration email address and team name — no PDF report.",
     ],
   },
@@ -691,7 +688,7 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
     formUrl: VALIDATION_FORM_URL,
     facts: [
       "Branch-wise anatomical labeling on the full validation set.",
-      "Results are returned by email and are not added to the frozen MICCAI 26 Validation archive.",
+      "Results are returned by email and ranked on the Longterm Validation board.",
       "You only need your registration email address and team name — no PDF report.",
     ],
   },
@@ -773,10 +770,10 @@ export const SUBMISSION_TIPS: SubmissionTip[] = [
   },
   {
     title: "Evaluation takes hours and results arrive by email",
-    note: "Our system may take hours to finish evaluating your submission, then sends you an email. For the Final Test Phase the email only confirms whether your submission succeeded; the scores themselves appear on the Longterm Test leaderboard, which is updated manually by the organizers. For Track-1 and Track-2 Validation the email includes the evaluated metrics and the MICCAI 26 Validation board stays a frozen archive; Track-3 validation results appear on the Track 3 validation board.",
+    note: "Our system may take hours to finish evaluating your submission, then sends you an email. For the Final Test Phase the email only confirms whether your submission succeeded; the scores themselves appear on the Longterm Test leaderboard, which is updated manually by the organizers. For Track-1 and Track-2 Validation the email includes the evaluated metrics and the result is ranked on the Longterm Validation board; Track-3 validation results appear on the Track 3 validation board.",
   },
   {
     title: "Deadlines and release",
-    note: "Post-MICCAI long-term Final Test submissions and Validation Phase submissions are open. Track-1 and Track-2 Final Test scores appear on the {leaderboard}; Track-1 and Track-2 Validation scores are returned by email while the MICCAI 26 Validation board remains a frozen archive. Track-3 validation scores appear on the Track 3 validation board.",
+    note: "Post-MICCAI long-term Final Test submissions and Validation Phase submissions are open. Track-1 and Track-2 Final Test scores appear on the {leaderboard}; Track-1 and Track-2 Validation scores are returned by email and appear on the Longterm Validation board. Track-3 validation scores appear on the Track 3 validation board.",
   },
 ];
