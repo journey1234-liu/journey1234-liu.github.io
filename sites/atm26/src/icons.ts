@@ -44,17 +44,18 @@ const LABELLED_AIRWAY = wrap(`
   <circle cx="39" cy="41" r="2.1" fill="#65a30d"/>
 `);
 
-/** Track-3: the scope entering the airway lumen (concentric rings = depth). */
-const BRONCHOSCOPE = wrap(`
-  <circle cx="26" cy="21" r="12" stroke="#0e7490" stroke-width="2.4"/>
-  <circle cx="26" cy="21" r="6.4" stroke="#0e7490" stroke-width="1.6" opacity="0.45"/>
-  <path d="M2.5 44C10 37.5 15.5 32.5 19 28.5c1.6-1.8 3-3.4 4.4-4.8" stroke="#155e75" stroke-width="4" stroke-linecap="round"/>
-  <circle cx="24" cy="23.5" r="3" fill="#155e75"/>
-  <circle cx="24" cy="23.5" r="1.1" fill="#e0f2fe"/>
+/** Track-3: an endoscopic surgical instrument — finger rings, shaft, open jaws. */
+const ENDOSCOPIC_TOOL = wrap(`
+  <circle cx="10.4" cy="37.4" r="4.3" stroke="#155e75" stroke-width="2.6"/>
+  <circle cx="16" cy="43" r="4.3" stroke="#155e75" stroke-width="2.6"/>
+  <path d="M13.6 34.4L28.2 19.8" stroke="#0e7490" stroke-width="3.6" stroke-linecap="round"/>
+  <path d="M28.2 19.8l7.6-5.6" stroke="#0e7490" stroke-width="2.9" stroke-linecap="round"/>
+  <path d="M28.2 19.8l7.2 4.4" stroke="#0e7490" stroke-width="2.9" stroke-linecap="round"/>
+  <circle cx="28.2" cy="19.8" r="1.5" fill="#0e7490"/>
 `);
 
 export const TRACK_ICONS: Record<TrackKey, string> = {
   t1: BINARY_AIRWAY,
   t2: LABELLED_AIRWAY,
-  t3: BRONCHOSCOPE,
+  t3: ENDOSCOPIC_TOOL,
 };
