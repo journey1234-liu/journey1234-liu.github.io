@@ -321,14 +321,18 @@ export function renderRules(): string {
         <ul class="portal-facts">
           ${portal.facts.map((fact) => `<li>${renderInlineLinks(fact)}</li>`).join("")}
         </ul>
-        <p>
+        ${
+          portal.formUrl
+            ? `<p>
           <a
             class="cta-inline"
             href="${escapeHtml(portal.formUrl)}"
             rel="noopener noreferrer"
             target="_blank"
           >Open submission form</a>
-        </p>
+        </p>`
+            : `<p class="portal-closed">Form opens with this phase</p>`
+        }
         ${
           portal.backupForm
             ? `<p class="backup-form">
@@ -355,11 +359,15 @@ export function renderRules(): string {
       <p>
         Register for the challenge and sign the data usage agreement on the
         official Grand Challenge site. Your algorithm container is submitted
-        through the phase-specific portal below (Final Test or Validation) and
-        is evaluated on the organizers' own machines.
+        through the track and phase card below and is evaluated on the
+        organizers' own machines.
       </p>
       <h2>Submission portals</h2>
       <div class="portal-grid">${portalCards}</div>
+      <p class="portal-note">
+        Evaluation runs on the organizers' own machines (off-GC platform). One
+        submission per 24 hours per team and track; results arrive by email.
+      </p>
       <h2>Submission tips</h2>
       <ul class="tips-list">${tipsHtml}</ul>
       <h2>Container contract</h2>

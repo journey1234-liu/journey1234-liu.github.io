@@ -45,11 +45,11 @@ describe("published-results copy", () => {
       "track3-validation",
     ]);
 
-    const finalTestPortal = content.SUBMISSION_PORTALS.find((portal) =>
-      portal.title.startsWith("Final Test Phase"),
+    const longtermPortal = content.SUBMISSION_PORTALS.find(
+      (portal) => portal.title === "Track-1 · Longterm Test",
     );
-    expect(finalTestPortal?.facts.join(" ")).toContain(
-      "The Final Test Phase intake continues",
+    expect(longtermPortal?.facts.join(" ")).toContain(
+      "Post-MICCAI long-term Final Test intake",
     );
     expect(content.PHASE_NOTICES["miccai26-validation"]).toContain(
       "Frozen MICCAI 26 Validation archive",

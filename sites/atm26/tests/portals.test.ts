@@ -20,66 +20,76 @@ const BACKUP_FORM =
 const BACKUP_LABEL = "Google Drive Upload Backup Form";
 
 describe("submission portals and tips", () => {
-  it("keeps the two official form URLs verbatim", () => {
-    expect(SUBMISSION_PORTALS.length).toBe(2);
-    expect(SUBMISSION_PORTALS[0].formUrl).toBe(FINAL_TEST_FORM);
-    expect(SUBMISSION_PORTALS[1].formUrl).toBe(VALIDATION_FORM);
+  it("lays out two rows of three, with the official form URLs verbatim", () => {
     expect(SUBMISSION_PORTALS.map((p) => p.title)).toEqual([
-      "Final Test Phase Submission",
-      "Validation Phase Submission",
+      "Track-1 · Validation",
+      "Track-2 · Validation",
+      "Track-3 · Validation",
+      "Track-1 · Longterm Test",
+      "Track-2 · Longterm Test",
+      "Track-3 · Test",
     ]);
+    // upper row: every validation card uses the validation form
+    expect(SUBMISSION_PORTALS.slice(0, 3).map((p) => p.formUrl)).toEqual([
+      VALIDATION_FORM,
+      VALIDATION_FORM,
+      VALIDATION_FORM,
+    ]);
+    // bottom row: the long-term cards use the Final Test form ...
+    expect(SUBMISSION_PORTALS.slice(3, 5).map((p) => p.formUrl)).toEqual([
+      FINAL_TEST_FORM,
+      FINAL_TEST_FORM,
+    ]);
+    // ... and the Track-3 test card has no form while the phase is closed
+    expect(SUBMISSION_PORTALS[5].formUrl).toBeUndefined();
   });
 
-  it("lists the Google Drive upload backup form on the Final Test card only", () => {
-    const finalTest = SUBMISSION_PORTALS.find(
-      (portal) => portal.title === "Final Test Phase Submission",
-    );
-    expect(finalTest?.backupForm?.url).toBe(BACKUP_FORM);
-    expect(finalTest?.backupForm?.label).toBe(BACKUP_LABEL);
-    expect(SUBMISSION_PORTALS.filter((portal) => portal.backupForm).length).toBe(1);
-    expect(
-      SUBMISSION_PORTALS.find((portal) => portal.title.startsWith("Validation"))
-        ?.backupForm,
-    ).toBeUndefined();
+  it("keeps the Google Drive backup form on the two long-term cards", () => {
+    const withBackup = SUBMISSION_PORTALS.filter((portal) => portal.backupForm);
+    expect(withBackup.map((portal) => portal.title)).toEqual([
+      "Track-1 · Longterm Test",
+      "Track-2 · Longterm Test",
+    ]);
+    expect(withBackup[0].backupForm?.url).toBe(BACKUP_FORM);
+    expect(withBackup[0].backupForm?.label).toBe(BACKUP_LABEL);
 
     const html = renderRules();
-    expect((html.match(new RegExp(BACKUP_LABEL, "g")) ?? []).length).toBe(1);
-    // card segments: [0] = Final Test (up to the next card), [1] = Validation
-    const cards = html.split('<div class="portal-card">').slice(1);
-    expect(cards.length).toBe(2);
-    expect(cards[0]).toContain(BACKUP_FORM);
-    expect(cards[0]).toContain(BACKUP_LABEL);
-    expect(cards[0]).toContain("Open submission form");
-    expect(cards[1]).not.toContain(BACKUP_FORM);
+    expect((html.match(new RegExp(BACKUP_LABEL, "g")) ?? []).length).toBe(2);
   });
 
-  it("states the current intake state and routes Track-3 through the same forms", () => {
-    const finalTest = SUBMISSION_PORTALS.find(
-      (portal) => portal.title === "Final Test Phase Submission",
-    );
-    const validation = SUBMISSION_PORTALS.find(
-      (portal) => portal.title === "Validation Phase Submission",
-    );
-    expect(finalTest?.status).toContain("Open again");
-    expect(validation?.status).toContain("Track-3");
-
+  it("shows the state of every intake and leaves the closed phase form-free", () => {
     const html = renderRules();
     const cards = [...html.matchAll(/<div class="portal-card">([\s\S]*?)<\/div>/g)].map(
       (match) => match[1],
     );
-    expect(cards.length).toBe(2);
+    expect(cards.length).toBe(6);
 
-    // Final Test: the long-term intake is open again, Track-3 Final Test is not
-    expect(cards[0]).toContain('class="portal-status"');
-    expect(cards[0]).toContain("The Final Test Phase intake continues");
-    expect(cards[0]).toContain("Track-3 Final Test is not open yet");
-    expect(cards[0]).toContain("this same form");
+    const statuses = [...html.matchAll(/<p class="portal-status">([^<]*)<\/p>/g)].map(
+      (match) => match[1],
+    );
+    expect(statuses).toEqual([
+      "Open",
+      "Open",
+      "Open",
+      "Open again — long-term",
+      "Open again — long-term",
+      "Opens later",
+    ]);
 
-    // Validation: Track-3 validation submits through this very form
-    expect(cards[1]).toContain("Track-3 validation submissions are open now");
-    expect(cards[1]).toContain("this same form");
-    expect(cards[1]).toContain("one submission every 24 hours");
-    expect(cards[1]).toContain("not added to the frozen MICCAI 26 Validation archive");
+    // five cards offer a form; the closed Track-3 test card says so instead
+    expect((html.match(/Open submission form/g) ?? []).length).toBe(5);
+    expect(cards[5]).toContain("portal-closed");
+    expect(cards[5]).not.toContain("Open submission form");
+    expect(cards[5]).toContain("not open yet");
+    expect(cards[5]).toContain("same form as Track-1 and Track-2");
+
+    // upper row is validation only, bottom row test only
+    expect(cards.slice(0, 3).every((card) => card.includes("Validation"))).toBe(true);
+    expect(cards.slice(3).every((card) => card.includes("Test"))).toBe(true);
+
+    // the shared note carries the frequency and venue once, outside the cards
+    const note = /<p class="portal-note">([\s\S]*?)<\/p>/.exec(html)?.[1] ?? "";
+    expect(note.replace(/\s+/g, " ")).toContain("One submission per 24 hours per team and track");
   });
 
   it("describes the current limits for all three tracks", () => {
@@ -131,7 +141,7 @@ describe("submission portals and tips", () => {
     expect(html).toContain("A failed run does not use up your submission limit");
   });
 
-  it("renders both portals with open-external links and all tips on the Rules page", () => {
+  it("renders every portal with open-external links and all tips on the Submission page", () => {
     const html = renderRules();
     const escapedFinal = FINAL_TEST_FORM.replaceAll("&", "&amp;");
     const escapedValidation = VALIDATION_FORM.replaceAll("&", "&amp;");
@@ -139,7 +149,7 @@ describe("submission portals and tips", () => {
     expect(html).toContain("<h2>Submission tips</h2>");
     expect(html).toContain(escapedFinal);
     expect(html).toContain(escapedValidation);
-    expect((html.match(/target="_blank"/g) ?? []).length).toBeGreaterThanOrEqual(2);
+    expect((html.match(/target="_blank"/g) ?? []).length).toBeGreaterThanOrEqual(5);
     expect(html).toContain(GUIDELINE_URL);
     expect(html).toContain("#/leaderboard/longterm-test");
     expect((html.match(/<ul class="tips-list">/g) ?? []).length).toBe(1);

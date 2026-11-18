@@ -71,7 +71,7 @@ export const NAV_ITEMS: NavItem[] = [
   { id: "tracks", label: "Tracks" },
   { id: "organizers", label: "Organizers" },
   { id: "leaderboard", label: "Leaderboard" },
-  { id: "rules", label: "Rules" },
+  { id: "rules", label: "Submission" },
   { id: "timeline", label: "Timeline" },
   { id: "citation", label: "Citation" },
   { id: "faq", label: "FAQ" },
@@ -637,33 +637,66 @@ export interface PortalBackupForm {
 }
 
 export interface SubmissionPortal {
+  /** Track and phase, e.g. "Track-1 · Validation". */
   title: string;
   /** One-line state of this intake, rendered as a badge under the card title. */
   status: string;
-  formUrl: string;
+  /** Submission form; absent while the phase is still closed. */
+  formUrl?: string;
   facts: string[];
   /** Optional secondary upload route, shown under the primary form link. */
   backupForm?: PortalBackupForm;
 }
 
-// Submission portals and tips (Rules page) — form URLs and facts taken
-// verbatim from the official submission-guidelines text (see
-// specs/site-rules-submission-portals-tips.md). Inline link placeholders
-// ({leaderboard}, {guidelines}, {batch contract section}) are expanded by the
-// Rules renderer; everything else is plain text.
-//
-// Both portals serve all three tracks: Track-3 has no form of its own, it
-// submits through the Final Test / Validation form of Track-1 and Track-2.
+const FINAL_TEST_FORM_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSfPv_OVm_PkOmF4YgsNW-zren6tDdrUzzZCV_J3oMSDMks13A/viewform?usp=sharing&ouid=117378226219491671209";
+const VALIDATION_FORM_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSdwPtoBXp3iyy-s0S2lp629Vpq75OogvS8Xcr-B_bciSQGIPg/viewform?usp=sharing&ouid=117378226219491671209";
+
+// Submission portals and tips (Rules page) — the form URLs are the two official
+// public links and must stay byte-identical (tests/portals.test.ts). Cards are
+// laid out as two rows of three: validation for the three tracks first, then
+// the test intake (long-term for Track-1/2, not yet open for Track-3).
+// Inline link placeholders ({leaderboard}, {guidelines}, {batch contract
+// section}) are expanded by the Rules renderer; everything else is plain text.
 export const SUBMISSION_PORTALS: SubmissionPortal[] = [
   {
-    title: "Final Test Phase Submission",
-    status: "Open again — post-MICCAI long-term Test submissions",
-    formUrl:
-      "https://docs.google.com/forms/d/e/1FAIpQLSfPv_OVm_PkOmF4YgsNW-zren6tDdrUzzZCV_J3oMSDMks13A/viewform?usp=sharing&ouid=117378226219491671209",
+    title: "Track-1 · Validation",
+    status: "Open",
+    formUrl: VALIDATION_FORM_URL,
     facts: [
-      "The Final Test Phase intake continues on the organizers' own machines (off-GC platform), with the same container contract as during the challenge.",
-      "For Track-1 and Track-2, the result email confirms whether the submission succeeded; the scores are ranked on the Longterm Test board together with the frozen MICCAI 26 results.",
-      "Track-3 Final Test is not open yet — when it opens, Track-3 submits through this same form and its results appear on the Track 3 test board.",
+      "CT airway segmentation on the full validation set.",
+      "Results are returned by email and are not added to the frozen MICCAI 26 Validation archive.",
+      "You only need your registration email address and team name — no PDF report.",
+    ],
+  },
+  {
+    title: "Track-2 · Validation",
+    status: "Open",
+    formUrl: VALIDATION_FORM_URL,
+    facts: [
+      "Branch-wise anatomical labeling on the full validation set.",
+      "Results are returned by email and are not added to the frozen MICCAI 26 Validation archive.",
+      "You only need your registration email address and team name — no PDF report.",
+    ],
+  },
+  {
+    title: "Track-3 · Validation",
+    status: "Open",
+    formUrl: VALIDATION_FORM_URL,
+    facts: [
+      "Frame-level landmark recognition: PNG sequences in, per-frame label CSV out, 32-class schema.",
+      "Results appear on the Track 3 validation board.",
+      "You only need your registration email address and team name — no PDF report.",
+    ],
+  },
+  {
+    title: "Track-1 · Longterm Test",
+    status: "Open again — long-term",
+    formUrl: FINAL_TEST_FORM_URL,
+    facts: [
+      "Post-MICCAI long-term Final Test intake; each result joins the {leaderboard}.",
+      "Attach a brief PDF methodological report with the archive.",
     ],
     backupForm: {
       label: "Google Drive Upload Backup Form",
@@ -671,16 +704,24 @@ export const SUBMISSION_PORTALS: SubmissionPortal[] = [
     },
   },
   {
-    title: "Validation Phase Submission",
-    status: "Open — Track-1, Track-2 and Track-3 validation",
-    formUrl:
-      "https://docs.google.com/forms/d/e/1FAIpQLSdwPtoBXp3iyy-s0S2lp629Vpq75OogvS8Xcr-B_bciSQGIPg/viewform?usp=sharing&ouid=117378226219491671209",
+    title: "Track-2 · Longterm Test",
+    status: "Open again — long-term",
+    formUrl: FINAL_TEST_FORM_URL,
     facts: [
-      "The organizers built their own evaluation platform, with the {leaderboard} migrated from Grand-Challenge; the Longterm Test Leaderboard is dynamically updated, while the MICCAI 26 boards stay frozen.",
-      "Validation Phase submissions are limited to one submission every 24 hours.",
-      "Track-1 and Track-2 validation results are returned by email and are not added to the frozen MICCAI 26 Validation archive.",
-      "For the validation phase submission you only need to provide your email address and team name used during registration.",
-      "Track-3 validation submissions are open now and use this same form; Track-3 validation results appear on the Track 3 validation board, and Track-3 Final Test opens later.",
+      "Post-MICCAI long-term Final Test intake; each result joins the {leaderboard}.",
+      "Attach a brief PDF methodological report with the archive.",
+    ],
+    backupForm: {
+      label: "Google Drive Upload Backup Form",
+      url: "https://docs.google.com/forms/d/e/1FAIpQLSdc7J-rJMTg45IvSqnJRpd1byCbNVF0q_2dtaa0Cn6g15t9ng/viewform?usp=dialog",
+    },
+  },
+  {
+    title: "Track-3 · Test",
+    status: "Opens later",
+    facts: [
+      "The Track-3 Test Phase is not open yet; no submissions are accepted.",
+      "It will use the same form as Track-1 and Track-2 when it opens, and results will appear on the Track 3 test board.",
     ],
   },
 ];
