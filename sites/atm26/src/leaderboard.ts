@@ -156,15 +156,15 @@ function errorState(): string {
 export function renderLeaderboard(
   container: HTMLElement,
   data: unknown,
-  activePhaseId: string | null,
+  route: string[] = [],
 ): void {
   const { snapshot } = parseLeaderboard(data);
   if (!snapshot) {
     container.innerHTML = `<section class="panel">${errorState()}</section>`;
     return;
   }
-  container.innerHTML = buildShell(snapshot, activePhaseId);
-  bindControls(container, snapshot, activePhaseId);
+  container.innerHTML = buildShell(snapshot, route);
+  bindControls(container, snapshot, route);
 }
 
 /**
@@ -176,10 +176,11 @@ export function renderLeaderboard(
  */
 const PHASE_DISPLAY_ORDER = [
   "miccai26-final-test",
-  "miccai26-validation",
   "longterm-test",
-  "track3-test",
+  "validation",
+  "miccai26-validation",
   "track3-validation",
+  "track3-test",
 ];
 
 /**
@@ -197,6 +198,29 @@ const PHASE_ALIASES: Record<string, string> = {
   "track-3": "track3-test",
 };
 
+/**
+ * Track-first navigation. A track is the top-level tab; inside it, the boards
+ * ("MICCAI 26 Final Test", "Longterm Test", ...) are the second row. The
+ * route is `#/leaderboard/<track>/<board>`; a bare `#/leaderboard/<board>`
+ * still works for old links.
+ */
+const TRACK_ORDER = ["track-1", "track-2", "track-3"];
+
+/** Short board labels inside a track (the published labels carry the track). */
+const PHASE_TAB_LABELS: Record<string, string> = {
+  "miccai26-final-test": "MICCAI 26 Final Test",
+  "miccai26-validation": "MICCAI 26 Validation",
+  "longterm-test": "Longterm Test",
+  validation: "Validation",
+  "track3-test": "Final Test",
+  "track3-validation": "Validation",
+};
+
+/** Boards that stay closed until their phase opens (auto-unlock with rows). */
+const LOCKED_PHASES = new Set(["track3-test"]);
+
+const LOCK_ICON = `<svg class="lb-lock-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="3.2" y="7" width="9.6" height="6.6" rx="1.6" fill="currentColor"/></svg>`;
+
 function orderPhases(
   phases: Record<string, PhaseLeaderboard>,
 ): Array<[string, PhaseLeaderboard]> {
@@ -210,21 +234,82 @@ function orderPhases(
     .map(({ entry }) => entry);
 }
 
-function resolvePhase(
+function phasesForTrack(
   snapshot: LeaderboardSnapshot,
-  activePhaseId: string | null,
-): { id: string; phase: PhaseLeaderboard } {
-  const entries = orderPhases(snapshot.phases);
-  if (entries.length === 0) {
-    return { id: "", phase: { tracks: {}, trackOrder: [] } };
-  }
-  const requested = activePhaseId ? PHASE_ALIASES[activePhaseId] ?? activePhaseId : null;
-  const [id, phase] = entries.find(([phaseId]) => phaseId === requested) ?? entries[0];
-  return { id, phase };
+  trackId: string,
+): Array<[string, PhaseLeaderboard]> {
+  return orderPhases(snapshot.phases).filter(([, phase]) =>
+    phase.trackOrder.includes(trackId),
+  );
 }
 
-function buildShell(snapshot: LeaderboardSnapshot, activePhaseId: string | null): string {
-  const { id: activeId, phase: activePhase } = resolvePhase(snapshot, activePhaseId);
+function totalEntries(phase: PhaseLeaderboard): number {
+  return phase.trackOrder.reduce(
+    (sum, trackId) => sum + (phase.tracks[trackId]?.entries.length ?? 0),
+    0,
+  );
+}
+
+function isLocked(phaseId: string, phase: PhaseLeaderboard): boolean {
+  return LOCKED_PHASES.has(phaseId) && totalEntries(phase) === 0;
+}
+
+/** First board of a track that has rows (and is not locked), else its first. */
+function defaultPhaseFor(
+  snapshot: LeaderboardSnapshot,
+  trackId: string,
+): [string, PhaseLeaderboard] | undefined {
+  const phases = phasesForTrack(snapshot, trackId);
+  return (
+    phases.find(([id, phase]) => totalEntries(phase) > 0 && !isLocked(id, phase)) ??
+    phases[0]
+  );
+}
+
+interface ResolvedRoute {
+  trackIds: string[];
+  trackId: string;
+  phaseId: string;
+  phase: PhaseLeaderboard;
+  phases: Array<[string, PhaseLeaderboard]>;
+}
+
+const EMPTY_PHASE: PhaseLeaderboard = { tracks: {}, trackOrder: [] };
+
+function resolveRoute(snapshot: LeaderboardSnapshot, route: string[]): ResolvedRoute {
+  const trackIds = TRACK_ORDER.filter(
+    (trackId) => phasesForTrack(snapshot, trackId).length > 0,
+  );
+  const [first, second] = route;
+
+  let trackId = first && trackIds.includes(first) ? first : undefined;
+  let requested = trackId ? second : first;
+  if (requested) requested = PHASE_ALIASES[requested] ?? requested;
+  if (!trackId && requested) {
+    trackId = trackIds.find((id) =>
+      phasesForTrack(snapshot, id).some(([phaseId]) => phaseId === requested),
+    );
+  }
+  trackId = trackId ?? trackIds[0] ?? "";
+
+  const phases = trackId ? phasesForTrack(snapshot, trackId) : [];
+  const chosen =
+    (requested ? phases.find(([phaseId]) => phaseId === requested) : undefined) ??
+    phases.find(([phaseId, phase]) => totalEntries(phase) > 0 && !isLocked(phaseId, phase)) ??
+    phases[0];
+
+  return {
+    trackIds,
+    trackId,
+    phaseId: chosen?.[0] ?? "",
+    phase: chosen?.[1] ?? EMPTY_PHASE,
+    phases,
+  };
+}
+
+function buildShell(snapshot: LeaderboardSnapshot, route: string[]): string {
+  const { trackIds, trackId, phaseId: activeId, phase: activePhase, phases } =
+    resolveRoute(snapshot, route);
   const policy = snapshot.ranking_policy;
   const policyText =
     policy?.method || policy?.submission_selection
@@ -244,26 +329,32 @@ function buildShell(snapshot: LeaderboardSnapshot, activePhaseId: string | null)
       : "";
 
   const updateLogHtml = renderUpdateLog(activeId);
-  const phaseNotice = PHASE_NOTICES[activeId]
-    ? `<div class="lb-phase-notice">${escapeHtml(PHASE_NOTICES[activeId])}</div>`
-    : "";
+  const locked = isLocked(activeId, activePhase);
+  const phaseNotice =
+    !locked && PHASE_NOTICES[activeId]
+      ? `<div class="lb-phase-notice">${escapeHtml(PHASE_NOTICES[activeId])}</div>`
+      : "";
 
-  const phaseTabs = orderPhases(snapshot.phases)
-    .map(([phaseId, phase]) => {
-      const label = phase.label || phaseId;
-      const isActive = phaseId === activeId;
-      return `<a class="lb-tab${isActive ? " is-active" : ""}" href="#/leaderboard/${phaseId}"${
-        isActive ? ' aria-current="true"' : ""
-      }>${escapeHtml(label)}</a>`;
+  const trackTabs = trackIds
+    .map((id) => {
+      const target = defaultPhaseFor(snapshot, id);
+      const isActive = id === trackId;
+      return `<a class="lb-tab${isActive ? " is-active" : ""}" href="#/leaderboard/${id}/${
+        target?.[0] ?? ""
+      }"${isActive ? ' aria-current="page"' : ""}>${escapeHtml(trackLabel(id))}</a>`;
     })
     .join("");
 
-  const trackTabs = activePhase.trackOrder
-    .map((trackId, index) => {
-      const isActive = index === 0;
-      return `<button class="lb-tab${isActive ? " is-active" : ""}" data-track="${trackId}" aria-pressed="${isActive}">${trackLabel(
-        trackId,
-      )}</button>`;
+  const phaseTabs = phases
+    .map(([phaseId, phase]) => {
+      const isActive = phaseId === activeId;
+      const locked = isLocked(phaseId, phase);
+      const label = PHASE_TAB_LABELS[phaseId] ?? phase.label ?? phaseId;
+      return `<a class="lb-tab${isActive ? " is-active" : ""}${
+        locked ? " is-locked" : ""
+      }" href="#/leaderboard/${trackId}/${phaseId}"${
+        isActive ? ' aria-current="page"' : ""
+      }>${escapeHtml(label)}${locked ? LOCK_ICON : ""}</a>`;
     })
     .join("");
 
@@ -278,19 +369,38 @@ function buildShell(snapshot: LeaderboardSnapshot, activePhaseId: string | null)
         ${policyText ? `<span>Ranking: ${escapeHtml(policyText)}</span>` : ""}
       </div>
       <div class="lb-toolbar">
-        <div class="lb-tabs" role="tablist" aria-label="Phase selector">${phaseTabs}</div>
+        <div class="lb-tabs" role="tablist" aria-label="Track">${trackTabs}</div>
       </div>
       <div class="lb-toolbar">
-        <div class="lb-tabs" role="tablist" aria-label="Track selector">${trackTabs}</div>
+        <div class="lb-tabs" role="tablist" aria-label="Board">${phaseTabs}</div>
         <label class="lb-search">
           <span class="visually-hidden">Search teams</span>
           <input type="search" id="lb-search" placeholder="Search teams…" autocomplete="off" />
         </label>
       </div>
       ${phaseNotice}
-      <div class="lb-boards"></div>
+      <div class="lb-boards">${
+        locked ? lockedState(trackId, activePhase.label || activeId) : ""
+      }</div>
       ${updateLogHtml}
     </section>`;
+}
+
+/** Placeholder for a board whose phase has not opened yet. */
+function lockedState(trackId: string, phaseLabel: string): string {
+  return `
+    <div class="lb-board lb-locked">
+      <div class="lb-locked-card">
+        <span class="lb-locked-icon" aria-hidden="true">${LOCK_ICON}</span>
+        <p class="lb-locked-title">${escapeHtml(trackLabel(trackId))} · ${escapeHtml(
+          PHASE_TAB_LABELS["track3-test"] ?? phaseLabel,
+        )} is locked</p>
+        <p class="lb-locked-note">
+          This leaderboard opens when the phase opens. Track-3 validation results
+          are on the Validation board.
+        </p>
+      </div>
+    </div>`;
 }
 
 /** Update log of a phase, rendered under its board. Empty when none. */
@@ -314,20 +424,22 @@ function renderUpdateLog(phaseId: string): string {
 function bindControls(
   container: HTMLElement,
   snapshot: LeaderboardSnapshot,
-  activePhaseId: string | null,
+  route: string[],
 ): void {
-  const { id: activeId, phase } = resolvePhase(snapshot, activePhaseId);
+  const { trackId, phaseId: activeId, phase } = resolveRoute(snapshot, route);
   const boardsEl = container.querySelector<HTMLElement>(".lb-boards");
   const searchEl = container.querySelector<HTMLInputElement>("#lb-search");
-  const trackTabs = Array.from(
-    container.querySelectorAll<HTMLButtonElement>(".lb-tab[data-track]"),
-  );
   if (!boardsEl || !searchEl) return;
+
+  if (isLocked(activeId, phase)) {
+    searchEl.disabled = true;
+    return;
+  }
 
   const sortState: SortState = { key: "rank", dir: "asc" };
   const pageState: PageState = { size: readStoredPageSize(), index: 0 };
 
-  const renderActive = (trackId: string, query: string, resetPage = true): void => {
+  const renderActive = (query: string, resetPage = true): void => {
     if (resetPage) pageState.index = 0;
     const track: TrackLeaderboard = phase.tracks[trackId] ?? { metrics: [], entries: [] };
     boardsEl.innerHTML = renderBoard(
@@ -338,24 +450,13 @@ function bindControls(
       sortState,
       pageState,
     );
-    bindBoard(boardsEl, track, sortState, pageState, renderActive);
+    bindBoard(boardsEl, track, sortState, pageState, (_trackId, query, resetPage) =>
+      renderActive(query, resetPage),
+    );
   };
 
-  let activeTrack: string = phase.trackOrder[0] ?? "";
-  for (const tab of trackTabs) {
-    tab.addEventListener("click", () => {
-      activeTrack = tab.dataset.track ?? phase.trackOrder[0] ?? "";
-      for (const other of trackTabs) {
-        const selected = other === tab;
-        other.classList.toggle("is-active", selected);
-        other.setAttribute("aria-pressed", String(selected));
-      }
-      renderActive(activeTrack, searchEl.value);
-    });
-  }
-
-  searchEl.addEventListener("input", () => renderActive(activeTrack, searchEl.value));
-  renderActive(activeTrack, "");
+  searchEl.addEventListener("input", () => renderActive(searchEl.value));
+  renderActive("");
 }
 
 function rangeLabel(start: number, shown: number, total: number): string {
@@ -540,7 +641,7 @@ function bindBoard(
 /** Fetch and render the deployed leaderboard snapshot for one phase. */
 export async function mountLeaderboard(
   container: HTMLElement,
-  activePhaseId: string | null,
+  route: string[] = [],
 ): Promise<void> {
   const url = resolveAsset("data/leaderboard.json");
   let data: unknown;
@@ -555,5 +656,5 @@ export async function mountLeaderboard(
     container.innerHTML = `<section class="panel">${errorState()}</section>`;
     return;
   }
-  renderLeaderboard(container, data, activePhaseId);
+  renderLeaderboard(container, data, route);
 }

@@ -4,12 +4,14 @@ import { currentBase } from "./basePath";
 import { renderStaticPage } from "./pages";
 import { mountLeaderboard } from "./leaderboard";
 
-function parseHash(): { page: string; phase: string | null } {
+function parseHash(): { page: string; params: string[] } {
   const hash = window.location.hash.replace(/^#\/?/, "");
   const segments = (hash || "home").split("/");
   return {
     page: segments[0] || "home",
-    phase: segments.length > 1 ? segments[1] : null,
+    // `/leaderboard/<track>/<board>`; old `/leaderboard/<board>` links keep
+    // working through the resolver in leaderboard.ts.
+    params: segments.slice(1).filter(Boolean),
   };
 }
 
@@ -57,7 +59,7 @@ function renderShell(route: string, content: string): string {
 async function mount(): Promise<void> {
   const app = document.getElementById("app");
   if (!app) return;
-  const { page: route, phase } = parseHash();
+  const { page: route, params } = parseHash();
   const pageLabel = NAV_ITEMS.find((item) => item.id === route)?.label;
   document.title = route === "home" || !pageLabel ? SITE.title : `${pageLabel} — ${SITE.title}`;
 
@@ -68,7 +70,7 @@ async function mount(): Promise<void> {
 
   if (route === "leaderboard") {
     const page = document.getElementById("page");
-    if (page) await mountLeaderboard(page, phase);
+    if (page) await mountLeaderboard(page, params);
   }
   const main = document.getElementById("main");
   main?.focus({ preventScroll: true });

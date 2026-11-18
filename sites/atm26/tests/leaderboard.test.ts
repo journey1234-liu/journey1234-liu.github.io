@@ -20,13 +20,13 @@ function loadFixture(): Record<string, unknown> {
 }
 
 /** Renders the leaderboard shell without a DOM: only innerHTML is captured. */
-function renderShellHtml(activePhaseId: string | null = null): string {
+function renderShellHtml(route: string | string[] = []): string {
   const container = {
     innerHTML: "",
     querySelector: () => null,
     querySelectorAll: () => [],
   } as unknown as HTMLElement;
-  renderLeaderboard(container, loadFixture(), activePhaseId);
+  renderLeaderboard(container, loadFixture(), Array.isArray(route) ? route : route ? [route] : []);
   return container.innerHTML;
 }
 
@@ -241,80 +241,99 @@ describe("validateLeaderboard", () => {
   });
 });
 
-describe("Track 3 phase rendering", () => {
-  it("renders one Track 3 tab and no Track 2 tab", () => {
-    const html = renderShellHtml("track3-test");
-    expect(html).toContain('data-track="track-3"');
-    expect(html).not.toContain('data-track="track-2"');
-    expect(html).not.toContain('data-track="track-1"');
-    expect(html).toContain("Track 3");
-    expect(html).toContain("frame-level landmark classification");
-  });
-});
-
-describe("empty Track 3 board", () => {
-  it("does not repeat the track label in the empty message", () => {
-    const html = renderBoard(
-      { id: "track3-test", label: "Track 3 · Test" },
-      "track-3",
-      { metrics: [], entries: [] },
-      "",
-      { key: "rank", dir: "asc" },
-    );
-    expect(html).toContain("No public results for Track 3 · Test yet.");
-    expect(html).not.toContain("Track 3 · Test · Track 3");
-  });
-});
-
-describe("phase selector", () => {
-  it("lists the MICCAI 26 archive before the longterm board", () => {
+describe("track-first navigation", () => {
+  it("puts the three tracks in the top row and the boards in the second", () => {
     const html = renderShellHtml();
+    expect(html).toContain('aria-label="Track"');
+    expect(html).toContain('aria-label="Board"');
+    for (const id of ["track-1", "track-2", "track-3"]) {
+      expect(html).toContain(`href="#/leaderboard/${id}/`);
+    }
+    expect(html).toContain(">Track 1</a>");
+    expect(html).toContain(">Track 2</a>");
+    expect(html).toContain(">Track 3</a>");
+  });
+
+  it("opens on the frozen MICCAI 26 Final Test board of Track-1 by default", () => {
+    const html = renderShellHtml();
+    expect(html).toContain(
+      '<a class="lb-tab is-active" href="#/leaderboard/track-1/miccai26-final-test" aria-current="page">Track 1</a>',
+    );
+    expect(html).toContain(
+      '<a class="lb-tab is-active" href="#/leaderboard/track-1/miccai26-final-test" aria-current="page">MICCAI 26 Final Test</a>',
+    );
+    expect(html).toContain("Frozen snapshot");
+  });
+
+  it("orders the Track-1 boards Final Test, Longterm Test, MICCAI 26 Validation", () => {
+    const html = renderShellHtml(["track-1", "miccai26-final-test"]);
     const order = [
-      ">MICCAI 26 · Final Test</a>",
-      ">MICCAI 26 · Validation</a>",
+      ">MICCAI 26 Final Test</a>",
       ">Longterm Test</a>",
+      ">MICCAI 26 Validation</a>",
     ].map((label) => html.indexOf(label));
     expect(order.every((index) => index > -1)).toBe(true);
     expect(order).toEqual([...order].sort((a, b) => a - b));
   });
 
-  it("opens on the frozen MICCAI 26 Final Test board by default", () => {
-    const html = renderShellHtml();
-    expect(html).toContain(
-      '<a class="lb-tab is-active" href="#/leaderboard/miccai26-final-test" aria-current="true">MICCAI 26 · Final Test</a>',
-    );
-    expect(html).toContain("Frozen snapshot");
+  it("shows only the boards of the selected track", () => {
+    const track3 = renderShellHtml(["track-3", "track3-validation"]);
+    expect(track3).toContain(">Validation</a>");
+    expect(track3).toContain(">Final Test<");
+    expect(track3).not.toContain(">MICCAI 26 Final Test</a>");
+    expect(track3).not.toContain(">Longterm Test</a>");
+    expect(track3).not.toContain(">MICCAI 26 Validation</a>");
   });
 
-  it("marks the longterm tab active when the route asks for it", () => {
-    const html = renderShellHtml("longterm-test");
+  it("lands Track-3 on its open board, not the locked one", () => {
+    const html = renderShellHtml(["track-3"]);
     expect(html).toContain(
-      '<a class="lb-tab is-active" href="#/leaderboard/longterm-test" aria-current="true">Longterm Test</a>',
+      '<a class="lb-tab is-active" href="#/leaderboard/track-3/track3-validation" aria-current="page">Validation</a>',
+    );
+  });
+
+  it("locks the Track-3 Final Test board until the phase opens", () => {
+    const html = renderShellHtml(["track-3", "track3-test"]);
+    expect(html).toContain("is-locked");
+    expect(html).toContain("lb-lock-icon");
+    expect(html).toContain("Track 3 · Final Test is locked");
+    expect(html).toContain("opens when the phase opens");
+  });
+
+  it("marks the longterm board active when the route asks for it", () => {
+    const html = renderShellHtml(["track-1", "longterm-test"]);
+    expect(html).toContain(
+      'href="#/leaderboard/track-1/longterm-test" aria-current="page">Longterm Test</a>',
+    );
+    expect(html).toContain(
+      '<a class="lb-tab is-active" href="#/leaderboard/track-1/miccai26-final-test" aria-current="page">Track 1</a>',
     );
     expect(html).not.toContain("Frozen snapshot");
   });
 
   it("keeps the pre-split routes working through aliases", () => {
-    // #/leaderboard/validation and #/leaderboard/final-test were the old ids,
-    // and the live board was called longterm-validation before 2026-11-13.
-    const legacyLongterm = renderShellHtml("longterm-validation");
-    expect(legacyLongterm).toContain(
-      '<a class="lb-tab is-active" href="#/leaderboard/longterm-test"',
-    );
-    const legacyValidation = renderShellHtml("validation");
-    expect(legacyValidation).toContain(
-      '<a class="lb-tab is-active" href="#/leaderboard/miccai26-validation"',
-    );
-    const legacyFinalTest = renderShellHtml("final-test");
-    expect(legacyFinalTest).toContain(
-      '<a class="lb-tab is-active" href="#/leaderboard/miccai26-final-test"',
-    );
+    // The old routes named a board only; they now resolve to Track-1 + board.
+    for (const [legacy, target] of [
+      ["longterm-validation", "longterm-test"],
+      ["validation", "miccai26-validation"],
+      ["final-test", "miccai26-final-test"],
+    ]) {
+      expect(renderShellHtml(legacy)).toContain(
+        `href="#/leaderboard/track-1/${target}" aria-current="page"`,
+      );
+    }
   });
 
   it("frames each board in one line", () => {
-    expect(renderShellHtml("longterm-test")).toContain("Continuously maintained Final Test leaderboard");
-    expect(renderShellHtml("miccai26-validation")).toContain("Frozen MICCAI 26 Validation archive");
-    expect(renderShellHtml("miccai26-final-test")).toContain("Final ranking of the MICCAI 26 challenge");
+    expect(renderShellHtml(["track-1", "longterm-test"])).toContain(
+      "Continuously maintained Final Test leaderboard",
+    );
+    expect(renderShellHtml(["track-1", "miccai26-validation"])).toContain(
+      "Frozen MICCAI 26 Validation archive",
+    );
+    expect(renderShellHtml(["track-1", "miccai26-final-test"])).toContain(
+      "Final ranking of the MICCAI 26 challenge",
+    );
   });
 });
 
