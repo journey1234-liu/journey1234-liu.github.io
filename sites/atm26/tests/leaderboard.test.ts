@@ -90,6 +90,20 @@ describe("public/data/leaderboard.json", () => {
     }
   });
 
+  it("marks deeptree's latest validation method as post-challenge", () => {
+    const phases = loadFixture().phases as Record<
+      string,
+      { tracks: Record<string, { entries: Array<{ team_display_name: string; submission_tag?: string }> }> }
+    >;
+    const board = phases["longterm-validation"].tracks["track-2"];
+    const deeptree = board.entries.filter((entry) =>
+      entry.team_display_name.includes("deeptree"),
+    );
+    // same method version as the post-challenge Final Test run: one row, post-tagged
+    expect(deeptree.length).toBe(1);
+    expect(deeptree[0].submission_tag).toBe("post-miccai26");
+  });
+
   it("tags every longterm row as a challenge or post-challenge submission", () => {
     const phases = loadFixture().phases as Record<
       string,
@@ -292,12 +306,13 @@ describe("track-first navigation", () => {
     expect(html).toContain("Frozen snapshot");
   });
 
-  it("orders the Track-1 boards Final Test, Longterm Test, MICCAI 26 Validation", () => {
+  it("keeps the MICCAI archives left of the longterm boards", () => {
     const html = renderShellHtml(["track-1", "miccai26-final-test"]);
     const order = [
       ">MICCAI 26 Final Test</a>",
-      ">Longterm Test</a>",
       ">MICCAI 26 Validation</a>",
+      ">Longterm Test</a>",
+      ">Longterm Validation</a>",
     ].map((label) => html.indexOf(label));
     expect(order.every((index) => index > -1)).toBe(true);
     expect(order).toEqual([...order].sort((a, b) => a - b));

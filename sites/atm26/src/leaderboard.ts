@@ -176,10 +176,10 @@ export function renderLeaderboard(
  */
 const PHASE_DISPLAY_ORDER = [
   "miccai26-final-test",
+  "miccai26-validation",
   "longterm-test",
   "longterm-validation",
   "validation",
-  "miccai26-validation",
   "track3-validation",
   "track3-test",
 ];

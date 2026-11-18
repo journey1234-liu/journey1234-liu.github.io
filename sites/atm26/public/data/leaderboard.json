@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-11-18T04:07:01+00:00",
+  "generated_at": "2026-11-18T05:05:11+00:00",
   "ranking_policy": {
     "method": "mean rank across metrics; ties use average rank",
     "submission_selection": "latest approved successful submission per team and track"
@@ -3420,8 +3420,9 @@
                 "mDice": 0.746164542093383,
                 "mclDice": 0.814677268991321
               },
-              "submission_tag": "miccai26",
+              "submission_tag": "post-miccai26",
               "submission_timestamp": "2026-09-23T07:30:02+00:00",
+              "origin": "own",
               "metric_ranks": {
                 "ACC": 1.0,
                 "F1": 1.0,
