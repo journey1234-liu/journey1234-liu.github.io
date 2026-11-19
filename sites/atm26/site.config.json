@@ -1,0 +1,5 @@
+{
+  "_comment": "Public site configuration. `goatcounterCode` is the GoatCounter site code (https://<code>.goatcounter.com); an empty value removes the tracking snippet and hides the visitor panel. `goatcounterPath` is the path count.js records and the CI snapshot aggregates. See README.md.",
+  "goatcounterCode": "journey1234-liu",
+  "goatcounterPath": "/atm26/"
+}

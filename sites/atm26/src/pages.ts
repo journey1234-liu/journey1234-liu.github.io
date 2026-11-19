@@ -221,6 +221,34 @@ export function renderHome(): string {
       <div class="home-tracks">${trackCards}</div>
       <p class="muted">${escapeHtml(TRACKS_INTRO)}</p>
       <p><a href="#/tracks">Metric definitions and track details</a></p>
+    </section>${renderVisitorsSection()}`;
+}
+
+function renderVisitorsSection(): string {
+  return `
+    <section class="panel visitors-panel" id="visitors" hidden>
+      <div class="section-kicker">Visitors</div>
+      <h2>Site visits</h2>
+      <p class="muted visitor-meta" id="visitor-meta">All time</p>
+      <div class="visitor-grid">
+        <div class="visitor-total">
+          <strong id="visitor-total">0</strong>
+          <span>visits to the ATM26 site</span>
+        </div>
+        <div class="visitor-breakdown">
+          <div class="visitor-head">
+            <span>By country/region</span>
+            <span class="muted" id="visitor-country-count"></span>
+          </div>
+          <ol class="visitor-country-list" id="visitor-country-list"></ol>
+          <p class="muted" id="visitor-empty" hidden>No located visits yet.</p>
+        </div>
+      </div>
+      <p class="muted visitor-note">
+        Cookie-free, privacy-friendly analytics by
+        <a href="https://www.goatcounter.com/" target="_blank" rel="noopener noreferrer">GoatCounter</a>.
+        Only aggregate counts are shown; GoatCounter does not store IP addresses.
+      </p>
     </section>`;
 }
 

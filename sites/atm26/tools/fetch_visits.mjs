@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Fetch aggregate visitor statistics from GoatCounter for the homepage.
+// Fetch aggregate visitor statistics from GoatCounter for the ATM26 site.
 //
 // GitHub Pages serves static files and exposes no access logs, so the browser
 // cannot read GoatCounter's API without exposing an API token. This script runs
@@ -11,11 +11,12 @@
 // GoatCounter derives the country from the request and does not store the IP.
 //
 // Usage:
-//   GOATCOUNTER_API_TOKEN=... node tools/fetch_visits.mjs --out deploy/data/visits.json
+//   GOATCOUNTER_API_TOKEN=... node tools/fetch_visits.mjs --out deploy/atm26/data/visits.json
 //
-// The site code is read from ../site.config.json (goatcounterCode) or --code.
-// If either the token or the code is missing the script exits 0 without writing
-// a file, so forks and pull-request builds still deploy the site without stats.
+// The site code and tracked path are read from ../site.config.json
+// (goatcounterCode, goatcounterPath) or --code / --path.
+// If the token or code is missing the script exits 0 without writing a file,
+// so forks and pull-request builds still deploy the site without stats.
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
@@ -29,22 +30,22 @@ const PAGE_LIMIT = 100;
 const MAX_PAGES = 10;
 
 export function parseArgs(argv) {
-  const args = { out: "", code: "", apiBase: "" };
+  const args = { out: "", code: "", apiBase: "", path: "" };
   for (let i = 0; i < argv.length; i += 1) {
     const flag = argv[i];
     const value = argv[i + 1];
-    if (flag === "--out" || flag === "--code" || flag === "--api-base") {
+    if (flag === "--out" || flag === "--code" || flag === "--api-base" || flag === "--path") {
       if (!value || value.startsWith("--")) {
         throw new Error(`${flag} requires a value`);
       }
-      args[flag === "--out" ? "out" : flag === "--code" ? "code" : "apiBase"] = value;
+      args[{ "--out": "out", "--code": "code", "--api-base": "apiBase", "--path": "path" }[flag]] = value;
       i += 1;
       continue;
     }
     throw new Error(`unknown argument: ${flag}`);
   }
   if (!args.out) {
-    throw new Error("usage: node tools/fetch_visits.mjs --out <file> [--code <site>] [--api-base <url>]");
+    throw new Error("usage: node tools/fetch_visits.mjs --out <file> [--code <site>] [--path </path/>] [--api-base <url>]");
   }
   return args;
 }
@@ -142,8 +143,13 @@ async function main() {
     throw new Error("goatcounterCode must be a GoatCounter subdomain (letters, digits, hyphens)");
   }
 
+  const path = (args.path || config.goatcounterPath || "/").trim();
+  if (!path.startsWith("/")) {
+    throw new Error("goatcounterPath must start with '/'");
+  }
+
   const apiBase = (args.apiBase || `https://${code}.goatcounter.com/api/v0`).replace(/\/+$/, "");
-  const snapshot = await collectStats({ apiBase, token });
+  const snapshot = await collectStats({ apiBase, token, path });
   const out = resolve(args.out);
   await mkdir(dirname(out), { recursive: true });
   await writeFile(out, `${JSON.stringify(snapshot, null, 2)}\n`, "utf-8");

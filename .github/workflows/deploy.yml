@@ -11,8 +11,8 @@
 # Moving ATM26 to its own repository is a copy of `sites/atm26/` plus the
 # "ATM26 site" steps below — see `sites/atm26/README.md`.
 #
-# A daily schedule rebuilds the site so the homepage's GoatCounter snapshot
-# (`deploy/data/visits.json`) stays fresh even when no code changes.
+# A daily schedule rebuilds the site so the ATM26 visitor snapshot
+# (`deploy/atm26/data/visits.json`) stays fresh even when no code changes.
 name: Deploy sites to GitHub Pages
 
 on:
@@ -56,18 +56,18 @@ jobs:
       - name: Build personal homepage
         run: node sites/homepage/build.mjs --out deploy
 
-      - name: Test homepage tooling
-        run: node --test sites/homepage/tools/fetch_visits.test.mjs
+      - name: Test visitor tooling
+        run: node --test sites/atm26/tools/fetch_visits.test.mjs
 
       # The API token stays in Actions; the browser only sees the aggregate
-      # snapshot. Without the secret the script skips and the section stays
+      # snapshot. Without the secret the script skips and the panel stays
       # hidden, so forks and pull requests still build normally.
-      - name: Add visitor statistics
+      - name: Add ATM26 visitor statistics
         if: github.event_name != 'pull_request'
         continue-on-error: true
         env:
           GOATCOUNTER_API_TOKEN: ${{ secrets.GOATCOUNTER_API_TOKEN }}
-        run: node sites/homepage/tools/fetch_visits.mjs --out deploy/data/visits.json
+        run: node sites/atm26/tools/fetch_visits.mjs --out deploy/atm26/data/visits.json
 
       # --- ATM26 Challenge site (/atm26/) ----------------------------------
       - name: Install ATM26 site dependencies

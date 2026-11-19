@@ -3,6 +3,9 @@ import { NAV_ITEMS, SITE } from "./content";
 import { currentBase } from "./basePath";
 import { renderStaticPage } from "./pages";
 import { mountLeaderboard } from "./leaderboard";
+import { installTracker, mountVisitors } from "./visitors";
+
+installTracker(__GOATCOUNTER_URL__);
 
 function parseHash(): { page: string; params: string[] } {
   const hash = window.location.hash.replace(/^#\/?/, "");
@@ -72,6 +75,7 @@ async function mount(): Promise<void> {
     const page = document.getElementById("page");
     if (page) await mountLeaderboard(page, params);
   }
+  if (route === "home") void mountVisitors();
   const main = document.getElementById("main");
   main?.focus({ preventScroll: true });
 }

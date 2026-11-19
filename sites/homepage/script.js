@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadNews();
     loadHonors();
     loadPublications();
-    loadVisitors();
 });
 
 function setupMobileMenu() {
@@ -65,8 +64,7 @@ function setupSmoothScroll() {
 
 function setupNavHighlight() {
     const navLinks = document.querySelectorAll('.nav-links a');
-    const sections = Array.from(document.querySelectorAll('section[id]'))
-        .filter(section => !section.hidden);
+    const sections = document.querySelectorAll('section[id]');
     const nav = document.querySelector('.top-nav');
 
     if (!navLinks.length || !sections.length || !nav) {
@@ -168,118 +166,6 @@ function loadPublications() {
                 container.innerHTML = '<p>Failed to load publications.</p>';
             }
         });
-}
-
-function loadVisitors() {
-    const section = document.getElementById('visitors');
-    const tracker = document.querySelector('script[data-goatcounter]');
-    if (!section || !tracker) {
-        return;
-    }
-
-    fetch(getDataPath('visits.json'))
-        .then(handleJsonResponse)
-        .then(data => renderVisitors(section, data))
-        .catch(error => {
-            console.warn('Visitor statistics are unavailable:', error);
-        });
-}
-
-function renderVisitors(section, data) {
-    if (!data || data.configured !== true) {
-        return;
-    }
-
-    const total = toCount(data.total);
-    const countries = Array.isArray(data.countries)
-        ? data.countries
-            .map(country => ({
-                name: country && typeof country.name === 'string' ? country.name.trim() : '',
-                visits: country ? toCount(country.visits) : 0
-            }))
-            .filter(country => country.name && country.visits > 0)
-            .sort((a, b) => b.visits - a.visits || a.name.localeCompare(b.name, 'en'))
-        : [];
-
-    const totalElement = document.getElementById('visitor-total');
-    if (totalElement) {
-        totalElement.textContent = total.toLocaleString('en-US');
-    }
-
-    const metaElement = document.getElementById('visitor-meta');
-    if (metaElement) {
-        const updated = data.generatedAt ? new Date(data.generatedAt) : null;
-        const dateLabel = updated && !Number.isNaN(updated.getTime())
-            ? updated.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-            : '';
-        metaElement.textContent = dateLabel ? `All time · updated ${dateLabel}` : 'All time';
-    }
-
-    const rows = countries.map(country => ({ ...country, unknown: false }));
-    const unknown = toCount(data.unknown);
-    if (unknown > 0) {
-        rows.push({ name: 'Unknown location', visits: unknown, unknown: true });
-    }
-
-    const list = document.getElementById('visitor-country-list');
-    if (list) {
-        list.innerHTML = '';
-        const max = rows.reduce((highest, row) => Math.max(highest, row.visits), 1);
-
-        rows.forEach(row => {
-            const item = document.createElement('li');
-            item.className = row.unknown ? 'visitor-country-row is-unknown' : 'visitor-country-row';
-
-            const name = document.createElement('span');
-            name.className = 'visitor-country-name';
-            name.textContent = row.name;
-
-            const track = document.createElement('span');
-            track.className = 'visitor-country-track';
-
-            const bar = document.createElement('span');
-            bar.className = 'visitor-country-bar';
-            bar.style.width = `${Math.max(2, (row.visits / max) * 100)}%`;
-            track.appendChild(bar);
-
-            const count = document.createElement('span');
-            count.className = 'visitor-country-count';
-            count.textContent = `${row.visits.toLocaleString('en-US')} · ${formatShare(row.visits, total)}`;
-
-            item.append(name, track, count);
-            list.appendChild(item);
-        });
-    }
-
-    const empty = document.getElementById('visitor-empty');
-    if (empty) {
-        empty.hidden = rows.length > 0;
-    }
-
-    const countryCount = document.getElementById('visitor-country-count');
-    if (countryCount) {
-        countryCount.textContent = countries.length === 0
-            ? ''
-            : `${countries.length.toLocaleString('en-US')} ${countries.length === 1 ? 'country/region' : 'countries/regions'}`;
-    }
-
-    section.hidden = false;
-}
-
-function formatShare(visits, total) {
-    if (!total) {
-        return '0%';
-    }
-    const share = (visits / total) * 100;
-    if (share > 0 && share < 1) {
-        return '<1%';
-    }
-    return `${Math.round(share)}%`;
-}
-
-function toCount(value) {
-    const number = Number(value);
-    return Number.isFinite(number) && number > 0 ? Math.trunc(number) : 0;
 }
 
 function renderFeaturedPublications(container, publications) {

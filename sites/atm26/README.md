@@ -22,9 +22,10 @@ cd sites/atm26
 npm ci            # install from the lockfile (reproducible)
 npm run dev       # local dev server
 npm run typecheck # TypeScript type-check only (tsc --noEmit)
-npm test          # run vitest: JSON schema, base-path, secret-scan
+npm test          # run vitest: JSON schema, base paths, visitors, secret scan
 npm run build     # type-check + production build into dist/
 npm run preview   # preview the production build
+node --test tools/fetch_visits.test.mjs  # visitor snapshot tool (node:test)
 ```
 
 ## Layout
@@ -33,7 +34,9 @@ npm run preview   # preview the production build
 sites/atm26/
   .nvmrc                    # Node version for CI/local
   vite.config.ts            # build + base-path configuration
+  vitest.config.ts          # Vitest scope (tests/ only)
   tsconfig.json
+  site.config.json          # public config: GoatCounter code + tracked path
   index.html                # SPA shell
   public/
     data/leaderboard.json   # versioned public leaderboard snapshot (generated)
@@ -46,6 +49,7 @@ sites/atm26/
     leaderboardSchema.ts    # client-side shape validation
     metricLabels.ts         # display labels (Betti0Error → β₀ error)
     basePath.ts             # base-path resolution helpers
+    visitors.ts             # visitor panel: snapshot parsing, rendering, tracker
     styles.css
   tests/
     leaderboard.test.ts     # validates public/data/leaderboard.json + schema
@@ -57,9 +61,12 @@ sites/atm26/
     portals.test.ts         # submission form URLs stay verbatim
     pitfalls.test.ts        # Rules page pitfalls contract
     workshop.test.ts        # home workshop agenda + seamless photo strip contract
+    visitors.test.ts        # visitor snapshot parsing + country-row rendering
   tools/
     gc_validation_snapshot.json       # frozen GC validation mirror (public data)
     refresh_gc_validation_overlay.py  # re-reads GC: team labels + Betti0Error
+    fetch_visits.mjs        # CI: GoatCounter aggregate snapshot (visitor panel)
+    fetch_visits.test.mjs   # node:test suite for the snapshot tool
 ```
 
 ## Deployment base path
@@ -82,6 +89,34 @@ from `/atm26/` while the personal homepage stays at the site root. Nothing else
 in the repository is referenced at build time, and the homepage's ATM26 links
 come from `sites/homepage/site.config.json` (`atm26Url`).
 
+## Visitor statistics
+
+The home page shows an aggregate visitor panel (`#visitors`): all-time visits
+and a country/region breakdown, deliberately without a world map. Data comes
+from [GoatCounter](https://www.goatcounter.com/), which is cookie-free and does
+not store IP addresses.
+
+- `site.config.json` holds the public `goatcounterCode` (the
+  `https://<code>.goatcounter.com` subdomain) and `goatcounterPath` (`/atm26/`,
+  the path that `count.js` records and the snapshot aggregates). An empty code
+  removes the tracker and hides the panel.
+- The browser only reads `data/visits.json`, an aggregate snapshot written by
+  `tools/fetch_visits.mjs` in CI; the GoatCounter API token never reaches the
+  browser.
+- The deploy workflow writes the snapshot to `deploy/atm26/data/visits.json`, and
+  a daily schedule refreshes it. Until the token exists the panel stays hidden
+  and the build still succeeds.
+
+The token is the repository secret `GOATCOUNTER_API_TOKEN`; create it in
+GoatCounter with the statistics/read permission. To refresh locally:
+
+```bash
+GOATCOUNTER_API_TOKEN=... node tools/fetch_visits.mjs --out /tmp/visits.json
+node --test tools/fetch_visits.test.mjs
+```
+
+The homepage at the repository root is not tracked.
+
 ## GitHub Pages deployment
 
 The workflow `.github/workflows/deploy.yml` (at the repository root):
@@ -91,8 +126,11 @@ The workflow `.github/workflows/deploy.yml` (at the repository root):
   redeploys;
 - runs the same verification build for pull requests without publishing;
 - uses a concurrency group so a newer deployment cancels a superseded one;
-- installs Node from `.nvmrc`, runs `npm ci`, `npm test`, `npm run build`, then
-  uploads and deploys the assembled artifact.
+- installs Node from `.nvmrc`, runs `npm ci`, `npm test`, the visitor-tool
+  `node --test tools/fetch_visits.test.mjs`, then `npm run build`, then uploads
+  and deploys the assembled artifact. The job writes the aggregate visitor
+  snapshot (`deploy/atm26/data/visits.json`) from the `GOATCOUNTER_API_TOKEN`
+  secret; without the secret the panel stays hidden.
 
 Configure GitHub Pages to use **GitHub Actions** as the deployment source
 (Settings → Pages → Source = GitHub Actions).
@@ -185,9 +223,12 @@ lifted out at any time:
    or to `/<repository-name>/` (an organization project site); `VITE_BASE_PATH`
    still overrides it for one-off builds.
 3. Add the *ATM26 Challenge site* steps of `.github/workflows/deploy.yml`
-   (checkout → setup-node → `npm ci` → `npm test` → `npm run build` → upload
-   `dist/`) as the new repository's workflow, dropping the `cp` into
-   `deploy/atm26/`.
+   (checkout → setup-node → `npm ci` → `npm test` →
+   `node --test tools/fetch_visits.test.mjs` → `npm run build` → upload `dist/`)
+   as the new repository's workflow, dropping the `cp` into `deploy/atm26/`.
+   If the visitor panel is kept, add the `Add ATM26 visitor statistics` step,
+   write its output to `dist/data/visits.json` **after** the build, and add the
+   `GOATCOUNTER_API_TOKEN` secret; an empty `goatcounterCode` disables it all.
 4. Point the publisher at the new working copy (its `DEFAULT_SITE` /
    `publish_and_push.sh` paths) — the publishing pipeline lives in the private
    ops repository, not here.
