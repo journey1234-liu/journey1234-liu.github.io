@@ -154,7 +154,17 @@ async function main() {
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch((error) => {
-    console.error(`visitor stats failed: ${error.message}`);
+    const message = `visitor stats failed: ${error.message}`;
+    console.error(message);
+    if (process.env.GITHUB_ACTIONS === "true") {
+      // Surface the reason on the run page: the step is continue-on-error, so
+      // without an annotation a broken token only shows up as a missing card.
+      const escaped = message
+        .replaceAll("%", "%25")
+        .replaceAll("\r", "%0D")
+        .replaceAll("\n", "%0A");
+      console.error(`::error title=Visitor statistics::${escaped}`);
+    }
     process.exit(1);
   });
 }
