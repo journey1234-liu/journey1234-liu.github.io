@@ -7,18 +7,25 @@
 // site's files (HTML and JSON alike) is replaced here. Moving ATM26 to its own
 // domain is therefore a one-line change plus a rebuild.
 //
+// The GoatCounter tracking snippet is handled the same way: `goatcounterCode`
+// becomes `__GOATCOUNTER_URL__`, and an empty code removes the whole
+// `goatcounter:begin` / `goatcounter:end` block, so a fork never sends hits to
+// a site it does not own. Analytics is optional; the build succeeds either way.
+//
 // Usage:
 //   node build.mjs --out <dir>        # write the site into <dir>
 //
 // Exits non-zero if any token survives the substitution, so a stale build can
 // never be deployed silently.
 
-import { cp, mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
-const TOKEN = "__ATM26_URL__";
+const ATM26_TOKEN = "__ATM26_URL__";
+const GOATCOUNTER_TOKEN = "__GOATCOUNTER_URL__";
+const GOATCOUNTER_BLOCK = /<!--\s*goatcounter:begin\s*-->[\s\S]*?<!--\s*goatcounter:end\s*-->/g;
 const TEXT_EXTENSIONS = new Set([".html", ".json", ".js", ".css", ".xml", ".txt"]);
 
 function parseArgs(argv) {
@@ -50,12 +57,18 @@ async function main() {
   if (typeof atm26Url !== "string" || atm26Url.trim() === "") {
     throw new Error("site.config.json: atm26Url must be a non-empty string");
   }
+  const goatcounterCode = typeof config.goatcounterCode === "string" ? config.goatcounterCode.trim() : "";
+  if (goatcounterCode && !/^[a-z0-9][a-z0-9-]{0,62}$/i.test(goatcounterCode)) {
+    throw new Error("site.config.json: goatcounterCode must be a GoatCounter subdomain (letters, digits, hyphens)");
+  }
+  const goatcounterUrl = goatcounterCode ? `https://${goatcounterCode}.goatcounter.com/count` : "";
 
   await mkdir(out, { recursive: true });
   let rewritten = 0;
   for await (const path of walk(ROOT)) {
     const name = relative(ROOT, path);
     if (name.startsWith(".") || name === "build.mjs" || name === "site.config.json") continue;
+    if (name === "tools" || name.startsWith("tools/")) continue;
     const target = join(out, name);
     if (!TEXT_EXTENSIONS.has(extensionOf(path))) {
       await mkdir(dirname(target), { recursive: true });
@@ -63,7 +76,12 @@ async function main() {
       continue;
     }
     const text = await readFile(path, "utf-8");
-    const replaced = text.split(TOKEN).join(atm26Url);
+    let replaced = text.split(ATM26_TOKEN).join(atm26Url);
+    if (goatcounterCode) {
+      replaced = replaced.split(GOATCOUNTER_TOKEN).join(goatcounterUrl);
+    } else {
+      replaced = replaced.replace(GOATCOUNTER_BLOCK, "");
+    }
     if (replaced !== text) rewritten += 1;
     await mkdir(dirname(target), { recursive: true });
     await writeFile(target, replaced, "utf-8");
@@ -73,15 +91,18 @@ async function main() {
   const leftovers = [];
   for await (const path of walk(out)) {
     if (!TEXT_EXTENSIONS.has(extensionOf(path))) continue;
-    if ((await readFile(path, "utf-8")).includes(TOKEN)) leftovers.push(relative(out, path));
+    const built = await readFile(path, "utf-8");
+    if (built.includes(ATM26_TOKEN) || built.includes(GOATCOUNTER_TOKEN)) {
+      leftovers.push(relative(out, path));
+    }
   }
   if (leftovers.length > 0) {
-    throw new Error(`unreplaced ${TOKEN} in: ${leftovers.join(", ")}`);
+    throw new Error(`unreplaced build token(s) in: ${leftovers.join(", ")}`);
   }
 
   const files = await readdir(out);
   console.log(
-    `homepage → ${out} (${files.length} entries, ${rewritten} file(s) with __ATM26_URL__ → ${atm26Url})`,
+    `homepage → ${out} (${files.length} entries, ${rewritten} rewritten; ATM26 → ${atm26Url}; GoatCounter ${goatcounterCode ? `→ ${goatcounterCode}` : "disabled"})`,
   );
 }
 

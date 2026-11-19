@@ -262,6 +262,33 @@
                         </div>
                     </section>
 
+                    <section id="visitors" class="scroll-mt-24" hidden>
+                        <div class="section-header mb-6">
+                            <h2 class="text-3xl font-serif font-bold text-primary">Visitors</h2>
+                            <p class="text-sm text-neutral-500 mt-1">Aggregate, cookie-free visit statistics for this page.</p>
+                        </div>
+                        <div class="visitor-card">
+                            <div class="visitor-summary">
+                                <div id="visitor-total" class="visitor-total">0</div>
+                                <div class="visitor-total-label">visits to this page</div>
+                                <div id="visitor-meta" class="visitor-meta">All time</div>
+                            </div>
+                            <div class="visitor-countries">
+                                <div class="visitor-countries-header">
+                                    <h3 id="visitor-country-heading" class="font-semibold text-primary">Visits by country/region</h3>
+                                    <span id="visitor-country-count" class="visitor-meta"></span>
+                                </div>
+                                <ol id="visitor-country-list" class="visitor-country-list" aria-labelledby="visitor-country-heading"></ol>
+                                <p id="visitor-empty" class="visitor-empty" hidden>No located visits yet.</p>
+                                <p class="visitor-note">
+                                    Cookie-free, privacy-friendly analytics by
+                                    <a href="https://www.goatcounter.com/" target="_blank" rel="noopener noreferrer">GoatCounter</a>.
+                                    Only aggregate counts are shown; GoatCounter does not store IP addresses.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
                     <section id="contact" class="scroll-mt-24">
                         <div class="section-header mb-6">
                             <h2 class="text-3xl font-serif font-bold text-primary">Contact</h2>
@@ -302,5 +329,10 @@
     </footer>
 
     <script src="script.js"></script>
+
+    <!-- goatcounter:begin -->
+    <!-- build.mjs fills in this URL from site.config.json, or removes this block when analytics is disabled. -->
+    <script data-goatcounter="__GOATCOUNTER_URL__" async src="https://gc.zgo.at/count.js"></script>
+    <!-- goatcounter:end -->
 </body>
 </html>
