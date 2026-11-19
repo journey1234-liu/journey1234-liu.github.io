@@ -64,8 +64,9 @@ One-time setup:
 1. The site is
    [`journey1234-liu.goatcounter.com`](https://journey1234-liu.goatcounter.com/);
    `goatcounterCode` in `sites/atm26/site.config.json` points at it, and
-   `goatcounterPath` (`/atm26/`) is the path aggregated in the snapshot. An empty
-   code removes the tracking snippet and hides the panel.
+   `goatcounterPath` (`/atm26` — GoatCounter strips the trailing slash) is the
+   path aggregated in the snapshot. An empty code removes the tracking snippet
+   and hides the panel.
 2. Create an API token with the stats/read permission in GoatCounter
    (`[username] → API`) and add it as the repository secret
    `GOATCOUNTER_API_TOKEN`.

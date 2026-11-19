@@ -2,7 +2,15 @@ import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import test from "node:test";
 
-import { buildSnapshot, collectStats, normalizeCountries, parseArgs } from "./fetch_visits.mjs";
+import { buildSnapshot, collectStats, normalizeCountries, normalizePath, parseArgs } from "./fetch_visits.mjs";
+
+test("normalizePath mirrors GoatCounter's trailing-slash normalization", () => {
+  assert.equal(normalizePath("/"), "/");
+  assert.equal(normalizePath("/atm26/"), "/atm26");
+  assert.equal(normalizePath("atm26"), "/atm26");
+  assert.equal(normalizePath("  /atm26///  "), "/atm26");
+  assert.equal(normalizePath(""), "/");
+});
 
 test("normalizeCountries maps, filters, and sorts location stats", () => {
   const countries = normalizeCountries([
@@ -28,12 +36,12 @@ test("buildSnapshot keeps located and unknown visits consistent", () => {
     total: 10,
     stats: [{ id: "US", name: "United States", count: 6 }],
     generatedAt: new Date("2026-11-18T12:00:00Z"),
-    path: "/atm26/",
+    path: "/atm26",
   });
 
   assert.equal(snapshot.configured, true);
   assert.equal(snapshot.source, "GoatCounter");
-  assert.equal(snapshot.path, "/atm26/");
+  assert.equal(snapshot.path, "/atm26");
   assert.equal(snapshot.total, 10);
   assert.equal(snapshot.unknown, 4);
   assert.equal(snapshot.generatedAt, "2026-11-18T12:00:00.000Z");
@@ -107,7 +115,7 @@ test("collectStats requests the ATM26 path and follows pagination", async () => 
     const snapshot = await collectStats({
       apiBase: `http://127.0.0.1:${port}/api/v0`,
       token: "test-token",
-      path: "/atm26/",
+      path: "/atm26",
       generatedAt: new Date("2026-11-18T12:00:00Z"),
     });
 
@@ -123,7 +131,7 @@ test("collectStats requests the ATM26 path and follows pagination", async () => 
     const locations = new URL(requests[1].url, "http://127.0.0.1");
     assert.equal(locations.pathname, "/api/v0/stats/locations");
     assert.equal(locations.searchParams.get("path_by_name"), "true");
-    assert.equal(locations.searchParams.get("include_paths"), "/atm26/");
+    assert.equal(locations.searchParams.get("include_paths"), "/atm26");
     assert.equal(locations.searchParams.get("start"), "2000-01-01T00:00:00Z");
   } finally {
     await new Promise((resolve) => server.close(resolve));

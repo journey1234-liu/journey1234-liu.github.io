@@ -29,6 +29,18 @@ const ALL_TIME_START = "2000-01-01T00:00:00Z";
 const PAGE_LIMIT = 100;
 const MAX_PAGES = 10;
 
+/**
+ * Mirror GoatCounter's path normalisation: it stores every page as
+ * `/` + strings.Trim(path, "/"), so `/atm26/` becomes `/atm26`. A config or
+ * CLI value with a trailing slash must therefore be normalised before it is
+ * used as an exact-match `include_paths` filter.
+ */
+export function normalizePath(path) {
+  const trimmed = String(path || "").trim();
+  if (!trimmed) return "/";
+  return `/${trimmed.replace(/^\/+|\/+$/g, "")}`;
+}
+
 export function parseArgs(argv) {
   const args = { out: "", code: "", apiBase: "", path: "" };
   for (let i = 0; i < argv.length; i += 1) {
@@ -143,10 +155,7 @@ async function main() {
     throw new Error("goatcounterCode must be a GoatCounter subdomain (letters, digits, hyphens)");
   }
 
-  const path = (args.path || config.goatcounterPath || "/").trim();
-  if (!path.startsWith("/")) {
-    throw new Error("goatcounterPath must start with '/'");
-  }
+  const path = normalizePath(args.path || config.goatcounterPath || "/");
 
   const apiBase = (args.apiBase || `https://${code}.goatcounter.com/api/v0`).replace(/\/+$/, "");
   const snapshot = await collectStats({ apiBase, token, path });

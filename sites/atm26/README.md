@@ -97,9 +97,9 @@ from [GoatCounter](https://www.goatcounter.com/), which is cookie-free and does
 not store IP addresses.
 
 - `site.config.json` holds the public `goatcounterCode` (the
-  `https://<code>.goatcounter.com` subdomain) and `goatcounterPath` (`/atm26/`,
-  the path that `count.js` records and the snapshot aggregates). An empty code
-  removes the tracker and hides the panel.
+  `https://<code>.goatcounter.com` subdomain) and `goatcounterPath` (`/atm26`;
+  GoatCounter normalizes `/atm26/` to `/atm26`), the path the snapshot
+  aggregates. An empty code removes the tracker and hides the panel.
 - The browser only reads `data/visits.json`, an aggregate snapshot written by
   `tools/fetch_visits.mjs` in CI; the GoatCounter API token never reaches the
   browser.

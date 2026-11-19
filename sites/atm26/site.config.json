@@ -1,5 +1,5 @@
 {
-  "_comment": "Public site configuration. `goatcounterCode` is the GoatCounter site code (https://<code>.goatcounter.com); an empty value removes the tracking snippet and hides the visitor panel. `goatcounterPath` is the path count.js records and the CI snapshot aggregates. See README.md.",
+  "_comment": "Public site configuration. `goatcounterCode` is the GoatCounter site code (https://<code>.goatcounter.com); an empty value removes the tracking snippet and hides the visitor panel. `goatcounterPath` is the path stored by GoatCounter and aggregated in the CI snapshot; GoatCounter normalizes a trailing slash away, so the challenge site is `/atm26`, not `/atm26/`. See README.md.",
   "goatcounterCode": "journey1234-liu",
-  "goatcounterPath": "/atm26/"
+  "goatcounterPath": "/atm26"
 }
