@@ -233,7 +233,7 @@ function renderVisitorsSection(): string {
       <div class="visitor-grid">
         <div class="visitor-total">
           <strong id="visitor-total">0</strong>
-          <span>visits to the ATM26 site</span>
+          <span id="visitor-total-label">visits to the ATM26 site</span>
         </div>
         <div class="visitor-breakdown">
           <div class="visitor-head">

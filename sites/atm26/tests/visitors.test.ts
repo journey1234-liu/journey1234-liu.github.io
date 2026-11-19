@@ -3,6 +3,7 @@ import {
   formatShare,
   parseVisitorSnapshot,
   renderVisitorRows,
+  visitorTotalLabel,
   type VisitorSnapshot,
 } from "../src/visitors";
 
@@ -77,6 +78,14 @@ describe("formatShare", () => {
     expect(formatShare(1, 1000)).toBe("<1%");
     expect(formatShare(1, 3)).toBe("33%");
     expect(formatShare(10, 10)).toBe("100%");
+  });
+});
+
+describe("visitorTotalLabel", () => {
+  it("uses the singular only for one visit", () => {
+    expect(visitorTotalLabel(0)).toBe("visits to the ATM26 site");
+    expect(visitorTotalLabel(1)).toBe("visit to the ATM26 site");
+    expect(visitorTotalLabel(2)).toBe("visits to the ATM26 site");
   });
 });
 

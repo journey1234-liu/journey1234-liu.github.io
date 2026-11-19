@@ -66,6 +66,10 @@ export function formatShare(visits: number, total: number): string {
   return `${Math.round(share)}%`;
 }
 
+export function visitorTotalLabel(total: number): string {
+  return total === 1 ? "visit to the ATM26 site" : "visits to the ATM26 site";
+}
+
 /** Render the country rows; empty string when there are no located visits. */
 export function renderVisitorRows(snapshot: VisitorSnapshot): string {
   const rows: Array<VisitorCountry & { unknown: boolean }> = snapshot.countries.map(
@@ -116,6 +120,9 @@ export async function mountVisitors(): Promise<void> {
 
   const total = document.getElementById("visitor-total");
   if (total) total.textContent = snapshot.total.toLocaleString("en-US");
+
+  const totalLabel = document.getElementById("visitor-total-label");
+  if (totalLabel) totalLabel.textContent = visitorTotalLabel(snapshot.total);
 
   const meta = document.getElementById("visitor-meta");
   if (meta) {
