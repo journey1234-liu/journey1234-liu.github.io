@@ -59,6 +59,11 @@ cookie-free and does not store IP addresses. The browser loads GoatCounter's
 (`data/visits.json`) so the API token never reaches the browser. The homepage is
 not tracked.
 
+GoatCounter counts visits rather than raw pageviews: one visit per
+User-Agent + IP per path per 8-hour session. Reloads and return visits within
+that window do not add another count; the [ATM26 README](sites/atm26/README.md#visitor-statistics)
+documents the rule and how to count every page load instead.
+
 One-time setup:
 
 1. The site is

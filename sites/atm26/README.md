@@ -96,6 +96,14 @@ and a country/region breakdown, deliberately without a world map. Data comes
 from [GoatCounter](https://www.goatcounter.com/), which is cookie-free and does
 not store IP addresses.
 
+GoatCounter counts **visits**, not raw pageviews. A visit is the first load of
+`/atm26` in a session; sessions are keyed on site + User-Agent + IP and expire
+after 8 hours of inactivity. Reloading, moving between SPA hash routes, and
+returning within that window do not add another visit; a return after 8 hours
+(or from a different IP/User-Agent) does. To count every page load instead,
+disable sessions in GoatCounter under **Settings → Data collection →
+Sessions**.
+
 - `site.config.json` holds the public `goatcounterCode` (the
   `https://<code>.goatcounter.com` subdomain) and `goatcounterPath` (`/atm26`;
   GoatCounter normalizes `/atm26/` to `/atm26`), the path the snapshot
