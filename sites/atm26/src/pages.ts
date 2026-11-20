@@ -315,6 +315,7 @@ function renderTaskCard(track: TrackInfo): string {
 function renderTrackFigurePane(
   pane: TrackFigurePane,
   role: "input" | "output",
+  noteFirst = false,
 ): string {
   const img = pane.src
     ? `<img
@@ -326,14 +327,16 @@ function renderTrackFigurePane(
             decoding="async"
           />`
     : "";
+  const note = `<p class="track-figure-note">${escapeHtml(pane.note)}</p>`;
   return `
         <div class="track-figure-pane track-figure-pane--${role}">
           <div class="track-figure-head">
             <span class="track-figure-tag">${escapeHtml(pane.label)}</span>
             <span class="track-figure-kind">${escapeHtml(pane.kind)}</span>
           </div>
+          ${noteFirst ? note : ""}
           <div class="track-figure-canvas">${img}</div>
-          <p class="track-figure-note">${escapeHtml(pane.note)}</p>
+          ${noteFirst ? "" : note}
         </div>`;
 }
 
@@ -361,11 +364,11 @@ function renderTrackFigure(track: TrackInfo): string {
               <span class="track-figure-tag">${escapeHtml(fig.input.label)}</span>
               <span class="track-figure-kind">${escapeHtml(fig.input.kind)}</span>
             </div>
-            ${renderFrameStrip(fig, "tracks")}
             <p class="track-figure-note">${escapeHtml(fig.input.note)}</p>
+            ${renderFrameStrip(fig, "tracks")}
           </div>
           <span class="track-figure-arrow" aria-hidden="true"><span></span></span>
-          ${fig.output ? renderTrackFigurePane(fig.output, "output") : ""}
+          ${fig.output ? renderTrackFigurePane(fig.output, "output", true) : ""}
         </div>
         ${renderFigureLegend(fig)}
         <figcaption>${escapeHtml(fig.caption)}</figcaption>

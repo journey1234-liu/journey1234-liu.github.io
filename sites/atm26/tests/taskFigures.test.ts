@@ -67,6 +67,25 @@ describe("track demo figures", () => {
     }
   });
 
+  it("keeps the Track 3 explanation to one caption line and aligned notes", () => {
+    const figure = TRACKS[2].figure;
+    expect(figure?.caption.length).toBeLessThanOrEqual(100);
+    expect(figure?.caption).not.toContain("\n");
+    expect(figure?.input.note.length).toBeLessThanOrEqual(40);
+    expect(figure?.output?.note?.length ?? 0).toBeLessThanOrEqual(50);
+
+    // Both notes sit directly under their pane head, above the media, so the
+    // input and output explanations share a baseline on the Tracks page.
+    const html = renderTracks();
+    const track3 = html.slice(html.indexOf('id="track-3"'));
+    const inputNote = track3.indexOf("Frames run top to bottom.");
+    const inputStrip = track3.indexOf("seq-strip--tracks");
+    expect(inputNote).toBeGreaterThan(-1);
+    expect(inputNote).toBeLessThan(inputStrip);
+    const outputNote = track3.indexOf("Translucent classes; the rest of the tree faded.");
+    expect(outputNote).toBeGreaterThan(inputStrip);
+  });
+
   it("renders the Track 3 sequence as a vertical, tagged filmstrip", () => {
     const html = renderHome();
     expect(html).toContain('class="seq-strip seq-strip--home"');

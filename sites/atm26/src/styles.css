@@ -1549,7 +1549,7 @@ summary {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 0.5rem 0.75rem;
 }
 
@@ -1716,7 +1716,7 @@ summary {
 }
 
 .track-figure--sequence .track-figure-grid--sequence {
-  grid-template-columns: 190px 40px minmax(0, 1fr);
+  grid-template-columns: 210px 40px minmax(0, 1fr);
   align-items: start;
   gap: 1rem;
 }
