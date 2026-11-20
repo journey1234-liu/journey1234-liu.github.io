@@ -1080,6 +1080,7 @@ summary {
 }
 
 .task-pane-tag {
+  min-width: 4.25rem;
   padding: 0.22rem 0.45rem;
   border: 1px solid var(--viewer-line);
   border-radius: 999px;
@@ -1088,6 +1089,7 @@ summary {
   font-weight: 700;
   letter-spacing: 0.14em;
   line-height: 1;
+  text-align: center;
   text-transform: uppercase;
 }
 
@@ -1158,9 +1160,13 @@ summary {
 .task-card-sequence {
   display: grid;
   grid-template-columns: minmax(0, 74px) 18px minmax(0, 1fr);
-  align-items: center;
+  align-items: start;
   gap: 0.1rem;
   min-height: 220px;
+}
+
+.task-card-sequence .task-media-arrow {
+  align-self: center;
 }
 
 .task-card-sequence-input {
@@ -1188,18 +1194,10 @@ summary {
 
 .task-pane--sequence-output {
   position: relative;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   align-self: stretch;
-}
-
-.task-pane--sequence-output .task-pane-tag {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(7, 12, 21, 0.62);
-  backdrop-filter: blur(2px);
+  gap: 0.45rem;
 }
 
 .task-pane--sequence-output .task-pane-canvas img {

@@ -86,6 +86,21 @@ describe("track demo figures", () => {
     expect(outputNote).toBeGreaterThan(inputStrip);
   });
 
+  it("styles the home input and output tags as a matched pair", () => {
+    const html = renderHome();
+    const track3 = html.slice(html.indexOf("task-card task-card--track-3"));
+    expect(track3.match(/class="task-pane-tag"/g)).toHaveLength(2);
+    expect(track3).toContain('class="task-pane-tag">Input<');
+    expect(track3).toContain('class="task-pane-tag">Output<');
+
+    const css = readFileSync(new URL("../src/styles.css", import.meta.url), "utf8");
+    const rule = css.match(/\.task-pane-tag\s*\{([^}]*)\}/)?.[1] ?? "";
+    expect(rule).toContain("min-width: 4.25rem");
+    expect(rule).toContain("text-align: center");
+    // The output tag must not switch to the old overlaid, filled variant.
+    expect(css).not.toContain(".task-pane--sequence-output .task-pane-tag");
+  });
+
   it("renders the Track 3 sequence as a vertical, tagged filmstrip", () => {
     const html = renderHome();
     expect(html).toContain('class="seq-strip seq-strip--home"');
