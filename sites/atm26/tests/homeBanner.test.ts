@@ -42,6 +42,22 @@ describe("home Track-3 status banner", () => {
     expect(html).not.toContain("deadline-");
   });
 
+  it("links Code and Model beside the submission buttons", () => {
+    const html = renderHome();
+    expect(html).toContain(
+      'class="cta cta-resource" href="https://github.com/EndoluminalSurgicalVision-IMR/Airway-Tree-Modeling-26"',
+    );
+    expect(html).toContain(
+      'href="https://huggingface.co/Endoluminal-Surg-Vision-IMR/Airway-Tree-Modeling-26-baselines"',
+    );
+    expect(html).toContain('class="cta-pair"');
+    expect(html).toContain(">Code");
+    expect(html).toContain(">Model");
+    expect(html.indexOf(">Code")).toBeLessThan(html.indexOf("Submit to Validation Phase"));
+    expect(html.indexOf(">Model")).toBeLessThan(html.indexOf("Submit to Validation Phase"));
+    expect(html.match(/class="cta-icon"/g)).toHaveLength(2);
+  });
+
   it("styles the title and emphasis rules in the stylesheet", () => {
     // Guard the visual contract: title bold + italic, emphasis bold +
     // enlarged + amber, defined once.

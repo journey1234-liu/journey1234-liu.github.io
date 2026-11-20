@@ -183,11 +183,11 @@ The home Tasks panel and each Tracks section share the figures in
   frame is labelled to its right with the landmark from the sequence's
   `labels.csv` (trachea, right main bronchus, bronchus intermedius, right middle
   lobe, RB5). The output is a translucent 32-class airway surface with the
-  endoluminal path from the trachea (100) through the right main (102),
-  bronchus intermedius (112) and right lower lobe (111) / basal trunk (115) to
-  RB10 (17). Five bronchoscopy frames sit on axial planes along the path, each
-  tagged with the same per-frame landmark, so the sequence and the 3D route
-  read as one scene. Frames live in `public/img/tasks/track3/`; the scene is
+  endoluminal path from the trachea (100) through the right main (102) and
+  bronchus intermedius (112) to the right middle lobe (110) and RB5 (12), the
+  sequence's destination. Five bronchoscopy frames sit on axial planes along
+  the path, each tagged with the same per-frame landmark, so the sequence and
+  the 3D route read as one scene. Frames live in `public/img/tasks/track3/`; the scene is
   `bronch-output.webp`, with an unlabelled `bronch-output-thumb.webp` for the
   home card.
 - The home cards use the tighter, stylized `ct-volume-thumb.webp`; the Tracks

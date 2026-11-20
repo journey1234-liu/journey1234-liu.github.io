@@ -33,7 +33,7 @@ import type {
   TrackFigure,
   TrackFigurePane,
 } from "./content";
-import { TRACK_ICONS } from "./icons";
+import { GITHUB_ICON, HUGGINGFACE_ICON, TRACK_ICONS } from "./icons";
 import { resolveAsset } from "./basePath";
 import { metricLabel } from "./metricLabels";
 
@@ -416,6 +416,14 @@ export function renderHome(): string {
       <p class="lede">${escapeHtml(SITE.intro)}</p>
       <div class="cta-row">
         <a class="cta" href="#/leaderboard">View leaderboard</a>
+        <span class="cta-pair">
+          <a class="cta cta-resource" href="${escapeHtml(LINKS.github)}" target="_blank" rel="noopener noreferrer">
+            <span class="cta-icon">${GITHUB_ICON}</span>Code
+          </a>
+          <a class="cta cta-resource" href="${escapeHtml(LINKS.huggingFace)}" target="_blank" rel="noopener noreferrer">
+            <span class="cta-icon">${HUGGINGFACE_ICON}</span>Model
+          </a>
+        </span>
         <a class="cta" href="#/rules">Submit to Validation Phase</a>
         <a class="cta cta-secondary" href="#/rules">Submit to Final Test Phase</a>
       </div>

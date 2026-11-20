@@ -178,9 +178,10 @@ describe("track demo figures", () => {
     expect(html).toContain('class="legend-swatch legend-right"');
     expect(html).toContain('class="legend-swatch legend-trachea"');
     expect(html).toContain('class="legend-swatch legend-100"');
-    expect(html).toContain('class="legend-swatch legend-17"');
+    expect(html).toContain('class="legend-swatch legend-110"');
+    expect(html).toContain('class="legend-swatch legend-12"');
     expect(html).toContain('class="legend-swatch legend-path"');
-    expect(html).toContain("RB10");
+    expect(html).toContain("RB5");
     expect(html).not.toContain('class="track-output-note"');
   });
 
@@ -199,7 +200,7 @@ describe("track demo figures", () => {
       expect(css).toContain(selector);
     }
     expect(css).toContain("--viewer-bg:");
-    for (const selector of [".legend-left", ".legend-right", ".legend-trachea", ".legend-100", ".legend-path"]) {
+    for (const selector of [".legend-left", ".legend-right", ".legend-trachea", ".legend-100", ".legend-110", ".legend-12", ".legend-path"]) {
       expect(css).toContain(selector);
     }
   });

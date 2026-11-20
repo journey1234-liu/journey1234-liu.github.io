@@ -186,13 +186,14 @@ describe("submission portals and tips", () => {
     expect(html).not.toContain("Submission Guidelines");
   });
 
-  it("renders the hero with exactly three CTAs and no how-to-submit/timeline panels", () => {
+  it("renders the hero with five CTAs and no how-to-submit/timeline panels", () => {
     const html = renderHome();
     const heroRow = /<div class="cta-row">([\s\S]*?)<\/div>/.exec(html)?.[1] ?? "";
     expect(heroRow).toContain('<a class="cta" href="#/leaderboard">View leaderboard</a>');
     expect(heroRow).toContain('<a class="cta" href="#/rules">Submit to Validation Phase</a>');
     expect(heroRow).toContain('<a class="cta cta-secondary" href="#/rules">Submit to Final Test Phase</a>');
-    expect((heroRow.match(/<a class="cta/g) ?? []).length).toBe(3);
+    expect(heroRow).toContain('class="cta cta-resource"');
+    expect((heroRow.match(/<a class="cta/g) ?? []).length).toBe(5);
     expect(html).not.toContain("Participation");
     expect(html).not.toContain("Timeline to be announced");
     expect(html).not.toContain("Official challenge site");
