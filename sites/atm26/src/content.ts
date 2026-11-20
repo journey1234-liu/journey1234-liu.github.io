@@ -265,7 +265,7 @@ export const TRACKS: TrackInfo[] = [
     ],
     figure: {
       caption:
-        "Input: ten frames of a training bronchoscopy sequence, packed top to bottom from the first frame shown (000) to the last (180). Output: the predicted 32-class airway surface, kept translucent so the endoluminal path shows through. The path starts at the top of the trachea (100) and runs through the right main bronchus (102), the bronchus intermedius (112), the right lower lobe (111) and the right basal trunk (115) to RB10 (17); its colour follows the predicted class at each position. Bronchoscopy frames at 0%, 25%, 50%, 75% and 100% of the path are placed on axial planes along the route.",
+        "Input: ten frames of a training bronchoscopy sequence, packed top to bottom from the first frame shown (000) to the last (180). Output: the predicted 32-class airway surface, kept translucent so the endoluminal path shows through; branches away from the route are faded for context. The path starts at the top of the trachea (100) and runs through the right main bronchus (102), the bronchus intermedius (112), the right lower lobe (111) and the right basal trunk (115) to RB10 (17); its colour follows the predicted class at each position. Bronchoscopy frames at 0%, 25%, 50%, 75% and 100% of the path are placed on axial planes along the route.",
       input: {
         label: "Input",
         kind: "Bronchoscopy frames",
@@ -274,7 +274,7 @@ export const TRACKS: TrackInfo[] = [
       output: {
         label: "Output",
         kind: "32-class model + path",
-        note: "Translucent class surfaces with the predicted path; five keyframes sit on axial planes along the route.",
+        note: "Translucent class surfaces along the predicted path, with the rest of the tree faded for context; five keyframes sit on axial planes.",
         src: IMAGES.taskBronchOutput,
         alt: "A translucent multicoloured airway tree with a glowing navigation path from the top of the trachea to the RB10 segment; five bronchoscopy frames lie on horizontal planes along the path.",
         width: 1042,
