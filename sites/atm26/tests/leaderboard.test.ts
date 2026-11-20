@@ -570,6 +570,85 @@ describe("board paging", () => {
   });
 });
 
+describe("podium medals", () => {
+  const snapshot = () => parseLeaderboard(loadFixture()).snapshot!;
+  const ASC = { key: "rank", dir: "asc" as const };
+  const LONGTERM = { id: "longterm-test", label: "Longterm Test" };
+  const VALIDATION = { id: "longterm-validation", label: "Longterm Validation" };
+  const allRows = () =>
+    renderBoard(
+      LONGTERM,
+      "track-1",
+      snapshot().phases["longterm-test"].tracks["track-1"],
+      "",
+      ASC,
+      { size: 0, index: 0 },
+    );
+
+  it("awards gold, silver and copper to the three podium ranks", () => {
+    const html = allRows();
+    expect(html.match(/lb-medal--gold/g)).toHaveLength(1);
+    expect(html.match(/lb-medal--silver/g)).toHaveLength(1);
+    expect(html.match(/lb-medal--copper/g)).toHaveLength(1);
+
+    // The medal follows the team name, before the era tag.
+    const goldRow = html.split("</tr>").find((row) => row.includes("lb-medal--gold"))!;
+    expect(goldRow).toContain("MUST-MEDAI");
+    expect(goldRow.indexOf("MUST-MEDAI")).toBeLessThan(goldRow.indexOf("lb-medal--gold"));
+    expect(goldRow.indexOf("lb-medal--gold")).toBeLessThan(goldRow.indexOf("lb-tag"));
+    expect(goldRow).toContain('aria-label="Gold medal"');
+  });
+
+  it("gives both teams of a first-place tie the gold medal", () => {
+    // Validation Track 1 starts 1.5, 1.5, 3: two tied firsts, then third.
+    const html = renderBoard(
+      VALIDATION,
+      "track-1",
+      snapshot().phases["longterm-validation"].tracks["track-1"],
+      "",
+      ASC,
+      { size: 0, index: 0 },
+    );
+    const rows = html.split("</tr>");
+    for (const name of ["cesar.acebes (UpfHsp)", "jjzhu (MUST-MEDAI)"]) {
+      expect(rows.find((row) => row.includes(name)), name).toContain("lb-medal--gold");
+    }
+    expect(rows.find((row) => row.includes("ziyanhuang (BioMaker)"))).toContain(
+      "lb-medal--copper",
+    );
+    expect(html.match(/lb-medal--gold/g)).toHaveLength(2);
+    expect(html).not.toContain("lb-medal--silver");
+    expect(html.match(/lb-medal--copper/g)).toHaveLength(1);
+  });
+
+  it("does not medal fourth place", () => {
+    const row = allRows()
+      .split("</tr>")
+      .find((candidate) => candidate.includes("UpfHsp"))!;
+    expect(row).not.toContain("lb-medal");
+  });
+
+  it("medals the podium of every track and phase", () => {
+    const snap = snapshot();
+    for (const [phaseId, phase] of Object.entries(snap.phases)) {
+      for (const [trackId, track] of Object.entries(phase.tracks)) {
+        const html = renderBoard(
+          { id: phaseId, label: phase.label ?? phaseId },
+          trackId,
+          track,
+          "",
+          ASC,
+          { size: 0, index: 0 },
+        );
+        const podium = track.entries.filter((entry) => entry.rank < 4).length;
+        expect(html.match(/class="lb-medal /g) ?? [], `${phaseId}/${trackId}`).toHaveLength(
+          podium,
+        );
+      }
+    }
+  });
+});
+
 describe("rows-per-page preference", () => {
   const withStorage = (getItem: () => string | null): number => {
     const scope = globalThis as { window?: unknown };

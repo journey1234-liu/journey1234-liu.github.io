@@ -709,6 +709,13 @@ export const CITATIONS: CitationItem[] = [
     venue: "arXiv preprint arXiv:2412.11039.",
     link: "https://arxiv.org/abs/2412.11039",
   },
+  {
+    authors: "Luo, M., Wu, J., Zhang, M., Liu, Y., Chen, Y., Zhang, H., Li, Q. and Gu, Y., 2026.",
+    title: "Topology-constrained vision-language sequence modeling for bronchoscopic localization.",
+    venue:
+      "MICCAI 2026 EndoLINA Workshop (International Workshop on Endoluminal Intervention, Navigation and Autonomy), MICCAI 2026 Workshops and Challenges, LNCS 17275.",
+    link: "https://papers.miccai.org/miccai-2026-sat/paper/EndoLINA_005.pdf",
+  },
 ];
 
 export const FAQ: FaqItem[] = [

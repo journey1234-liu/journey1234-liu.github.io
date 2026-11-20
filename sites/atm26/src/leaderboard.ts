@@ -111,6 +111,27 @@ function formatCutoff(value: string): string {
   return escapeHtml(`${date}, ${time} UTC`);
 }
 
+/** Ribbon-and-disc medal; the CSS modifier classes supply the metal colours. */
+const MEDAL_SVG = `<svg viewBox="0 0 16 20" aria-hidden="true" focusable="false">
+  <path d="M3.6 1h3L8.2 9.4H5.4z" fill="#8a1630"/>
+  <path d="M9.4 1h3L10.6 9.4H7.8z" fill="#a41034"/>
+  <circle cx="8" cy="13.8" r="5.3" fill="var(--medal-face)" stroke="var(--medal-rim)" stroke-width="1"/>
+  <circle cx="8" cy="13.8" r="3.3" fill="none" stroke="var(--medal-shine)" stroke-width="1"/>
+</svg>`;
+
+/**
+ * Podium medal shown directly after a team name. Ranks are mean metric ranks,
+ * so a two-way tie for first is 1.5; the medal covers the band it represents
+ * (gold < 2 ≤ silver < 3 ≤ copper < 4). Only the top three positions qualify.
+ */
+function rankMedal(entry: LeaderboardEntry): string {
+  const rank = entry.rank;
+  const variant = rank < 2 ? "gold" : rank < 3 ? "silver" : rank < 4 ? "copper" : "";
+  if (!variant) return "";
+  const label = variant[0].toUpperCase() + variant.slice(1);
+  return ` <span class="lb-medal lb-medal--${variant}" role="img" aria-label="${label} medal" title="${label} medal">${MEDAL_SVG}</span>`;
+}
+
 /**
  * Marker for a row the organizers produced rather than the team: the team's
  * best Validation Phase model, re-evaluated on the Final Test set.
@@ -521,7 +542,7 @@ export function renderBoard(
       (entry) => `
       <tr>
         <td class="lb-rank">${formatNumber(entry.rank)}</td>
-        <td class="lb-team">${escapeHtml(entry.team_display_name)}${originBadge(entry)}${tagBadge(entry)}</td>
+        <td class="lb-team">${escapeHtml(entry.team_display_name)}${rankMedal(entry)}${originBadge(entry)}${tagBadge(entry)}</td>
         ${metricNames
           .map((name) => {
             const value = entry.metrics[name];
