@@ -1,6 +1,6 @@
 // Demo figures in the home Tasks panel and on the Tracks page. Track 1 and
-// Track 2 share the CT input and differ in the rendered output; Track 3 is
-// text-only until its output visual is decided.
+// Track 2 show a CT input and a rendered surface; Track 3 shows a packed
+// bronchoscopy sequence and the labelled airway with its endoluminal path.
 import { describe, it, expect } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -11,13 +11,27 @@ const publicFile = (relative: string): string =>
   fileURLToPath(new URL(`../public/${relative}`, import.meta.url));
 
 describe("track demo figures", () => {
-  it("gives Track 1 and Track 2 an input and an output, and leaves Track 3 text-only", () => {
+  it("gives every track a visual demo, with Track 3 driven by frames", () => {
     expect(TRACKS).toHaveLength(3);
-    expect(TRACKS[0].figure?.input.label).toBe("Input");
-    expect(TRACKS[0].figure?.output?.label).toBe("Output");
-    expect(TRACKS[1].figure?.input.label).toBe("Input");
-    expect(TRACKS[1].figure?.output?.label).toBe("Output");
-    expect(TRACKS[2].figure).toBeUndefined();
+    for (const track of TRACKS) {
+      expect(track.figure?.input.label).toBe("Input");
+      expect(track.figure?.output?.label).toBe("Output");
+    }
+    expect(TRACKS[2].figure?.frames).toHaveLength(10);
+    expect(TRACKS[2].figure?.frames?.[0].role).toBe("start");
+    expect(TRACKS[2].figure?.frames?.[9].role).toBe("final");
+    expect(TRACKS[2].figure?.frames?.map((frame) => frame.label)).toEqual([
+      "000",
+      "020",
+      "040",
+      "060",
+      "080",
+      "100",
+      "120",
+      "140",
+      "160",
+      "180",
+    ]);
   });
 
   it("pairs the shared CT input with a binary and a multiclass surface", () => {
@@ -33,36 +47,42 @@ describe("track demo figures", () => {
     ]);
   });
 
-  it("ships every Track 1/2 figure asset and keeps its intrinsic size", () => {
-    const paths = TRACKS.flatMap((track) =>
-      [track.figure?.input.src, track.figure?.input.thumbSrc, track.figure?.output?.src].filter(
-        (path): path is string => Boolean(path),
-      ),
-    );
+  it("ships every figure asset, including the Track 3 frames", () => {
+    const paths = TRACKS.flatMap((track) => [
+      track.figure?.input.src,
+      track.figure?.input.thumbSrc,
+      track.figure?.output?.src,
+      track.figure?.output?.thumbSrc,
+      ...(track.figure?.frames?.map((frame) => frame.src) ?? []),
+    ]).filter((path): path is string => Boolean(path));
     const uniquePaths = [...new Set(paths)];
-    expect(uniquePaths).toHaveLength(4);
+    expect(uniquePaths).toHaveLength(16);
     for (const path of uniquePaths) {
       expect(path.startsWith("img/tasks/")).toBe(true);
       expect(existsSync(publicFile(path))).toBe(true);
     }
-    expect(TRACKS[0].figure?.input.width).toBeGreaterThan(0);
-    expect(TRACKS[0].figure?.input.height).toBeGreaterThan(0);
-    expect(TRACKS[0].figure?.output?.width).toBeGreaterThan(0);
-    expect(TRACKS[0].figure?.output?.height).toBeGreaterThan(0);
+    for (const track of TRACKS) {
+      expect(track.figure?.output?.width).toBeGreaterThan(0);
+      expect(track.figure?.output?.height).toBeGreaterThan(0);
+    }
   });
 
-  it("does not ship the deferred Track 3 frame sequence", () => {
-    const html = renderHome() + renderTracks();
-    expect(html).not.toContain("img/tasks/track3");
-    expect(html).not.toContain('class="frame-strip"');
-    expect(existsSync(publicFile("img/tasks/track3"))).toBe(false);
+  it("renders the Track 3 sequence as a vertical, tagged filmstrip", () => {
+    const html = renderHome();
+    expect(html).toContain('class="seq-strip seq-strip--home"');
+    expect(html.match(/class="seq-step"/g)).toHaveLength(3);
+    expect(html).toContain(">f000<");
+    expect(html).toContain(">f180<");
+    expect(html).toContain("img/tasks/track3/frame-000.webp");
+    expect(html).toContain("img/tasks/bronch-output-thumb.webp");
+    expect(html).toContain('class="task-card-sequence"');
   });
 
-  it("renders two visual Task cards and one text-only Track 3 card", () => {
+  it("renders three visual Task cards", () => {
     const html = renderHome();
     expect(html.match(/class="task-card task-card--/g)).toHaveLength(3);
-    expect(html.match(/class="task-card-media"/g)).toHaveLength(2);
-    expect(html.match(/class="task-card task-card--track-3 task-card--text"/g)).toHaveLength(1);
+    expect(html.match(/class="task-card-media"/g)).toHaveLength(3);
+    expect(html).not.toContain("task-card--text");
     expect(html).toContain("Track 1 · CT");
     expect(html).toContain("Track 2 · CT");
     expect(html).toContain("Track 3 · Bronchoscopy");
@@ -75,27 +95,41 @@ describe("track demo figures", () => {
     expect(html).toContain('href="#/tracks/track-3"');
   });
 
-  it("renders figures on the Tracks page only for Track 1 and Track 2", () => {
+  it("renders all three figures on the Tracks page", () => {
     const html = renderTracks();
     expect(html.match(/class="panel track-section"/g)).toHaveLength(3);
     expect(html).toContain('id="track-1"');
     expect(html).toContain('id="track-2"');
     expect(html).toContain('id="track-3"');
-    expect(html.match(/class="track-figure /g)).toHaveLength(2);
+    expect(html.match(/class="track-figure /g)).toHaveLength(3);
+    expect(html).toContain("track-figure--sequence");
+    expect(html.match(/class="seq-step"/g)).toHaveLength(10);
+    expect(html).toContain("img/tasks/bronch-output.webp");
     expect(html).toContain('class="legend-swatch legend-left"');
     expect(html).toContain('class="legend-swatch legend-right"');
     expect(html).toContain('class="legend-swatch legend-trachea"');
+    expect(html).toContain('class="legend-swatch legend-100"');
+    expect(html).toContain('class="legend-swatch legend-17"');
+    expect(html).toContain('class="legend-swatch legend-path"');
+    expect(html).toContain("RB10");
     expect(html).not.toContain('class="track-output-note"');
   });
 
-  it("keeps the viewer surface styled", () => {
+  it("keeps the viewer surfaces and sequence styles", () => {
     const css = readFileSync(new URL("../src/styles.css", import.meta.url), "utf8");
-    for (const selector of [".task-card-media", ".task-card-panes", ".task-card--text", ".track-figure"]) {
+    for (const selector of [
+      ".task-card-media",
+      ".task-card-panes",
+      ".task-card-sequence",
+      ".seq-strip",
+      ".track-figure",
+      ".track-figure--sequence",
+    ]) {
       expect(css).toContain(selector);
     }
     expect(css).toContain("--viewer-bg:");
-    expect(css).toContain(".legend-left");
-    expect(css).toContain(".legend-right");
-    expect(css).toContain(".legend-trachea");
+    for (const selector of [".legend-left", ".legend-right", ".legend-trachea", ".legend-100", ".legend-path"]) {
+      expect(css).toContain(selector);
+    }
   });
 });

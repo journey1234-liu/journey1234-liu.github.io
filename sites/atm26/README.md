@@ -113,9 +113,16 @@ Sessions**.
 - The browser only reads `data/visits.json`, an aggregate snapshot written by
   `tools/fetch_visits.mjs` in CI; the GoatCounter API token never reaches the
   browser.
-- The deploy workflow writes the snapshot to `deploy/atm26/data/visits.json`, and
-  a daily schedule refreshes it. Until the token exists the panel stays hidden
-  and the build still succeeds.
+- `public/data/visits.json` is the committed fallback (the last snapshot that
+  was verified against the API), so the panel stays visible when a refresh
+  fails or the secret is absent. It is replaced by the fetched snapshot at
+  deploy time.
+- The deploy workflow writes the snapshot to `deploy/atm26/data/visits.json`
+  **after** the site is assembled, and a daily schedule refreshes it. Until the
+  token exists the panel shows the committed snapshot and the build still
+  succeeds.
+- If the configured path has no stored pageviews yet, the tool retries without
+  the path filter and aggregates the whole GoatCounter site instead.
 
 The token is the repository secret `GOATCOUNTER_API_TOKEN`; create it in
 GoatCounter with the statistics/read permission. To refresh locally:
@@ -138,9 +145,10 @@ The workflow `.github/workflows/deploy.yml` (at the repository root):
 - uses a concurrency group so a newer deployment cancels a superseded one;
 - installs Node from `.nvmrc`, runs `npm ci`, `npm test`, the visitor-tool
   `node --test tools/fetch_visits.test.mjs`, then `npm run build`, then uploads
-  and deploys the assembled artifact. The job writes the aggregate visitor
-  snapshot (`deploy/atm26/data/visits.json`) from the `GOATCOUNTER_API_TOKEN`
-  secret; without the secret the panel stays hidden.
+  and deploys the assembled artifact. After assembly the job writes the
+  aggregate visitor snapshot (`deploy/atm26/data/visits.json`) from the
+  `GOATCOUNTER_API_TOKEN` secret; without the secret the committed
+  `public/data/visits.json` is deployed instead.
 
 Configure GitHub Pages to use **GitHub Actions** as the deployment source
 (Settings → Pages → Source = GitHub Actions).
@@ -170,12 +178,20 @@ The home Tasks panel and each Tracks section share the figures in
   rendered as a red binary surface (Track 1) or as a 20-class coloured surface
   (Track 2, cool colours for left-lung branches, warm for right-lung branches,
   neutral grey for the trachea and main bronchi).
-- **Track 3** is intentionally text-only for now. Its demo figure and frame
-  assets are not published until the output representation is designed; the
-  home card and the Tracks section still describe the task and its metrics.
+- **Track 3** packs ten frames of one training bronchoscopy sequence top to
+  bottom (first frame at the top, last at the bottom). The output is a
+  translucent 32-class airway surface with the endoluminal path from the
+  trachea (100) through the right main (102), bronchus intermedius (112) and
+  right lower lobe (111) / basal trunk (115) to RB10 (17). Five bronchoscopy
+  frames sit on axial planes along the path, so the sequence and the 3D route
+  read as one scene. Frames live in `public/img/tasks/track3/`; the scene is
+  `bronch-output.webp`, with an unlabelled `bronch-output-thumb.webp` for the
+  home card.
 - The home cards use the tighter, stylized `ct-volume-thumb.webp`; the Tracks
-  page uses the larger `ct-volume.webp`. Figures are stored as transparent WebP
-  so the dark viewer surface in `styles.css` provides the background.
+  page uses the larger `ct-volume.webp`. The Track 3 card uses the vertical
+  timeline (`seq-strip`) plus `bronch-output-thumb.webp`; the Tracks page shows
+  all ten frames and the labelled `bronch-output.webp`. Figures are transparent
+  WebP so the dark viewer surface in `styles.css` provides the background.
 
 Figure metadata (paths, intrinsic sizes, alt text, captions, legend labels and
 the Track-3 output note) lives in `src/content.ts` under `TRACKS[].figure`; the
@@ -260,7 +276,7 @@ lifted out at any time:
    `node --test tools/fetch_visits.test.mjs` → `npm run build` → upload `dist/`)
    as the new repository's workflow, dropping the `cp` into `deploy/atm26/`.
    If the visitor panel is kept, add the `Add ATM26 visitor statistics` step,
-   write its output to `dist/data/visits.json` **after** the build, and add the
+   write its output to `deploy/atm26/data/visits.json` **after** assembly, and add the
    `GOATCOUNTER_API_TOKEN` secret; an empty `goatcounterCode` disables it all.
 4. Point the publisher at the new working copy (its `DEFAULT_SITE` /
    `publish_and_push.sh` paths) — the publishing pipeline lives in the private

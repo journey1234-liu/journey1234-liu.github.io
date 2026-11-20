@@ -171,65 +171,66 @@ function renderWorkshopSection(): string {
     </section>`;
 }
 
-/** Small input/output pane used by the home-page task cards. */
-function renderTaskPane(pane: TrackFigurePane, role: "input" | "output"): string {
+/** Thumbnail (or full asset) used inside a home-page task pane. */
+function renderTaskImage(pane: TrackFigurePane): string {
   const src = pane.thumbSrc ?? pane.src;
   const width = pane.thumbSrc ? pane.thumbWidth : pane.width;
   const height = pane.thumbSrc ? pane.thumbHeight : pane.height;
-  const img = src
-    ? `<img
+  if (!src) return "";
+  return `<img
           src="${escapeHtml(resolveAsset(src))}"
           alt="${escapeHtml(pane.alt ?? "")}"
           ${width ? `width="${width}"` : ""}
           ${height ? `height="${height}"` : ""}
           loading="lazy"
           decoding="async"
-        />`
-    : "";
+        />`;
+}
+
+/** Small input/output pane used by the home-page task cards. */
+function renderTaskPane(pane: TrackFigurePane, role: "input" | "output"): string {
   return `
         <div class="task-pane task-pane--${role}">
           <span class="task-pane-tag">${escapeHtml(pane.label)}</span>
-          <div class="task-pane-canvas">${img}</div>
+          <div class="task-pane-canvas">${renderTaskImage(pane)}</div>
           <span class="task-pane-kind">${escapeHtml(pane.kind)}</span>
         </div>`;
 }
 
 /**
- * Horizontal bronchoscopy strip. The home card shows four frames sampled
- * across the sequence; the Tracks page shows every prepared frame.
+ * Vertical filmstrip for a frame sequence. The home card shows the start,
+ * middle and final frames; the Tracks page shows every frame, first at the top.
  */
 function renderFrameStrip(fig: TrackFigure, context: "home" | "tracks"): string {
   const frames = fig.frames ?? [];
-  const selected = frames
-    .map((frame, index) => ({ frame, index }))
-    .filter(({ index }) => context === "tracks" || [0, 2, 4, 6].includes(index));
+  const selected =
+    context === "tracks" || frames.length === 0
+      ? frames
+      : [frames[0], frames[Math.floor(frames.length / 2)], frames[frames.length - 1]];
   const items = selected
-    .map(
-      ({ frame, index }) => `
-          <figure class="frame-strip-item">
-            <img
-              src="${escapeHtml(resolveAsset(frame.src))}"
-              alt="${escapeHtml(frame.alt)}"
-              width="${frame.width}"
-              height="${frame.height}"
-              loading="lazy"
-              decoding="async"
-            />
-            <figcaption>${String(index * 20).padStart(3, "0")}</figcaption>
-          </figure>`,
-    )
+    .map((frame) => {
+      const tag = frame.label ?? "";
+      return `
+          <li class="seq-step">
+            <figure class="seq-frame">
+              <img
+                src="${escapeHtml(resolveAsset(frame.src))}"
+                alt="${escapeHtml(frame.alt)}"
+                width="${frame.width}"
+                height="${frame.height}"
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption>
+                <span class="seq-tag">f${escapeHtml(tag)}</span>
+              </figcaption>
+            </figure>
+          </li>`;
+    })
     .join("");
-  const lastIndex = selected.length
-    ? selected[selected.length - 1].index * 20
-    : 0;
   return `
-        <div class="frame-strip" role="group" aria-label="${escapeHtml(fig.input.kind)} frames in time order">${items}
-        </div>
-        <div class="frame-strip-meta" aria-hidden="true">
-          <span>frame 0</span>
-          <span class="frame-strip-line"></span>
-          <span>frame ${lastIndex}</span>
-        </div>`;
+        <ol class="seq-strip seq-strip--${context}" role="group" aria-label="${escapeHtml(fig.input.kind)} in time order, first frame at the top">${items}
+        </ol>`;
 }
 
 /** Ranking-metric chips shared by the visual and text-only task cards. */
@@ -276,15 +277,20 @@ function renderTaskCard(track: TrackInfo): string {
   const fig = track.figure;
   if (!fig) return renderTextTaskCard(track);
   const media = fig.frames?.length
-    ? `<div class="task-card-frames">
-          <div class="task-card-frames-head">
+    ? `<div class="task-card-sequence">
+          <div class="task-card-sequence-input">
             <span class="task-pane-tag">${escapeHtml(fig.input.label)}</span>
-            <span class="task-pane-kind">${escapeHtml(fig.input.kind)}</span>
+            ${renderFrameStrip(fig, "home")}
           </div>
-          ${renderFrameStrip(fig, "home")}
-          <span class="task-output-chip">
-            <span class="task-output-chip-dot" aria-hidden="true"></span>${escapeHtml(fig.outputNote ?? "")}
-          </span>
+          <span class="task-media-arrow" aria-hidden="true"><span></span></span>
+          ${
+            fig.output
+              ? `<div class="task-pane task-pane--output task-pane--sequence-output">
+            <span class="task-pane-tag">${escapeHtml(fig.output.label)}</span>
+            <div class="task-pane-canvas">${renderTaskImage(fig.output)}</div>
+          </div>`
+              : ""
+          }
         </div>`
     : `<div class="task-card-panes">
           ${renderTaskPane(fig.input, "input")}
@@ -331,15 +337,26 @@ function renderTrackFigurePane(
         </div>`;
 }
 
+/** Colour key for the class surfaces of a track figure. */
+function renderFigureLegend(fig: TrackFigure): string {
+  if (!fig.legend?.length) return "";
+  return `<ul class="track-figure-legend">${fig.legend
+    .map(
+      (item) =>
+        `<li><span class="legend-swatch ${escapeHtml(item.className)}" aria-hidden="true"></span>${escapeHtml(item.label)}</li>`,
+    )
+    .join("")}</ul>`;
+}
+
 /** Demo figure shared by the home Tasks cards and the Tracks page. */
 function renderTrackFigure(track: TrackInfo): string {
   const fig = track.figure;
   if (!fig) return "";
   if (fig.frames?.length) {
     return `
-      <figure class="track-figure track-figure--${escapeHtml(track.slug)} track-figure--frames">
-        <div class="track-figure-grid">
-          <div class="track-figure-pane track-figure-pane--wide">
+      <figure class="track-figure track-figure--${escapeHtml(track.slug)} track-figure--sequence">
+        <div class="track-figure-grid track-figure-grid--sequence">
+          <div class="track-figure-pane track-figure-pane--sequence">
             <div class="track-figure-head">
               <span class="track-figure-tag">${escapeHtml(fig.input.label)}</span>
               <span class="track-figure-kind">${escapeHtml(fig.input.kind)}</span>
@@ -347,22 +364,13 @@ function renderTrackFigure(track: TrackInfo): string {
             ${renderFrameStrip(fig, "tracks")}
             <p class="track-figure-note">${escapeHtml(fig.input.note)}</p>
           </div>
-          <div class="track-output-note">
-            <span class="track-figure-tag">Output</span>
-            <p>${escapeHtml(fig.outputNote ?? "")}</p>
-          </div>
+          <span class="track-figure-arrow" aria-hidden="true"><span></span></span>
+          ${fig.output ? renderTrackFigurePane(fig.output, "output") : ""}
         </div>
+        ${renderFigureLegend(fig)}
         <figcaption>${escapeHtml(fig.caption)}</figcaption>
       </figure>`;
   }
-  const legend = fig.legend?.length
-    ? `<ul class="track-figure-legend">${fig.legend
-        .map(
-          (item) =>
-            `<li><span class="legend-swatch ${escapeHtml(item.className)}" aria-hidden="true"></span>${escapeHtml(item.label)}</li>`,
-        )
-        .join("")}</ul>`
-    : "";
   return `
     <figure class="track-figure track-figure--${escapeHtml(track.slug)}">
       <div class="track-figure-grid">
@@ -370,7 +378,7 @@ function renderTrackFigure(track: TrackInfo): string {
         <span class="track-figure-arrow" aria-hidden="true"><span></span></span>
         ${fig.output ? renderTrackFigurePane(fig.output, "output") : ""}
       </div>
-      ${legend}
+      ${renderFigureLegend(fig)}
       <figcaption>${escapeHtml(fig.caption)}</figcaption>
     </figure>`;
 }

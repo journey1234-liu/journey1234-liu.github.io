@@ -14,6 +14,10 @@ export interface TrackFigureFrame {
   alt: string;
   width: number;
   height: number;
+  /** Numeric tag shown on the timeline, e.g. "000". */
+  label?: string;
+  /** "start" or "final" when the frame bounds the sequence. */
+  role?: string;
 }
 
 export interface TrackFigurePane {
@@ -39,7 +43,6 @@ export interface TrackFigure {
   input: TrackFigurePane;
   output: TrackFigurePane | null;
   frames?: TrackFigureFrame[];
-  outputNote?: string;
   legend?: TrackFigureLegendItem[];
 }
 
@@ -105,7 +108,26 @@ export const IMAGES = {
   taskCtVolumeThumb: "img/tasks/ct-volume-thumb.webp",
   taskAirwayBinary: "img/tasks/airway-binary.webp",
   taskAirwayMulticlass: "img/tasks/airway-multiclass.webp",
+  taskBronchOutput: "img/tasks/bronch-output.webp",
+  taskBronchOutputThumb: "img/tasks/bronch-output-thumb.webp",
 };
+
+/** Ten evenly spaced frames of one Track 3 training sequence. */
+const TRACK3_FRAME_IDS = [0, 20, 40, 60, 80, 100, 120, 140, 160, 180];
+
+const TRACK3_FRAMES: TrackFigureFrame[] = TRACK3_FRAME_IDS.map((id, index) => {
+  const tag = String(id).padStart(3, "0");
+  const role =
+    index === 0 ? "start" : index === TRACK3_FRAME_IDS.length - 1 ? "final" : undefined;
+  return {
+    src: `img/tasks/track3/frame-${tag}.webp`,
+    alt: `Bronchoscopy frame ${tag}${role ? `, the ${role} frame shown` : ""} of a training sequence.`,
+    width: 400,
+    height: 400,
+    label: tag,
+    role,
+  };
+});
 
 /** Shared input panel: the same CT case illustrates Track 1 and Track 2. */
 const CT_FIGURE_INPUT: TrackFigurePane = {
@@ -231,8 +253,6 @@ export const TRACKS: TrackInfo[] = [
     cardKicker: "Track 3 · Bronchoscopy",
     cardTitle: "Landmark Recognition",
     cardShort: "Recognise the airway landmark visible in each bronchoscopy frame.",
-    coverNumber: "32",
-    coverCaption: "landmark classes",
     short:
       "Classify each bronchoscopy frame into the airway landmark it shows.",
     description:
@@ -243,6 +263,37 @@ export const TRACKS: TrackInfo[] = [
       { name: "sequence_edit", higherIsBetter: true, note: "Segmental edit score: label order and extra/missing segments" },
       { name: "segment_f1_50", higherIsBetter: true, note: "Segmental F1 at temporal IoU 0.5" },
     ],
+    figure: {
+      caption:
+        "Input: ten frames of a training bronchoscopy sequence, packed top to bottom from the first frame shown (000) to the last (180). Output: the predicted 32-class airway surface, kept translucent so the endoluminal path shows through. The path starts at the top of the trachea (100) and runs through the right main bronchus (102), the bronchus intermedius (112), the right lower lobe (111) and the right basal trunk (115) to RB10 (17); its colour follows the predicted class at each position. Bronchoscopy frames at 0%, 25%, 50%, 75% and 100% of the path are placed on axial planes along the route.",
+      input: {
+        label: "Input",
+        kind: "Bronchoscopy frames",
+        note: "First frame at the top, last at the bottom.",
+      },
+      output: {
+        label: "Output",
+        kind: "32-class model + path",
+        note: "Translucent class surfaces with the predicted path; five keyframes sit on axial planes along the route.",
+        src: IMAGES.taskBronchOutput,
+        alt: "A translucent multicoloured airway tree with a glowing navigation path from the top of the trachea to the RB10 segment; five bronchoscopy frames lie on horizontal planes along the path.",
+        width: 1042,
+        height: 1222,
+        thumbSrc: IMAGES.taskBronchOutputThumb,
+        thumbWidth: 720,
+        thumbHeight: 761,
+      },
+      frames: TRACK3_FRAMES,
+      legend: [
+        { label: "100 · trachea", className: "legend-100" },
+        { label: "102 · right main", className: "legend-102" },
+        { label: "112 · bronchus intermedius", className: "legend-112" },
+        { label: "111 · right lower", className: "legend-111" },
+        { label: "115 · right basal trunk", className: "legend-115" },
+        { label: "17 · RB10", className: "legend-17" },
+        { label: "Navigation path", className: "legend-path" },
+      ],
+    },
   },
 ];
 

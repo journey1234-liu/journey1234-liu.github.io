@@ -59,16 +59,6 @@ jobs:
       - name: Test visitor tooling
         run: node --test sites/atm26/tools/fetch_visits.test.mjs
 
-      # The API token stays in Actions; the browser only sees the aggregate
-      # snapshot. Without the secret the script skips and the panel stays
-      # hidden, so forks and pull requests still build normally.
-      - name: Add ATM26 visitor statistics
-        if: github.event_name != 'pull_request'
-        continue-on-error: true
-        env:
-          GOATCOUNTER_API_TOKEN: ${{ secrets.GOATCOUNTER_API_TOKEN }}
-        run: node sites/atm26/tools/fetch_visits.mjs --out deploy/atm26/data/visits.json
-
       # --- ATM26 Challenge site (/atm26/) ----------------------------------
       - name: Install ATM26 site dependencies
         working-directory: sites/atm26
@@ -89,6 +79,18 @@ jobs:
           cp -r sites/atm26/dist/. deploy/atm26/
           test -f deploy/index.html
           test -f deploy/atm26/index.html
+
+      # Run after the site is assembled so a fresh snapshot replaces the
+      # committed fallback instead of being overwritten by it. The token stays
+      # in Actions; the browser only sees the aggregate snapshot. Without the
+      # secret the step is skipped and the committed snapshot keeps the panel
+      # visible, so forks and pull-request builds still work.
+      - name: Add ATM26 visitor statistics
+        if: github.event_name != 'pull_request'
+        continue-on-error: true
+        env:
+          GOATCOUNTER_API_TOKEN: ${{ secrets.GOATCOUNTER_API_TOKEN }}
+        run: node sites/atm26/tools/fetch_visits.mjs --out deploy/atm26/data/visits.json
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

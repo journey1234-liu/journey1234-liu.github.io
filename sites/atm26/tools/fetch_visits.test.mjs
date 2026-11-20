@@ -82,6 +82,55 @@ test("collectStats surfaces API errors without exposing the token", async () => 
   }
 });
 
+test("collectStats falls back to site-wide totals when the path filter is missing", async () => {
+  const requests = [];
+  const server = createServer((request, response) => {
+    const url = new URL(request.url, "http://127.0.0.1");
+    requests.push(url);
+    response.setHeader("content-type", "application/json");
+    const filtered = url.searchParams.has("include_paths");
+
+    if (url.pathname.endsWith("/stats/total")) {
+      if (filtered) {
+        response.statusCode = 404;
+        response.end(JSON.stringify({ error: "not found" }));
+        return;
+      }
+      response.end(JSON.stringify({ total: 5 }));
+      return;
+    }
+    if (url.pathname.endsWith("/stats/locations")) {
+      if (filtered) {
+        response.statusCode = 404;
+        response.end(JSON.stringify({ error: "not found" }));
+        return;
+      }
+      response.end(JSON.stringify({ stats: [{ id: "CN", name: "China", count: 5 }], more: false }));
+      return;
+    }
+    response.statusCode = 404;
+    response.end("{}");
+  });
+
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const { port } = server.address();
+
+  try {
+    const snapshot = await collectStats({
+      apiBase: `http://127.0.0.1:${port}/api/v0`,
+      token: "test-token",
+      path: "/atm26",
+      generatedAt: new Date("2026-11-20T12:00:00Z"),
+    });
+    assert.equal(snapshot.total, 5);
+    assert.equal(snapshot.path, "/");
+    assert.deepEqual(snapshot.countries, [{ code: "CN", name: "China", visits: 5 }]);
+    assert.equal(requests.length, 3);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+});
+
 test("collectStats requests the ATM26 path and follows pagination", async () => {
   const requests = [];
   const server = createServer((request, response) => {

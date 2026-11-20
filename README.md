@@ -55,9 +55,10 @@ visits and a country/region breakdown, deliberately without a world map. The
 numbers come from [GoatCounter](https://www.goatcounter.com/), which is
 cookie-free and does not store IP addresses. The browser loads GoatCounter's
 `count.js` only when `goatcounterCode` is set in
-`sites/atm26/site.config.json`, and reads a CI-generated snapshot
-(`data/visits.json`) so the API token never reaches the browser. The homepage is
-not tracked.
+`sites/atm26/site.config.json`, and reads a snapshot (`data/visits.json`) so
+the API token never reaches the browser. The committed snapshot is the fallback;
+the deploy job overwrites it with fresh GoatCounter data after assembling the
+site. The homepage is not tracked.
 
 GoatCounter counts visits rather than raw pageviews: one visit per
 User-Agent + IP per path per 8-hour session. Reloads and return visits within
@@ -75,10 +76,11 @@ One-time setup:
 2. Create an API token with the stats/read permission in GoatCounter
    (`[username] → API`) and add it as the repository secret
    `GOATCOUNTER_API_TOKEN`.
-3. Push. The deploy job writes `deploy/atm26/data/visits.json` and the daily
-   scheduled run refreshes it. Until the token exists the panel stays hidden and
-   the build still succeeds. To refresh immediately, run the workflow manually
-   (Actions → Deploy sites to GitHub Pages → Run workflow).
+3. Push. The deploy job writes `deploy/atm26/data/visits.json` after the site is
+   assembled, and the daily scheduled run refreshes it. Without the token the
+   committed snapshot is deployed, so the panel remains visible and the build
+   still succeeds. To refresh immediately, run the workflow manually (Actions →
+   Deploy sites to GitHub Pages → Run workflow).
 
 To refresh the snapshot locally:
 

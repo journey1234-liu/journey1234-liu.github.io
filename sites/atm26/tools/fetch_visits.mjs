@@ -89,24 +89,57 @@ export function buildSnapshot({ total, stats, generatedAt = new Date(), path = "
   };
 }
 
+/** GoatCounter answers 404 when a path filter matches no stored path. */
+function isNotFound(error) {
+  return /\b404\b/.test(String(error));
+}
+
 export async function collectStats({ apiBase, token, path = "/", generatedAt = new Date() }) {
-  const totalParams = new URLSearchParams({
-    path_by_name: "true",
-    include_paths: path,
-    start: ALL_TIME_START,
-  });
-  const totalData = await fetchJson(`${apiBase}/stats/total?${totalParams}`, token);
+  const totalUrl = (scope) => {
+    const params = new URLSearchParams({ start: ALL_TIME_START });
+    if (scope !== "/") {
+      params.set("path_by_name", "true");
+      params.set("include_paths", scope);
+    }
+    return `${apiBase}/stats/total?${params}`;
+  };
+
+  // The configured path may not exist yet (a freshly deployed site has no
+  // stored pageviews). Falling back to the whole-site totals keeps the panel
+  // visible instead of failing the deploy; both are the same site here.
+  let scope = path;
+  let totalData;
+  try {
+    totalData = await fetchJson(totalUrl(scope), token);
+  } catch (error) {
+    if (scope === "/" || !isNotFound(error)) throw error;
+    console.warn(`visitor stats: path ${scope} not found; retrying site-wide totals`);
+    scope = "/";
+    totalData = await fetchJson(totalUrl(scope), token);
+  }
 
   const stats = [];
   for (let page = 0; page < MAX_PAGES; page += 1) {
     const params = new URLSearchParams({
-      path_by_name: "true",
-      include_paths: path,
       start: ALL_TIME_START,
       limit: String(PAGE_LIMIT),
       offset: String(stats.length),
     });
-    const data = await fetchJson(`${apiBase}/stats/locations?${params}`, token);
+    if (scope !== "/") {
+      params.set("path_by_name", "true");
+      params.set("include_paths", scope);
+    }
+    let data;
+    try {
+      data = await fetchJson(`${apiBase}/stats/locations?${params}`, token);
+    } catch (error) {
+      if (scope === "/" || !isNotFound(error)) throw error;
+      console.warn(`visitor stats: path ${scope} not found for locations; retrying site-wide`);
+      scope = "/";
+      params.delete("path_by_name");
+      params.delete("include_paths");
+      data = await fetchJson(`${apiBase}/stats/locations?${params}`, token);
+    }
     const batch = Array.isArray(data.stats) ? data.stats : [];
     stats.push(...batch);
     if (!data.more || batch.length === 0) break;
@@ -114,7 +147,7 @@ export async function collectStats({ apiBase, token, path = "/", generatedAt = n
     await new Promise((resolve) => setTimeout(resolve, 300));
   }
 
-  return buildSnapshot({ total: totalData.total, stats, generatedAt, path });
+  return buildSnapshot({ total: totalData.total, stats, generatedAt, path: scope });
 }
 
 function toCount(value) {
