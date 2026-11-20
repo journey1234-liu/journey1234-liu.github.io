@@ -16,6 +16,8 @@ export interface TrackFigureFrame {
   height: number;
   /** Numeric tag shown on the timeline, e.g. "000". */
   label?: string;
+  /** Airway landmark visible in the frame, e.g. "Right main bronchus". */
+  anatomy?: string;
   /** "start" or "final" when the frame bounds the sequence. */
   role?: string;
 }
@@ -115,16 +117,32 @@ export const IMAGES = {
 /** Ten evenly spaced frames of one Track 3 training sequence. */
 const TRACK3_FRAME_IDS = [0, 20, 40, 60, 80, 100, 120, 140, 160, 180];
 
+/** Per-frame landmarks of sequence ATM_276/13, from its labels.csv. */
+const TRACK3_FRAME_ANATOMY: Record<number, string> = {
+  0: "Trachea",
+  20: "Trachea",
+  40: "Trachea",
+  60: "Trachea",
+  80: "Trachea",
+  100: "Right main bronchus",
+  120: "Bronchus intermedius",
+  140: "Bronchus intermedius",
+  160: "Right middle lobe",
+  180: "RB5",
+};
+
 const TRACK3_FRAMES: TrackFigureFrame[] = TRACK3_FRAME_IDS.map((id, index) => {
   const tag = String(id).padStart(3, "0");
   const role =
     index === 0 ? "start" : index === TRACK3_FRAME_IDS.length - 1 ? "final" : undefined;
+  const anatomy = TRACK3_FRAME_ANATOMY[id];
   return {
     src: `img/tasks/track3/frame-${tag}.webp`,
-    alt: `Bronchoscopy frame ${tag}${role ? `, the ${role} frame shown` : ""} of a training sequence.`,
+    alt: `Bronchoscopy frame ${tag} (${anatomy})${role ? `, the ${role} frame` : ""}, from a training sequence.`,
     width: 400,
     height: 400,
     label: tag,
+    anatomy,
     role,
   };
 });
@@ -276,7 +294,7 @@ export const TRACKS: TrackInfo[] = [
         kind: "32-class model + path",
         note: "Translucent classes; the rest of the tree faded.",
         src: IMAGES.taskBronchOutput,
-        alt: "A translucent multicoloured airway tree with a glowing navigation path from the top of the trachea to the RB10 segment; five bronchoscopy frames lie on horizontal planes along the path.",
+        alt: "A translucent multicoloured airway tree with a glowing navigation path from the top of the trachea to the RB10 segment; five bronchoscopy frames lie on horizontal planes along the path, each labelled with its airway class.",
         width: 1042,
         height: 1222,
         thumbSrc: IMAGES.taskBronchOutputThumb,

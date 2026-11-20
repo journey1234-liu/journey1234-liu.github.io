@@ -32,6 +32,18 @@ describe("track demo figures", () => {
       "160",
       "180",
     ]);
+    expect(TRACKS[2].figure?.frames?.map((frame) => frame.anatomy)).toEqual([
+      "Trachea",
+      "Trachea",
+      "Trachea",
+      "Trachea",
+      "Trachea",
+      "Right main bronchus",
+      "Bronchus intermedius",
+      "Bronchus intermedius",
+      "Right middle lobe",
+      "RB5",
+    ]);
   });
 
   it("pairs the shared CT input with a binary and a multiclass surface", () => {
@@ -112,6 +124,29 @@ describe("track demo figures", () => {
     expect(html).toContain('class="task-card-sequence"');
   });
 
+  it("names the landmark next to every Tracks frame, but not on the home card", () => {
+    const tracks = renderTracks();
+    expect(tracks.match(/class="seq-step seq-step--labelled"/g)).toHaveLength(10);
+    expect(tracks.match(/class="seq-anatomy"/g)).toHaveLength(10);
+    for (const name of [
+      "Trachea",
+      "Right main bronchus",
+      "Bronchus intermedius",
+      "Right middle lobe",
+      "RB5",
+    ]) {
+      expect(tracks).toContain(`<span class="seq-anatomy">${name}</span>`);
+    }
+    // The label follows the frame it names, and the alt text carries it too.
+    const firstFrame = tracks.indexOf("frame-000.webp");
+    const firstLabel = tracks.indexOf(">Trachea</span>");
+    expect(firstLabel).toBeGreaterThan(firstFrame);
+    expect(tracks).toContain("Bronchoscopy frame 100 (Right main bronchus)");
+
+    // The compact home card stays a pure timeline.
+    expect(renderHome()).not.toContain("seq-anatomy");
+  });
+
   it("renders three visual Task cards", () => {
     const html = renderHome();
     expect(html.match(/class="task-card task-card--/g)).toHaveLength(3);
@@ -137,7 +172,7 @@ describe("track demo figures", () => {
     expect(html).toContain('id="track-3"');
     expect(html.match(/class="track-figure /g)).toHaveLength(3);
     expect(html).toContain("track-figure--sequence");
-    expect(html.match(/class="seq-step"/g)).toHaveLength(10);
+    expect(html.match(/class="seq-step(?=[\s"])/g)).toHaveLength(10);
     expect(html).toContain("img/tasks/bronch-output.webp");
     expect(html).toContain('class="legend-swatch legend-left"');
     expect(html).toContain('class="legend-swatch legend-right"');
@@ -156,6 +191,8 @@ describe("track demo figures", () => {
       ".task-card-panes",
       ".task-card-sequence",
       ".seq-strip",
+      ".seq-step--labelled",
+      ".seq-anatomy",
       ".track-figure",
       ".track-figure--sequence",
     ]) {

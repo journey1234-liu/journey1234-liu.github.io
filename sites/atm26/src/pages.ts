@@ -210,8 +210,14 @@ function renderFrameStrip(fig: TrackFigure, context: "home" | "tracks"): string 
   const items = selected
     .map((frame) => {
       const tag = frame.label ?? "";
+      // The large Tracks figure names the landmark next to every frame; the
+      // compact home card keeps its timeline-only treatment.
+      const anatomy =
+        context === "tracks" && frame.anatomy
+          ? `<span class="seq-anatomy">${escapeHtml(frame.anatomy)}</span>`
+          : "";
       return `
-          <li class="seq-step">
+          <li class="seq-step${anatomy ? " seq-step--labelled" : ""}">
             <figure class="seq-frame">
               <img
                 src="${escapeHtml(resolveAsset(frame.src))}"
@@ -224,7 +230,7 @@ function renderFrameStrip(fig: TrackFigure, context: "home" | "tracks"): string 
               <figcaption>
                 <span class="seq-tag">f${escapeHtml(tag)}</span>
               </figcaption>
-            </figure>
+            </figure>${anatomy}
           </li>`;
     })
     .join("");

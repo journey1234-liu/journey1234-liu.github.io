@@ -179,11 +179,14 @@ The home Tasks panel and each Tracks section share the figures in
   (Track 2, cool colours for left-lung branches, warm for right-lung branches,
   neutral grey for the trachea and main bronchi).
 - **Track 3** packs ten frames of one training bronchoscopy sequence top to
-  bottom (first frame at the top, last at the bottom). The output is a
-  translucent 32-class airway surface with the endoluminal path from the
-  trachea (100) through the right main (102), bronchus intermedius (112) and
-  right lower lobe (111) / basal trunk (115) to RB10 (17). Five bronchoscopy
-  frames sit on axial planes along the path, so the sequence and the 3D route
+  bottom (first frame at the top, last at the bottom). On the Tracks page each
+  frame is labelled to its right with the landmark from the sequence's
+  `labels.csv` (trachea, right main bronchus, bronchus intermedius, right middle
+  lobe, RB5). The output is a translucent 32-class airway surface with the
+  endoluminal path from the trachea (100) through the right main (102),
+  bronchus intermedius (112) and right lower lobe (111) / basal trunk (115) to
+  RB10 (17). Five bronchoscopy frames sit on axial planes along the path, each
+  tagged with the same per-frame landmark, so the sequence and the 3D route
   read as one scene. Frames live in `public/img/tasks/track3/`; the scene is
   `bronch-output.webp`, with an unlabelled `bronch-output-thumb.webp` for the
   home card.
