@@ -76,6 +76,10 @@ async function mount(): Promise<void> {
     if (page) await mountLeaderboard(page, params);
   }
   if (route === "home") void mountVisitors();
+  if (route === "tracks" && params[0]) {
+    const target = document.getElementById(params[0]);
+    target?.scrollIntoView({ block: "start" });
+  }
   const main = document.getElementById("main");
   main?.focus({ preventScroll: true });
 }

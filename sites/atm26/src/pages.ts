@@ -25,7 +25,14 @@ import {
   TRACK3_LABEL_NOTES,
   LINKS,
 } from "./content";
-import type { WorkshopAgendaItem, WorkshopPhoto, Track3Label } from "./content";
+import type {
+  WorkshopAgendaItem,
+  WorkshopPhoto,
+  Track3Label,
+  TrackInfo,
+  TrackFigure,
+  TrackFigurePane,
+} from "./content";
 import { TRACK_ICONS } from "./icons";
 import { resolveAsset } from "./basePath";
 import { metricLabel } from "./metricLabels";
@@ -164,6 +171,210 @@ function renderWorkshopSection(): string {
     </section>`;
 }
 
+/** Small input/output pane used by the home-page task cards. */
+function renderTaskPane(pane: TrackFigurePane, role: "input" | "output"): string {
+  const src = pane.thumbSrc ?? pane.src;
+  const width = pane.thumbSrc ? pane.thumbWidth : pane.width;
+  const height = pane.thumbSrc ? pane.thumbHeight : pane.height;
+  const img = src
+    ? `<img
+          src="${escapeHtml(resolveAsset(src))}"
+          alt="${escapeHtml(pane.alt ?? "")}"
+          ${width ? `width="${width}"` : ""}
+          ${height ? `height="${height}"` : ""}
+          loading="lazy"
+          decoding="async"
+        />`
+    : "";
+  return `
+        <div class="task-pane task-pane--${role}">
+          <span class="task-pane-tag">${escapeHtml(pane.label)}</span>
+          <div class="task-pane-canvas">${img}</div>
+          <span class="task-pane-kind">${escapeHtml(pane.kind)}</span>
+        </div>`;
+}
+
+/**
+ * Horizontal bronchoscopy strip. The home card shows four frames sampled
+ * across the sequence; the Tracks page shows every prepared frame.
+ */
+function renderFrameStrip(fig: TrackFigure, context: "home" | "tracks"): string {
+  const frames = fig.frames ?? [];
+  const selected = frames
+    .map((frame, index) => ({ frame, index }))
+    .filter(({ index }) => context === "tracks" || [0, 2, 4, 6].includes(index));
+  const items = selected
+    .map(
+      ({ frame, index }) => `
+          <figure class="frame-strip-item">
+            <img
+              src="${escapeHtml(resolveAsset(frame.src))}"
+              alt="${escapeHtml(frame.alt)}"
+              width="${frame.width}"
+              height="${frame.height}"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>${String(index * 20).padStart(3, "0")}</figcaption>
+          </figure>`,
+    )
+    .join("");
+  const lastIndex = selected.length
+    ? selected[selected.length - 1].index * 20
+    : 0;
+  return `
+        <div class="frame-strip" role="group" aria-label="${escapeHtml(fig.input.kind)} frames in time order">${items}
+        </div>
+        <div class="frame-strip-meta" aria-hidden="true">
+          <span>frame 0</span>
+          <span class="frame-strip-line"></span>
+          <span>frame ${lastIndex}</span>
+        </div>`;
+}
+
+/** Ranking-metric chips shared by the visual and text-only task cards. */
+function renderTaskMetrics(track: TrackInfo): string {
+  const metrics = track.metrics
+    .slice(0, 3)
+    .map((metric) => `<li>${metricLabel(metric.name)}</li>`)
+    .join("");
+  const more =
+    track.metrics.length > 3
+      ? `<li class="task-metric-more">+${track.metrics.length - 3}</li>`
+      : "";
+  return `<ul class="task-metrics" aria-label="Ranking metrics">${metrics}${more}</ul>`;
+}
+
+/** Track glyph for a card that has no demo figure yet. */
+function taskIcon(slug: string): string {
+  if (slug === "track-1") return TRACK_ICONS.t1;
+  if (slug === "track-2") return TRACK_ICONS.t2;
+  return TRACK_ICONS.t3;
+}
+
+/** Text-only card, used while a track's visual demo is still being designed. */
+function renderTextTaskCard(track: TrackInfo): string {
+  return `
+      <article class="task-card task-card--${escapeHtml(track.slug)} task-card--text">
+        <div class="task-card-cover" aria-hidden="true">
+          ${track.coverNumber ? `<span class="task-card-cover-number">${escapeHtml(track.coverNumber)}</span>` : ""}
+          ${track.coverCaption ? `<span class="task-card-cover-caption">${escapeHtml(track.coverCaption)}</span>` : ""}
+          <span class="task-card-icon">${taskIcon(track.slug)}</span>
+        </div>
+        <div class="task-card-body">
+          <div class="task-card-kicker">${escapeHtml(track.cardKicker)}</div>
+          <h3>${escapeHtml(track.cardTitle)}</h3>
+          <p>${escapeHtml(track.cardShort)}</p>
+          ${renderTaskMetrics(track)}
+          <a class="task-card-link" href="#/tracks/${escapeHtml(track.slug)}" aria-label="${escapeHtml(track.cardTitle)} track details">Track details <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </article>`;
+}
+
+/** One track card in the home-page Tasks panel. */
+function renderTaskCard(track: TrackInfo): string {
+  const fig = track.figure;
+  if (!fig) return renderTextTaskCard(track);
+  const media = fig.frames?.length
+    ? `<div class="task-card-frames">
+          <div class="task-card-frames-head">
+            <span class="task-pane-tag">${escapeHtml(fig.input.label)}</span>
+            <span class="task-pane-kind">${escapeHtml(fig.input.kind)}</span>
+          </div>
+          ${renderFrameStrip(fig, "home")}
+          <span class="task-output-chip">
+            <span class="task-output-chip-dot" aria-hidden="true"></span>${escapeHtml(fig.outputNote ?? "")}
+          </span>
+        </div>`
+    : `<div class="task-card-panes">
+          ${renderTaskPane(fig.input, "input")}
+          <span class="task-media-arrow" aria-hidden="true"><span></span></span>
+          ${fig.output ? renderTaskPane(fig.output, "output") : ""}
+        </div>`;
+  return `
+      <article class="task-card task-card--${escapeHtml(track.slug)}">
+        <div class="task-card-media">${media}
+        </div>
+        <div class="task-card-body">
+          <div class="task-card-kicker">${escapeHtml(track.cardKicker)}</div>
+          <h3>${escapeHtml(track.cardTitle)}</h3>
+          <p>${escapeHtml(track.cardShort)}</p>
+          ${renderTaskMetrics(track)}
+          <a class="task-card-link" href="#/tracks/${escapeHtml(track.slug)}" aria-label="${escapeHtml(track.cardTitle)} track details">Track details <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </article>`;
+}
+
+/** Large input/output pane on the Tracks page. */
+function renderTrackFigurePane(
+  pane: TrackFigurePane,
+  role: "input" | "output",
+): string {
+  const img = pane.src
+    ? `<img
+            src="${escapeHtml(resolveAsset(pane.src))}"
+            alt="${escapeHtml(pane.alt ?? "")}"
+            ${pane.width ? `width="${pane.width}"` : ""}
+            ${pane.height ? `height="${pane.height}"` : ""}
+            loading="lazy"
+            decoding="async"
+          />`
+    : "";
+  return `
+        <div class="track-figure-pane track-figure-pane--${role}">
+          <div class="track-figure-head">
+            <span class="track-figure-tag">${escapeHtml(pane.label)}</span>
+            <span class="track-figure-kind">${escapeHtml(pane.kind)}</span>
+          </div>
+          <div class="track-figure-canvas">${img}</div>
+          <p class="track-figure-note">${escapeHtml(pane.note)}</p>
+        </div>`;
+}
+
+/** Demo figure shared by the home Tasks cards and the Tracks page. */
+function renderTrackFigure(track: TrackInfo): string {
+  const fig = track.figure;
+  if (!fig) return "";
+  if (fig.frames?.length) {
+    return `
+      <figure class="track-figure track-figure--${escapeHtml(track.slug)} track-figure--frames">
+        <div class="track-figure-grid">
+          <div class="track-figure-pane track-figure-pane--wide">
+            <div class="track-figure-head">
+              <span class="track-figure-tag">${escapeHtml(fig.input.label)}</span>
+              <span class="track-figure-kind">${escapeHtml(fig.input.kind)}</span>
+            </div>
+            ${renderFrameStrip(fig, "tracks")}
+            <p class="track-figure-note">${escapeHtml(fig.input.note)}</p>
+          </div>
+          <div class="track-output-note">
+            <span class="track-figure-tag">Output</span>
+            <p>${escapeHtml(fig.outputNote ?? "")}</p>
+          </div>
+        </div>
+        <figcaption>${escapeHtml(fig.caption)}</figcaption>
+      </figure>`;
+  }
+  const legend = fig.legend?.length
+    ? `<ul class="track-figure-legend">${fig.legend
+        .map(
+          (item) =>
+            `<li><span class="legend-swatch ${escapeHtml(item.className)}" aria-hidden="true"></span>${escapeHtml(item.label)}</li>`,
+        )
+        .join("")}</ul>`
+    : "";
+  return `
+    <figure class="track-figure track-figure--${escapeHtml(track.slug)}">
+      <div class="track-figure-grid">
+        ${renderTrackFigurePane(fig.input, "input")}
+        <span class="track-figure-arrow" aria-hidden="true"><span></span></span>
+        ${fig.output ? renderTrackFigurePane(fig.output, "output") : ""}
+      </div>
+      ${legend}
+      <figcaption>${escapeHtml(fig.caption)}</figcaption>
+    </figure>`;
+}
+
 export function renderHome(): string {
   const introHtml = INTRODUCTION.map((p) => `<p>${escapeHtml(p)}</p>`).join("");
   const newsHtml = NEWS.length
@@ -171,13 +382,7 @@ export function renderHome(): string {
         (n) => `<li><strong>${escapeHtml(n.date)}</strong> — ${escapeHtml(n.title)}<br /><span class="muted">${escapeHtml(n.detail)}</span></li>`,
       ).join("")
     : "<li>No news yet.</li>";
-  const trackCards = TRACKS.map(
-    (track) => `
-      <div class="home-track">
-        <h2>${escapeHtml(track.title)}</h2>
-        <p>${escapeHtml(track.short)}</p>
-      </div>`,
-  ).join("");
+  const trackCards = TRACKS.map(renderTaskCard).join("");
 
   return `
     <section class="panel hero-banner-panel">
@@ -215,12 +420,17 @@ export function renderHome(): string {
       <h2>About ATM26</h2>
       ${introHtml}
     </section>
-    <section class="panel">
+    <section class="panel tasks-panel">
       <div class="section-kicker">Tasks</div>
       <h2>Tracks</h2>
+      <p class="tasks-intro">
+        Each track turns a different data view into a structured airway
+        prediction. The visual examples below use training data to show the
+        input and output representation for the task.
+      </p>
       <div class="home-tracks">${trackCards}</div>
-      <p class="muted">${escapeHtml(TRACKS_INTRO)}</p>
-      <p><a href="#/tracks">Metric definitions and track details</a></p>
+      <p class="muted home-tracks-note">${escapeHtml(TRACKS_INTRO)}</p>
+      <p class="tasks-more"><a href="#/tracks">Metric definitions and track details</a></p>
     </section>${renderVisitorsSection()}`;
 }
 
@@ -319,10 +529,13 @@ export function renderTracks(): string {
       )
       .join("");
     return `
-      <section class="panel">
+      <section class="panel track-section" id="${escapeHtml(track.slug)}">
+        <div class="section-kicker">${escapeHtml(track.cardKicker)}</div>
         <h2>${escapeHtml(track.title)}</h2>
-        <p>${escapeHtml(track.short)}</p>
+        ${renderTrackFigure(track)}
+        <p class="track-summary">${escapeHtml(track.short)}</p>
         <p>${escapeHtml(track.description)}</p>
+        <h3 class="track-metrics-title">Metrics</h3>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Metric</th><th>Direction</th><th>Description</th></tr></thead>
@@ -332,10 +545,15 @@ export function renderTracks(): string {
       </section>`;
   }).join("");
 
+  const jumpNav = TRACKS.map(
+    (track) =>
+      `<a class="track-jump" href="#/tracks/${escapeHtml(track.slug)}">${escapeHtml(track.cardKicker)}</a>`,
+  ).join("");
   return `
-    <section class="panel">
+    <section class="panel track-intro">
       <h1>Tracks</h1>
       <p>${escapeHtml(TRACKS_INTRO)}</p>
+      <nav class="track-jump-row" aria-label="Jump to a track">${jumpNav}</nav>
     </section>
     ${sections}
     ${renderTrack3Labels()}`;

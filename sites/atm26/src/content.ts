@@ -9,12 +9,55 @@ export interface NavItem {
   label: string;
 }
 
+export interface TrackFigureFrame {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+export interface TrackFigurePane {
+  label: string;
+  kind: string;
+  note: string;
+  src?: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  thumbSrc?: string;
+  thumbWidth?: number;
+  thumbHeight?: number;
+}
+
+export interface TrackFigureLegendItem {
+  label: string;
+  className: string;
+}
+
+export interface TrackFigure {
+  caption: string;
+  input: TrackFigurePane;
+  output: TrackFigurePane | null;
+  frames?: TrackFigureFrame[];
+  outputNote?: string;
+  legend?: TrackFigureLegendItem[];
+}
+
 export interface TrackInfo {
   slug: string;
   title: string;
+  cardKicker: string;
+  cardTitle: string;
+  cardShort: string;
+  /** Decorative cover copy for a card without a demo figure. */
+  coverNumber?: string;
+  coverCaption?: string;
   short: string;
   description: string;
   metrics: { name: string; higherIsBetter: boolean; note: string }[];
+  /** Visual demo for the Tasks panel / Tracks page; omitted while a track's
+   * output representation is still being designed. */
+  figure?: TrackFigure;
 }
 
 export interface TimelineItem {
@@ -58,6 +101,24 @@ export const IMAGES = {
   track3Labels: "img/track3-labels.webp",
   keylab: "img/keylab.webp",
   tongren: "img/tongren.webp",
+  taskCtVolume: "img/tasks/ct-volume.webp",
+  taskCtVolumeThumb: "img/tasks/ct-volume-thumb.webp",
+  taskAirwayBinary: "img/tasks/airway-binary.webp",
+  taskAirwayMulticlass: "img/tasks/airway-multiclass.webp",
+};
+
+/** Shared input panel: the same CT case illustrates Track 1 and Track 2. */
+const CT_FIGURE_INPUT: TrackFigurePane = {
+  label: "Input",
+  kind: "CT volume",
+  note: "Axial, coronal and sagittal views of a training case.",
+  src: IMAGES.taskCtVolume,
+  alt: "A CT volume shown as three intersecting axial, coronal and sagittal slices inside a wireframe cube.",
+  width: 1434,
+  height: 1566,
+  thumbSrc: IMAGES.taskCtVolumeThumb,
+  thumbWidth: 802,
+  thumbHeight: 866,
 };
 
 export interface OrganizerInstitution {
@@ -94,6 +155,9 @@ export const TRACKS: TrackInfo[] = [
   {
     slug: "track-1",
     title: "Track 1 · Binary Airway Segmentation",
+    cardKicker: "Track 1 · CT",
+    cardTitle: "Binary Airway Segmentation",
+    cardShort: "Segment the airway tree from chest CT into one connected mask.",
     short: "Segment the airway tree from chest CT.",
     description:
       "Track 1 focuses on automatic binary segmentation of the airway tree from chest CT scans. Participants are expected to generate a connected airway mask covering the trachea, main bronchi, lobar bronchi, segmental bronchi, and distal branches. Unlike conventional segmentation tasks that primarily emphasize voxel-wise overlap, this track encourages methods that preserve airway completeness, connectivity, and distal branch structures. Topological correctness is a critical component of clinically useful airway modeling.",
@@ -108,10 +172,27 @@ export const TRACKS: TrackInfo[] = [
         note: "Betti-0 error: the difference in the number of connected components against the reference; lower is better",
       },
     ],
+    figure: {
+      caption:
+        "Input: axial, coronal and sagittal slices of a training CT case, composed into a volume. Output: the airway lumen as a single-class red surface.",
+      input: CT_FIGURE_INPUT,
+      output: {
+        label: "Output",
+        kind: "Binary airway surface",
+        note: "One class: the airway lumen, rendered in red.",
+        src: IMAGES.taskAirwayBinary,
+        alt: "The airway tree as a red three-dimensional surface, from the trachea down to the distal bronchi.",
+        width: 884,
+        height: 1176,
+      },
+    },
   },
   {
     slug: "track-2",
     title: "Track 2 · Branch-wise Anatomical Labeling",
+    cardKicker: "Track 2 · CT",
+    cardTitle: "Branch-wise Anatomical Labeling",
+    cardShort: "Assign one of 20 anatomical labels to every airway branch.",
     short: "Label airway branches into the 20 scored foreground classes (labels 1–20; 0 is background; class 20 is a real scored branch).",
     description:
       "Track 2 moves beyond binary segmentation toward structured airway understanding. Participants are required to assign anatomical labels to airway branches and generate an anatomically consistent airway representation. Target labels include the segmental airway branches. This task is designed to support automated route planning, lesion-to-airway association, and standardized anatomical reporting for endobronchial intervention.",
@@ -124,10 +205,34 @@ export const TRACKS: TrackInfo[] = [
       { name: "mDice", higherIsBetter: true, note: "Mean Dice (multi-class)" },
       { name: "mclDice", higherIsBetter: true, note: "Mean clDice (multi-class)" },
     ],
+    figure: {
+      caption:
+        "The same CT input, with the airway tree labelled into 20 anatomical classes. Cool colours mark left-lung branches, warm colours right-lung branches, and the trachea and main bronchi are neutral.",
+      input: CT_FIGURE_INPUT,
+      output: {
+        label: "Output",
+        kind: "20-class airway surface",
+        note: "Each segmental branch is rendered in its own class colour.",
+        src: IMAGES.taskAirwayMulticlass,
+        alt: "The airway tree as a multicoloured three-dimensional surface: cool colours for left-lung branches, warm colours for right-lung branches, and a grey trachea and main bronchi.",
+        width: 902,
+        height: 1188,
+      },
+      legend: [
+        { label: "Left lung", className: "legend-left" },
+        { label: "Right lung", className: "legend-right" },
+        { label: "Trachea & main bronchi", className: "legend-trachea" },
+      ],
+    },
   },
   {
     slug: "track-3",
     title: "Track 3 · Landmark Recognition for Endobronchial Intervention",
+    cardKicker: "Track 3 · Bronchoscopy",
+    cardTitle: "Landmark Recognition",
+    cardShort: "Recognise the airway landmark visible in each bronchoscopy frame.",
+    coverNumber: "32",
+    coverCaption: "landmark classes",
     short:
       "Classify each bronchoscopy frame into the airway landmark it shows.",
     description:

@@ -40,6 +40,7 @@ sites/atm26/
   index.html                # SPA shell
   public/
     data/leaderboard.json   # versioned public leaderboard snapshot (generated)
+    img/tasks/              # Track 1/2 training-example figures for the home Tasks panel / Tracks page
     img/workshop/           # MICCAI 2026 workshop day: agenda slide + 6 photos
   src/
     main.ts                 # entry point, hash routing, shell
@@ -61,6 +62,7 @@ sites/atm26/
     portals.test.ts         # submission form URLs stay verbatim
     pitfalls.test.ts        # Rules page pitfalls contract
     workshop.test.ts        # home workshop agenda + seamless photo strip contract
+    taskFigures.test.ts     # demo-figure metadata, asset presence and markup contract
     visitors.test.ts        # visitor snapshot parsing + country-row rendering
   tools/
     gc_validation_snapshot.json       # frozen GC validation mirror (public data)
@@ -157,6 +159,29 @@ marked `PLACEHOLDER` and must be filled in before public release.
 The registration and submission form URLs are configurable content
 (`LINKS.registration`, `LINKS.submission`); placeholder values render as a
 clearly marked "pending" label instead of a dead link.
+
+## Task figures
+
+The home Tasks panel and each Tracks section share the figures in
+`public/img/tasks/`:
+
+- **Track 1 / Track 2** use the same training CT case. The input cube is three
+  orthogonal CT slices composed into a volume; the output is the airway lumen
+  rendered as a red binary surface (Track 1) or as a 20-class coloured surface
+  (Track 2, cool colours for left-lung branches, warm for right-lung branches,
+  neutral grey for the trachea and main bronchi).
+- **Track 3** is intentionally text-only for now. Its demo figure and frame
+  assets are not published until the output representation is designed; the
+  home card and the Tracks section still describe the task and its metrics.
+- The home cards use the tighter, stylized `ct-volume-thumb.webp`; the Tracks
+  page uses the larger `ct-volume.webp`. Figures are stored as transparent WebP
+  so the dark viewer surface in `styles.css` provides the background.
+
+Figure metadata (paths, intrinsic sizes, alt text, captions, legend labels and
+the Track-3 output note) lives in `src/content.ts` under `TRACKS[].figure`; the
+renderers are `renderTaskCard` / `renderTrackFigure` in `src/pages.ts`. Every task
+image is lazy-loaded, while the intrinsic `width`/`height` attributes reserve
+space and prevent layout shift.
 
 ## Leaderboard data contract
 

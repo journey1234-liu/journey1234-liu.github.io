@@ -60,7 +60,8 @@ describe("home workshop section", () => {
 
   it("keeps the marquee images eager so nothing stays unloaded off-screen", () => {
     const html = renderHome();
-    const strip = html.slice(html.indexOf('class="photo-marquee-track"'));
+    const strip = /<div class="photo-marquee-set">([\s\S]*?)<\/div>/.exec(html)?.[1] ?? "";
+    expect(strip).not.toBe("");
     expect(strip).not.toContain('loading="lazy"');
   });
 
