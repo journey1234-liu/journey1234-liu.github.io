@@ -435,16 +435,6 @@ export function renderHome(): string {
         <strong class="status-emphasis">${escapeHtml(TRACK3_NOTICE.emphasis)}</strong>${escapeHtml(TRACK3_NOTICE.after)}
       </p>
     </section>
-    <section class="panel">
-      <div class="section-kicker">News</div>
-      <h2>Latest updates</h2>
-      <ul class="news-list">${newsHtml}</ul>
-    </section>${renderWorkshopSection()}
-    <section class="panel">
-      <div class="section-kicker">Challenge</div>
-      <h2>About ATM26</h2>
-      ${introHtml}
-    </section>
     <section class="panel tasks-panel">
       <div class="section-kicker">Tasks</div>
       <h2>Tracks</h2>
@@ -456,6 +446,16 @@ export function renderHome(): string {
       <div class="home-tracks">${trackCards}</div>
       <p class="muted home-tracks-note">${escapeHtml(TRACKS_INTRO)}</p>
       <p class="tasks-more"><a href="#/tracks">Metric definitions and track details</a></p>
+    </section>
+    <section class="panel">
+      <div class="section-kicker">News</div>
+      <h2>Latest updates</h2>
+      <ul class="news-list">${newsHtml}</ul>
+    </section>${renderWorkshopSection()}
+    <section class="panel">
+      <div class="section-kicker">Challenge</div>
+      <h2>About ATM26</h2>
+      ${introHtml}
     </section>${renderVisitorsSection()}`;
 }
 

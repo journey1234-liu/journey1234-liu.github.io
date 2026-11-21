@@ -58,6 +58,20 @@ describe("home Track-3 status banner", () => {
     expect(html.match(/class="cta-icon"/g)).toHaveLength(2);
   });
 
+  it("places the tasks panel directly below the hero cluster", () => {
+    const html = renderHome();
+    const hero = html.indexOf('<section class="panel hero">');
+    const status = html.indexOf('class="panel status-card"');
+    const tasks = html.indexOf('class="panel tasks-panel"');
+    const news = html.indexOf("Latest updates");
+    expect(hero).toBeGreaterThan(-1);
+    expect(status).toBeGreaterThan(hero);
+    expect(tasks).toBeGreaterThan(status);
+    expect(tasks).toBeLessThan(news);
+    // The tracks content itself, not just the section wrapper, comes first.
+    expect(html.indexOf("<h2>Tracks</h2>")).toBeLessThan(news);
+  });
+
   it("styles the title and emphasis rules in the stylesheet", () => {
     // Guard the visual contract: title bold + italic, emphasis bold +
     // enlarged + amber, defined once.
