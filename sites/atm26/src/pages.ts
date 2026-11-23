@@ -657,7 +657,7 @@ export function renderRules(): string {
         <code>/output/predictions/&lt;sequence-id&gt;.csv</code> with the header
         <code>filename,label</code> — one row per input frame, in numeric order,
         using the 32-class
-        <a href="#/tracks">label schema</a>. It receives the whole split in one
+        <a href="#/tracks/track3-labels">label schema</a>. It receives the whole split in one
         run (load the model once, then loop), must run as a non-root user, and
         must not use the network or command-line arguments. Images must declare
         <code>org.atm26.batch="1"</code> and

@@ -2,6 +2,7 @@
 // them. The schema is fixed by the organizers' label_schema.json, so an ID
 // mismatch here would silently mis-score every submission.
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
 import {
   TRACK3_PROXIMAL_LABELS,
   TRACK3_SEGMENTAL_LABELS,
@@ -57,5 +58,27 @@ describe("Track 3 pages", () => {
     expect(html).toContain("/output/predictions/");
     expect(html).toContain("filename,label");
     expect(html).toContain("org.atm26.batch");
+  });
+
+  it("links the Rules page schema reference to the Track 3 label guide", () => {
+    const rules = renderRules();
+    expect(rules).toContain('<a href="#/tracks/track3-labels">label schema</a>');
+    expect(rules).not.toContain('<a href="#/tracks">label schema</a>');
+
+    // The hash route must resolve to a real element on the Tracks page, and
+    // the section must clear the sticky header when scrolled into view.
+    expect(renderTracks()).toContain('id="track3-labels"');
+    const css = readFileSync(
+      new URL("../src/styles.css", import.meta.url),
+      "utf8",
+    );
+    const rule = /#track3-labels\s*\{([\s\S]*?)\}/.exec(css)?.[1] ?? "";
+    expect(rule).toContain("scroll-margin-top: 5.5rem");
+    expect(css).toMatch(
+      /@media \(max-width: 986px\)[\s\S]*?scroll-margin-top: 10rem/,
+    );
+    expect(css).toMatch(
+      /@media \(max-width: 435px\)[\s\S]*?scroll-margin-top: 15rem/,
+    );
   });
 });

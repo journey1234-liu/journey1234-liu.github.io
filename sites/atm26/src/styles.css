@@ -1964,6 +1964,27 @@ summary {
   opacity: 0.8;
 }
 
+/* The guide is a jump target from the submission page; keep its heading clear
+   of the sticky header when the router scrolls to it. The header wraps onto
+   more rows at narrow widths, so the offset grows with it. */
+#track3-labels {
+  scroll-margin-top: 5.5rem;
+}
+
+@media (max-width: 986px) {
+  .track-section,
+  #track3-labels {
+    scroll-margin-top: 10rem;
+  }
+}
+
+@media (max-width: 435px) {
+  .track-section,
+  #track3-labels {
+    scroll-margin-top: 15rem;
+  }
+}
+
 #track3-labels h3 {
   margin-top: 28px;
 }
