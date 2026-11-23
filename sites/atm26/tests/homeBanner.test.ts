@@ -53,8 +53,8 @@ describe("home Track-3 status banner", () => {
     expect(html).toContain('class="cta-pair"');
     expect(html).toContain(">Code");
     expect(html).toContain(">Model");
-    expect(html.indexOf(">Code")).toBeLessThan(html.indexOf("Submit to Validation Phase"));
-    expect(html.indexOf(">Model")).toBeLessThan(html.indexOf("Submit to Validation Phase"));
+    expect(html.indexOf(">Code")).toBeLessThan(html.indexOf("Submit Your Algorithm"));
+    expect(html.indexOf(">Model")).toBeLessThan(html.indexOf("Submit Your Algorithm"));
     expect(html.match(/class="cta-icon"/g)).toHaveLength(2);
   });
 

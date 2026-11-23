@@ -181,16 +181,6 @@ summary:focus-visible,
   background: var(--primary-dark);
 }
 
-.hero .cta-secondary {
-  background: #fff;
-  color: var(--primary);
-  border: 1px solid var(--primary);
-}
-
-.hero .cta-secondary:hover {
-  background: var(--primary-soft);
-}
-
 /* Resource links beside the submission buttons. */
 .hero .cta-pair {
   display: inline-flex;
@@ -294,16 +284,6 @@ h2:first-child {
 .cta:hover {
   background: var(--primary-dark);
   text-decoration: none;
-}
-
-.cta-secondary {
-  background: #fff;
-  color: var(--primary);
-  border: 1px solid var(--primary);
-}
-
-.cta-secondary:hover {
-  background: var(--primary-soft);
 }
 
 .cta-inline {

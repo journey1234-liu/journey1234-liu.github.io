@@ -424,8 +424,7 @@ export function renderHome(): string {
             <span class="cta-icon">${HUGGINGFACE_ICON}</span>Model
           </a>
         </span>
-        <a class="cta" href="#/rules">Submit to Validation Phase</a>
-        <a class="cta cta-secondary" href="#/rules">Submit to Final Test Phase</a>
+        <a class="cta" href="#/rules">Submit Your Algorithm</a>
       </div>
     </section>
     <section class="panel status-card">
