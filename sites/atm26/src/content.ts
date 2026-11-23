@@ -91,6 +91,8 @@ export interface NewsItem {
 
 export const SITE = {
   title: "ATM26 Challenge",
+  /** Browser-tab title for the home page; keep in sync with <title> in index.html. */
+  documentTitle: "ATM26 | Airway Tree Modeling 2026: Leaderboard & News",
   fullTitle: "ATM26 — Airway Tree Modeling 2026",
   tagline:
     "A public benchmark challenge for airway-tree modeling from chest CT and bronchoscopy frames.",

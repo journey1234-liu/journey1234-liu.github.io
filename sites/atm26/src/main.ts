@@ -64,7 +64,10 @@ async function mount(): Promise<void> {
   if (!app) return;
   const { page: route, params } = parseHash();
   const pageLabel = NAV_ITEMS.find((item) => item.id === route)?.label;
-  document.title = route === "home" || !pageLabel ? SITE.title : `${pageLabel} — ${SITE.title}`;
+  document.title =
+    route === "home" || !pageLabel
+      ? SITE.documentTitle
+      : `${pageLabel} — ${SITE.title}`;
 
   app.innerHTML = renderShell(
     route,
