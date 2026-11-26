@@ -48,6 +48,15 @@ export interface TrackFigure {
   legend?: TrackFigureLegendItem[];
 }
 
+/** Schematic that explains a track's label scheme, shown inside its section. */
+export interface TrackLabelFigure {
+  src: string;
+  alt: string;
+  caption: string;
+  width: number;
+  height: number;
+}
+
 export interface TrackInfo {
   slug: string;
   title: string;
@@ -63,6 +72,8 @@ export interface TrackInfo {
   /** Visual demo for the Tasks panel / Tracks page; omitted while a track's
    * output representation is still being designed. */
   figure?: TrackFigure;
+  /** Label-scheme illustration shown under the track description. */
+  labelFigure?: TrackLabelFigure;
 }
 
 export interface TimelineItem {
@@ -105,6 +116,7 @@ export const SITE = {
 // Renderers resolve them against the site base path.
 export const IMAGES = {
   banner: "img/banner.webp",
+  track2Labels: "img/track2-labels.webp",
   track3Labels: "img/track3-labels.webp",
   keylab: "img/keylab.webp",
   tongren: "img/tongren.webp",
@@ -238,6 +250,14 @@ export const TRACKS: TrackInfo[] = [
     short: "Label airway branches into the 20 scored foreground classes (labels 1–20; 0 is background; class 20 is a real scored branch).",
     description:
       "Track 2 moves beyond binary segmentation toward structured airway understanding. Participants are required to assign anatomical labels to airway branches and generate an anatomically consistent airway representation. Target labels include the segmental airway branches. This task is designed to support automated route planning, lesion-to-airway association, and standardized anatomical reporting for endobronchial intervention.",
+    labelFigure: {
+      src: IMAGES.track2Labels,
+      alt: "Two views of the airway tree coloured by anatomical class, with leader lines naming the trachea, the left-lung segments (LB1+2, LB3, LB4, LB5, LB6, LB7, LB8, LB9, LB10) and the right-lung segments (RB1 to RB10).",
+      caption:
+        "The airway tree labelled with its 19 segmental classes: left-lung segments (LB1+2, LB3–LB10) on the left, right-lung segments (RB1–RB10) on the right, and the trachea as the root class.",
+      width: 2362,
+      height: 1347,
+    },
     metrics: [
       { name: "ACC", higherIsBetter: true, note: "Branch classification accuracy" },
       { name: "F1", higherIsBetter: true, note: "Branch F1 score" },

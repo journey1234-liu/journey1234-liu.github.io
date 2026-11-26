@@ -98,6 +98,19 @@ describe("track demo figures", () => {
     expect(outputNote).toBeGreaterThan(inputStrip);
   });
 
+  it("renders the Track 2 label guide between its description and metrics", () => {
+    const html = renderTracks();
+    const track1 = html.slice(html.indexOf('id="track-1"'), html.indexOf('id="track-2"'));
+    const track2 = html.slice(html.indexOf('id="track-2"'), html.indexOf('id="track-3"'));
+    expect(track1).not.toContain("Label guide");
+    expect(track2).toContain('<h3 class="track-subtitle">Label guide</h3>');
+    expect(track2).toContain("img/track2-labels.webp");
+    expect(track2).toContain("labelled with its 19 segmental classes");
+    expect(track2.indexOf("Label guide")).toBeLessThan(track2.indexOf(">Metrics<"));
+    expect(existsSync(publicFile(IMAGES.track2Labels))).toBe(true);
+    expect(IMAGES.track2Labels).toBe("img/track2-labels.webp");
+  });
+
   it("styles the home input and output tags as a matched pair", () => {
     const html = renderHome();
     const track3 = html.slice(html.indexOf("task-card task-card--track-3"));

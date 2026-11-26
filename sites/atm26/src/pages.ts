@@ -29,6 +29,7 @@ import type {
   WorkshopAgendaItem,
   WorkshopPhoto,
   Track3Label,
+  TrackLabelFigure,
   TrackInfo,
   TrackFigure,
   TrackFigurePane,
@@ -540,6 +541,23 @@ function renderTrack3Labels(): string {
     </section>`;
 }
 
+/** Label-scheme illustration of a track, shown under its description. */
+function renderTrackLabelFigure(fig: TrackLabelFigure): string {
+  return `
+        <h3 class="track-subtitle">Label guide</h3>
+        <figure class="label-figure">
+          <img
+            src="${escapeHtml(resolveAsset(fig.src))}"
+            alt="${escapeHtml(fig.alt)}"
+            width="${fig.width}"
+            height="${fig.height}"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>${escapeHtml(fig.caption)}</figcaption>
+        </figure>`;
+}
+
 export function renderTracks(): string {
   const sections = TRACKS.map((track) => {
     const metricRows = track.metrics
@@ -559,6 +577,7 @@ export function renderTracks(): string {
         ${renderTrackFigure(track)}
         <p class="track-summary">${escapeHtml(track.short)}</p>
         <p>${escapeHtml(track.description)}</p>
+        ${track.labelFigure ? renderTrackLabelFigure(track.labelFigure) : ""}
         <h3 class="track-metrics-title">Metrics</h3>
         <div class="table-wrap">
           <table>
