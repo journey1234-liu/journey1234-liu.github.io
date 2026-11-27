@@ -181,6 +181,24 @@ export interface OrganizerInstitution {
   logo?: string;
 }
 
+/** One mark in the home-page collaborator strip. */
+export interface CollaboratorLogo {
+  name: string;
+  src: string;
+  /** Intrinsic size of the generated WebP, in pixels. */
+  width: number;
+  height: number;
+}
+
+export interface CollaboratorSection {
+  kicker: string;
+  title: string;
+  intro: string;
+  /** Alphabetical; `tests/collaborators.test.ts` re-checks the order. */
+  logos: CollaboratorLogo[];
+  note: string;
+}
+
 export const NAV_ITEMS: NavItem[] = [
   { id: "home", label: "Home" },
   { id: "tracks", label: "Tracks" },
@@ -729,6 +747,61 @@ export const ORGANIZERS: OrganizerInstitution[] = [
     logo: "img/org-mi.webp",
   },
 ];
+
+// Collaborating institutions of the Airway Tree Modeling challenge series,
+// shown as a scrolling strip at the end of the home page. The marks come from
+// the ATM-Collaborators logo set; `tools/make_collaborator_logos.py` trims
+// them, converts them to WebP and prints this list (alphabetical by name).
+export const COLLABORATORS: CollaboratorSection = {
+  kicker: "Network",
+  title: "Collaborators",
+  intro:
+    "The Airway Tree Modeling challenge series is developed with collaborating universities, hospitals and industry partners, shown here in alphabetical order.",
+  logos: [
+    { name: "Alibaba DAMO Academy", src: "img/collaborators/alibaba-damo-academy.webp", width: 479, height: 144 },
+    { name: "Busan Medical Center", src: "img/collaborators/busan-medical-center.webp", width: 598, height: 95 },
+    { name: "Columbia University", src: "img/collaborators/columbia-university.webp", width: 210, height: 144 },
+    { name: "DIANGI", src: "img/collaborators/diangi.webp", width: 173, height: 144 },
+    { name: "DKFZ", src: "img/collaborators/dkfz.webp", width: 604, height: 70 },
+    { name: "ENSTA Bretagne", src: "img/collaborators/ensta-bretagne.webp", width: 450, height: 144 },
+    { name: "Fraunhofer MEVIS", src: "img/collaborators/fraunhofer-mevis.webp", width: 526, height: 144 },
+    { name: "Fudan University", src: "img/collaborators/fudan-university.webp", width: 144, height: 144 },
+    { name: "Fuzhou University", src: "img/collaborators/fuzhou-university.webp", width: 149, height: 144 },
+    { name: "Harvard Medical School", src: "img/collaborators/harvard-medical-school.webp", width: 573, height: 144 },
+    { name: "IIT Madras", src: "img/collaborators/iit-madras.webp", width: 144, height: 144 },
+    { name: "Imperial College London", src: "img/collaborators/imperial-college-london.webp", width: 548, height: 144 },
+    { name: "InferVision", src: "img/collaborators/infervision.webp", width: 467, height: 144 },
+    { name: "Institute of Medical Robotics, SJTU", src: "img/collaborators/institute-of-medical-robotics-sjtu.webp", width: 146, height: 144 },
+    { name: "King's College London", src: "img/collaborators/kings-college-london.webp", width: 189, height: 144 },
+    { name: "MBZUAI", src: "img/collaborators/mbzuai.webp", width: 583, height: 144 },
+    { name: "Median Technologies", src: "img/collaborators/median-technologies.webp", width: 344, height: 144 },
+    { name: "Medical Image Insights", src: "img/collaborators/medical-image-insights.webp", width: 586, height: 144 },
+    { name: "MicroPort MedBot", src: "img/collaborators/microport-medbot.webp", width: 601, height: 121 },
+    { name: "MIT", src: "img/collaborators/mit.webp", width: 272, height: 144 },
+    { name: "NMED", src: "img/collaborators/nmed.webp", width: 600, height: 117 },
+    { name: "Philips", src: "img/collaborators/philips.webp", width: 599, height: 110 },
+    { name: "Politecnico di Milano", src: "img/collaborators/politecnico-di-milano.webp", width: 144, height: 144 },
+    { name: "Pusan National University", src: "img/collaborators/pusan-national-university.webp", width: 583, height: 144 },
+    { name: "Radboudumc", src: "img/collaborators/radboudumc.webp", width: 599, height: 74 },
+    { name: "SANMED Biotech", src: "img/collaborators/sanmed-biotech.webp", width: 343, height: 144 },
+    { name: "SENSAR", src: "img/collaborators/sensar.webp", width: 177, height: 144 },
+    { name: "Shanghai AI Laboratory", src: "img/collaborators/shanghai-ai-laboratory.webp", width: 250, height: 144 },
+    { name: "Shanghai Chest Hospital", src: "img/collaborators/shanghai-chest-hospital.webp", width: 144, height: 144 },
+    { name: "Shanghai Jiao Tong University", src: "img/collaborators/shanghai-jiao-tong-university.webp", width: 144, height: 144 },
+    { name: "Siemens Healthineers", src: "img/collaborators/siemens-healthineers.webp", width: 601, height: 141 },
+    { name: "Stanford University", src: "img/collaborators/stanford-university.webp", width: 601, height: 126 },
+    { name: "St. Luke's Hospital, SJTU", src: "img/collaborators/st-lukes-hospital-sjtu.webp", width: 145, height: 144 },
+    { name: "Tsinghua University", src: "img/collaborators/tsinghua-university.webp", width: 144, height: 144 },
+    { name: "TUM", src: "img/collaborators/tum.webp", width: 277, height: 144 },
+    { name: "UCL", src: "img/collaborators/ucl.webp", width: 122, height: 144 },
+    { name: "UNICAMP", src: "img/collaborators/unicamp.webp", width: 128, height: 144 },
+    { name: "United Imaging Intelligence", src: "img/collaborators/united-imaging-intelligence.webp", width: 600, height: 124 },
+    { name: "Universiti Kebangsaan Malaysia", src: "img/collaborators/universiti-kebangsaan-malaysia.webp", width: 303, height: 144 },
+    { name: "University of Science and Technology of China", src: "img/collaborators/university-of-science-and-technology-of-china.webp", width: 144, height: 144 },
+    { name: "West China Hospital, Sichuan University", src: "img/collaborators/west-china-hospital-sichuan-university.webp", width: 172, height: 144 },
+  ],
+  note: "Logos are trademarks of their respective owners and are shown here to credit the collaboration.",
+};
 
 export const CITATIONS: CitationItem[] = [
   {

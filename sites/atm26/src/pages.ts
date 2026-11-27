@@ -13,6 +13,7 @@ import {
   RANKING_POLICY_DESCRIPTION,
   TIMELINE,
   ORGANIZERS,
+  COLLABORATORS,
   CITATIONS,
   FAQ,
   CONTACT,
@@ -28,6 +29,7 @@ import {
 import type {
   WorkshopAgendaItem,
   WorkshopPhoto,
+  CollaboratorLogo,
   Track3Label,
   TrackLabelFigure,
   TrackInfo,
@@ -169,6 +171,46 @@ function renderWorkshopSection(): string {
           target="_blank"
         >${escapeHtml(WORKSHOP.resultsLinkLabel)}</a>
       </p>
+    </section>`;
+}
+
+/**
+ * One mark of the collaborator strip. The strip renders the same set twice so a
+ * -50% translation loops seamlessly; the second copy is hidden from assistive
+ * technology, which reads the names once.
+ */
+function renderCollaboratorLogo(logo: CollaboratorLogo): string {
+  return `
+            <div class="logo-marquee-item">
+              <img
+                src="${escapeHtml(resolveAsset(logo.src))}"
+                alt="${escapeHtml(logo.name)}"
+                width="${escapeHtml(logo.width)}"
+                height="${escapeHtml(logo.height)}"
+                style="--logo-ratio: ${(logo.width / logo.height).toFixed(3)}"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>`;
+}
+
+/** Closing home-page band crediting the challenge series' collaborators. */
+function renderCollaboratorsSection(): string {
+  const logoSet = COLLABORATORS.logos.map(renderCollaboratorLogo).join("");
+  return `
+    <section class="panel collaborators-panel" id="collaborators">
+      <div class="section-kicker">${escapeHtml(COLLABORATORS.kicker)}</div>
+      <h2>${escapeHtml(COLLABORATORS.title)}</h2>
+      <p class="muted collaborators-intro">${escapeHtml(COLLABORATORS.intro)}</p>
+      <div class="logo-marquee" role="group" aria-label="Collaborating institutions">
+        <div class="logo-marquee-track">
+          <div class="logo-marquee-set">${logoSet}
+          </div>
+          <div class="logo-marquee-set" aria-hidden="true">${logoSet}
+          </div>
+        </div>
+      </div>
+      <p class="muted collaborators-note">${escapeHtml(COLLABORATORS.note)}</p>
     </section>`;
 }
 
@@ -456,7 +498,7 @@ export function renderHome(): string {
       <div class="section-kicker">Challenge</div>
       <h2>About ATM26</h2>
       ${introHtml}
-    </section>${renderVisitorsSection()}`;
+    </section>${renderCollaboratorsSection()}${renderVisitorsSection()}`;
 }
 
 function renderVisitorsSection(): string {

@@ -42,6 +42,7 @@ sites/atm26/
     data/leaderboard.json   # versioned public leaderboard snapshot (generated)
     img/tasks/              # Track 1/2 training-example figures for the home Tasks panel / Tracks page
     img/workshop/           # MICCAI 2026 workshop day: agenda slide + 6 photos
+    img/collaborators/      # collaborator marks for the home-page logo strip
   src/
     main.ts                 # entry point, hash routing, shell
     content.ts              # editable site copy, links, tracks, timeline, FAQ
@@ -62,11 +63,13 @@ sites/atm26/
     portals.test.ts         # submission form URLs stay verbatim
     pitfalls.test.ts        # Rules page pitfalls contract
     workshop.test.ts        # home workshop agenda + seamless photo strip contract
+    collaborators.test.ts   # collaborator list order, logo assets, seamless logo strip
     taskFigures.test.ts     # demo-figure metadata, asset presence and markup contract
     visitors.test.ts        # visitor snapshot parsing + country-row rendering
   tools/
     gc_validation_snapshot.json       # frozen GC validation mirror (public data)
     refresh_gc_validation_overlay.py  # re-reads GC: team labels + Betti0Error
+    make_collaborator_logos.py        # trims/converts the collaborator PNGs, prints content.ts entries
     fetch_visits.mjs        # CI: GoatCounter aggregate snapshot (visitor panel)
     fetch_visits.test.mjs   # node:test suite for the snapshot tool
 ```
@@ -201,6 +204,32 @@ the Track-3 output note) lives in `src/content.ts` under `TRACKS[].figure`; the
 renderers are `renderTaskCard` / `renderTrackFigure` in `src/pages.ts`. Every task
 image is lazy-loaded, while the intrinsic `width`/`height` attributes reserve
 space and prevent layout shift.
+
+## Collaborator logos
+
+The home page closes with a scrolling strip crediting the collaborating
+institutions of the ATM challenge series (`COLLABORATORS` in `src/content.ts`,
+rendered by `renderCollaboratorsSection`). It reuses the workshop photo
+marquee: the same set is rendered twice, one copy is hidden from assistive
+technology, and the track is translated by exactly -50% so the loop is seamless.
+Two differences:
+
+- **Direction.** The photo strip runs right to left; the logo strip runs left to
+  right (`@keyframes logo-marquee-scroll` goes from `-50%` back to `0`, so marks
+  enter at the left edge). Flip the keyframes to mirror the photos.
+- **Sizing.** Logos are capped at 72px high and 300px wide instead of being
+  scaled to one height, so a wide wordmark and a square seal carry similar
+  weight. The cap is written as an explicit `width` fed by a per-image
+  `--logo-ratio` custom property, which keeps each box reserved before the
+  lazy-loaded file arrives.
+
+Marks come from the ATM-Collaborators logo set and are converted to trimmed,
+2x-sized WebP by `tools/make_collaborator_logos.py`. The script prints the
+`COLLABORATORS.logos` entries; paste them back and keep the array in the
+alphabetical order the tool computes (letters and digits only, so `St. Luke's`
+sorts as `stlukes`). `tests/collaborators.test.ts` re-checks the order, the
+asset presence and the two-copy structure. The order is alphabetical by the
+name in the list, including the short forms (`TUM`, `UCL`, `MIT`, `NMED`).
 
 ## Leaderboard data contract
 
