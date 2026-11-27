@@ -194,9 +194,52 @@ function renderCollaboratorLogo(logo: CollaboratorLogo): string {
             </div>`;
 }
 
+/** Display height of a mark, mirrored from `.logo-marquee-item img`. */
+const LOGO_ROW_HEIGHT = 60;
+/** Widest a single mark may render, mirrored from the same rule. */
+const LOGO_MAX_WIDTH = 300;
+/** Gap between marks in a row, mirrored from `.logo-marquee-row`. */
+const LOGO_ROW_GAP = 24;
+
+function logoDisplayWidth(logo: CollaboratorLogo): number {
+  const ratio = logo.width / logo.height;
+  return Math.min(LOGO_MAX_WIDTH, LOGO_ROW_HEIGHT * ratio);
+}
+
+/**
+ * Split the alphabetical list into the two rows of the band. Both rows share
+ * one scrolling track, so a row that came out much shorter would leave a hole
+ * at the loop seam; picking the split with the closest row widths keeps the
+ * rows the same length and therefore travelling at the same speed.
+ */
+function splitCollaboratorRows(logos: CollaboratorLogo[]): [CollaboratorLogo[], CollaboratorLogo[]] {
+  const widths = logos.map(logoDisplayWidth);
+  let left = 0;
+  let best = 1;
+  let bestDelta = Infinity;
+  for (let index = 1; index < logos.length; index += 1) {
+    left += widths[index - 1] + (index > 1 ? LOGO_ROW_GAP : 0);
+    const right = widths.slice(index).reduce((sum, width) => sum + width, 0)
+      + LOGO_ROW_GAP * (logos.length - index - 1);
+    const delta = Math.abs(left - right);
+    if (delta < bestDelta) {
+      bestDelta = delta;
+      best = index;
+    }
+  }
+  return [logos.slice(0, best), logos.slice(best)];
+}
+
+/** One row of marks; order is preserved so the band stays alphabetical. */
+function renderCollaboratorRow(logos: CollaboratorLogo[]): string {
+  return `
+          <div class="logo-marquee-row">${logos.map(renderCollaboratorLogo).join("")}
+          </div>`;
+}
+
 /** Closing home-page band crediting the challenge series' collaborators. */
 function renderCollaboratorsSection(): string {
-  const logoSet = COLLABORATORS.logos.map(renderCollaboratorLogo).join("");
+  const rows = splitCollaboratorRows(COLLABORATORS.logos).map(renderCollaboratorRow).join("");
   return `
     <section class="panel collaborators-panel" id="collaborators">
       <div class="section-kicker">${escapeHtml(COLLABORATORS.kicker)}</div>
@@ -204,9 +247,9 @@ function renderCollaboratorsSection(): string {
       <p class="muted collaborators-intro">${escapeHtml(COLLABORATORS.intro)}</p>
       <div class="logo-marquee" role="group" aria-label="Collaborating institutions">
         <div class="logo-marquee-track">
-          <div class="logo-marquee-set">${logoSet}
+          <div class="logo-marquee-set">${rows}
           </div>
-          <div class="logo-marquee-set" aria-hidden="true">${logoSet}
+          <div class="logo-marquee-set" aria-hidden="true">${rows}
           </div>
         </div>
       </div>

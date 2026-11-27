@@ -207,17 +207,24 @@ space and prevent layout shift.
 
 ## Collaborator logos
 
-The home page closes with a scrolling strip crediting the collaborating
+The home page closes with a scrolling band crediting the collaborating
 institutions of the ATM challenge series (`COLLABORATORS` in `src/content.ts`,
 rendered by `renderCollaboratorsSection`). It reuses the workshop photo
-marquee: the same set is rendered twice, one copy is hidden from assistive
+marquee: the same block is rendered twice, one copy is hidden from assistive
 technology, and the track is translated by exactly -50% so the loop is seamless.
-Two differences:
+Three things are specific to the band:
 
-- **Direction.** The photo strip runs right to left; the logo strip runs left to
-  right (`@keyframes logo-marquee-scroll` goes from `-50%` back to `0`, so marks
-  enter at the left edge). Flip the keyframes to mirror the photos.
-- **Sizing.** Logos are capped at 72px high and 300px wide instead of being
+- **Two rows.** The 41 marks sit in two rows of one set, so a single track
+  scrolls both and the strip is about half as long as a single row would be.
+  `splitCollaboratorRows` picks the split point whose two rows come out the same
+  width — a much shorter row would otherwise leave a hole at the loop seam.
+  Rows are filled in alphabetical order, so the band reads top row first, and
+  the split lands where the row lengths balance (currently 19 + 22 marks).
+- **Direction.** The band runs leftward like the photo strip, so the marks pass
+  in alphabetical order as they enter on the right and the visible band also
+  reads A→Z. Flipping `@keyframes logo-marquee-scroll` would make them arrive in
+  reverse, which is why it is not a purely cosmetic choice.
+- **Sizing.** Marks are capped at 60px high and 300px wide instead of being
   scaled to one height, so a wide wordmark and a square seal carry similar
   weight. The cap is written as an explicit `width` fed by a per-image
   `--logo-ratio` custom property, which keeps each box reserved before the
@@ -228,8 +235,8 @@ Marks come from the ATM-Collaborators logo set and are converted to trimmed,
 `COLLABORATORS.logos` entries; paste them back and keep the array in the
 alphabetical order the tool computes (letters and digits only, so `St. Luke's`
 sorts as `stlukes`). `tests/collaborators.test.ts` re-checks the order, the
-asset presence and the two-copy structure. The order is alphabetical by the
-name in the list, including the short forms (`TUM`, `UCL`, `MIT`, `NMED`).
+assets, the row balance and the two-copy structure. The order is alphabetical by
+the name in the list, including the short forms (`TUM`, `UCL`, `MIT`, `NMED`).
 
 ## Leaderboard data contract
 

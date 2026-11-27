@@ -1925,11 +1925,12 @@ summary {
   }
 }
 
-/* Collaborator strip: the same seamless two-copy marquee as the workshop
-   photos, but the pieces are marks of very different proportions, so every one
-   is capped by height *and* width instead of being scaled to a single height.
-   The track runs left to right (from -50% back to 0), the opposite of the
-   photo strip, so the marks enter from the left edge. */
+/* Collaborator band: the same seamless two-copy marquee as the workshop
+   photos, but two rows of marks so the strip is about half as long. The rows
+   sit in one set, so both travel at the same speed and the loop stays in step.
+   Marks are capped by height *and* width instead of being scaled to one
+   height. The rows carry the list in alphabetical order, so the band reads A-Z
+   on screen and the marks also pass in that order. */
 .collaborators-intro {
   max-width: 62ch;
   margin-top: 0.25rem;
@@ -1942,14 +1943,14 @@ summary {
   padding: 0.9rem 0;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
 }
 
 .logo-marquee-track {
   display: flex;
   width: max-content;
-  animation: logo-marquee-scroll 140s linear infinite;
+  animation: logo-marquee-scroll 62s linear infinite;
 }
 
 .logo-marquee:hover .logo-marquee-track,
@@ -1959,9 +1960,15 @@ summary {
 
 .logo-marquee-set {
   display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding-right: 1.5rem;
+}
+
+.logo-marquee-row {
+  display: flex;
   align-items: center;
   gap: 1.5rem;
-  padding-right: 1.5rem;
 }
 
 .logo-marquee-item {
@@ -1971,21 +1978,22 @@ summary {
 /* Each mark is sized by the same two caps, but written as an explicit width so
    the box is already reserved before the (lazy) file arrives: the ratio comes
    from the asset through --logo-ratio, and the width expression resolves to
-   min(72px * ratio, 300px) — the old max-height / max-width fit. */
+   min(60px * ratio, 300px) — the old max-height / max-width fit. Both rows use
+   that height, so a row is exactly as tall as its tallest mark. */
 .logo-marquee-item img {
   display: block;
-  width: min(300px, 72px * var(--logo-ratio, 1));
+  width: min(300px, 60px * var(--logo-ratio, 1));
   aspect-ratio: var(--logo-ratio, 1);
   height: auto;
 }
 
 @keyframes logo-marquee-scroll {
   from {
-    transform: translateX(-50%);
+    transform: translateX(0);
   }
 
   to {
-    transform: translateX(0);
+    transform: translateX(-50%);
   }
 }
 
@@ -2171,12 +2179,16 @@ summary {
   }
 
   .logo-marquee-set {
-    gap: 1rem;
-    padding-right: 1rem;
+    gap: 0.7rem;
+    padding-right: 0.9rem;
+  }
+
+  .logo-marquee-row {
+    gap: 0.9rem;
   }
 
   .logo-marquee-item img {
-    width: min(190px, 48px * var(--logo-ratio, 1));
+    width: min(160px, 40px * var(--logo-ratio, 1));
   }
 
   .task-card-media {

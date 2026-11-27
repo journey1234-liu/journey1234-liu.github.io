@@ -11,9 +11,9 @@ for ``content.ts``:
   transparent pixels of slack around the artwork (Columbia University alone has
   83 px above and 107 px below). Trimmed to the alpha bounding box, every mark
   sits on the same optical edge in the strip.
-* **Resize.** The strip caps each logo at 72px high and 300px wide (see
-  ``.logo-marquee-item img`` in ``styles.css``), so assets are rendered at twice
-  that box to stay sharp on 2x displays.
+* **Resize.** Each row of the strip is 60px high and a single mark may be at
+  most 300px wide (see ``.logo-marquee-item img`` in ``styles.css``), so assets
+  are rendered at twice that box to stay sharp on 2x displays.
 * **WebP.** Alpha is preserved; the source is lossless PNG, exported at q=90
   with method 6. Logos are flat artwork, so the files stay small.
 
@@ -47,7 +47,7 @@ from pathlib import Path
 from PIL import Image
 
 #: Strip box at 1x, mirrored from ``.logo-marquee-item img`` in styles.css.
-MAX_HEIGHT = 72
+MAX_HEIGHT = 60
 MAX_WIDTH = 300
 SCALE = 2
 QUALITY = 90
